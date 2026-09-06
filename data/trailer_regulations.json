@@ -1,0 +1,288 @@
+{
+  "schema": "trp.trailer_regulations/1",
+  "updated": "2026-01-01",
+  "disclaimer": "ESTIMATE / SUMMARY ONLY. These notes are a simplified planning aid, not legal advice. National rules, driving bans, holiday calendars and dimension limits change frequently. VERIFY EVERY ITEM WITH THE COMPETENT NATIONAL AUTHORITY BEFORE DEPARTURE.",
+  "regulations": {
+    "DEFAULT": {
+      "name": "General EU baseline",
+      "rules": [
+        "Driving time: max 4h30 continuous, then a 45-minute break (or 15 + 30 split); max 9h daily driving, extendable to 10h twice a week.",
+        "Rest: minimum 11h daily rest (reducible to 9h up to three times between weekly rests); weekly rest of 45h, reducible to 24h under conditions.",
+        "Standard dimensions for an articulated combination: max length 16.50 m, width 2.55 m (2.60 m refrigerated), height 4.00 m, gross weight 40 t (44 t intermodal).",
+        "Carry the tachograph records for the current day and the previous 28 days, plus driver card, CMR, licence and insurance documents.",
+        "Load securing must comply with EN 12195-1; enforcement roadside checks are common across the EU."
+      ]
+    },
+    "AT": {
+      "name": "Austria",
+      "rules": [
+        "Night driving ban (22:00-05:00) for trucks over 7.5 t on many routes, including the A12 Inntal transit corridor.",
+        "Weekend ban for trucks over 7.5 t with trailer: Saturday 15:00 to Sunday 22:00, plus public holidays.",
+        "Winter equipment obligation from 1 November to 15 April: winter tyres on drive axles and snow chains carried.",
+        "GO-Box on-board unit required for all vehicles over 3.5 t; sectoral bans apply to certain goods on the A12."
+      ]
+    },
+    "BE": {
+      "name": "Belgium",
+      "rules": [
+        "Viapass / Satellic on-board unit mandatory for vehicles over 3.5 t on all roads, including local ones.",
+        "Low emission zones in Brussels, Antwerp and Ghent - pre-registration required for foreign vehicles.",
+        "No general weekend ban, but abnormal load transport is restricted at weekends and at night.",
+        "Snow chains only permitted on snow-covered roads; winter tyres are not compulsory."
+      ]
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "rules": [
+        "TOLL BG route pass or on-board unit required before entering the tolled network with a vehicle over 3.5 t.",
+        "Winter tyres or chains required from 15 November to 1 March.",
+        "Summer driving restrictions can apply to heavy vehicles on Black Sea routes during peak weekends.",
+        "Weight checks are frequent; axle load limits are strictly enforced at border crossings."
+      ]
+    },
+    "HR": {
+      "name": "Croatia",
+      "rules": [
+        "Winter equipment mandatory from 15 November to 15 April on designated roads; chains must be carried.",
+        "Summer weekend bans for trucks over 7.5 t on Adriatic coastal roads during the tourist season.",
+        "Strong bora wind closures on the A1 and Maslenica bridge - check traffic bulletins before departure.",
+        "ENC transponder recommended to avoid queues at barrier toll plazas."
+      ]
+    },
+    "CZ": {
+      "name": "Czechia",
+      "rules": [
+        "MYTO CZ on-board unit mandatory over 3.5 t on motorways and selected first-class roads.",
+        "Weekend and holiday ban for vehicles over 7.5 t: Sunday 13:00-22:00 all year, plus Friday 17:00-21:00 and Saturday 07:00-13:00 from July to August.",
+        "Winter tyres compulsory from 1 November to 31 March when wintry conditions exist.",
+        "Prague has restricted zones for vehicles over 3.5 t and 6 t - permits required."
+      ]
+    },
+    "DK": {
+      "name": "Denmark",
+      "rules": [
+        "Distance-based HGV road charge applies; registration and an on-board unit are required.",
+        "Low emission zones in Copenhagen, Aarhus, Odense and Aalborg for diesel trucks.",
+        "No general weekend driving ban for standard freight.",
+        "Great Belt and Oresund crossings are tolled separately - budget for them in addition to the road charge."
+      ]
+    },
+    "EE": {
+      "name": "Estonia",
+      "rules": [
+        "Time-based road user charge must be purchased before entering the road network with a vehicle over 3.5 t.",
+        "Winter tyres compulsory from 1 December to 1 March; studded tyres permitted 15 October to 31 March.",
+        "Ice road regulations apply seasonally - separate rules and weight limits.",
+        "Spring thaw weight restrictions can apply on secondary roads."
+      ]
+    },
+    "FI": {
+      "name": "Finland",
+      "rules": [
+        "Winter tyres compulsory for heavy vehicles from December to February; chains recommended.",
+        "Higher national weight and length limits (up to 76 t and 34.5 m) apply only to vehicles registered for them.",
+        "No general HGV road charge, but ferry connections require advance booking.",
+        "Reindeer and elk warnings apply - reduced speeds are enforced on northern routes."
+      ]
+    },
+    "FR": {
+      "name": "France",
+      "rules": [
+        "General ban for vehicles over 7.5 t from Saturday 22:00 to Sunday 22:00 and on public holidays.",
+        "Crit'Air sticker mandatory for low emission zones (Paris, Lyon, Grenoble, Strasbourg and others).",
+        "Winter equipment obligation (Loi Montagne) from 1 November to 31 March in designated mountain areas.",
+        "Alcohol limit 0.5 g/l; a breathalyser and hi-vis vest must be carried in the cab."
+      ]
+    },
+    "DE": {
+      "name": "Germany",
+      "rules": [
+        "Sunday and public holiday driving ban for trucks over 7.5 t from 00:00 to 22:00; summer ban on selected motorways on Saturdays 07:00-20:00 (July-August).",
+        "Toll Collect on-board unit or manual booking required for vehicles from 3.5 t on all federal roads.",
+        "Winter tyres (M+S or 3PMSF) mandatory in wintry conditions on all driven axles.",
+        "Umweltplakette required for environmental zones in most large cities.",
+        "Maximum gross weight 40 t (44 t for intermodal pre- and post-haulage)."
+      ]
+    },
+    "GR": {
+      "name": "Greece",
+      "rules": [
+        "Driving restrictions for trucks over 1.5 t payload on holiday weekends and around major cities.",
+        "Snow chains must be carried on mountain routes in winter.",
+        "Athens has an alternating traffic restriction ring that affects heavy vehicles.",
+        "Ferry connections to the islands require advance booking and separate documentation."
+      ]
+    },
+    "HU": {
+      "name": "Hungary",
+      "rules": [
+        "HU-GO route ticket or on-board unit mandatory for vehicles over 3.5 t before entering the tolled network.",
+        "Weekend ban for trucks over 7.5 t: Saturday 22:00 to Sunday 22:00, extended in summer.",
+        "Winter tyres are not mandatory, but vehicles must be equipped for the conditions.",
+        "Budapest has a permit system for vehicles over 3.5 t inside the city limits."
+      ]
+    },
+    "IE": {
+      "name": "Ireland",
+      "rules": [
+        "M50 uses barrier-free tolling - payment must be made online by 20:00 the following day.",
+        "Dublin Port tunnel is free for HGVs over 25 t but has height restrictions (4.65 m).",
+        "Left-hand traffic; mirrors and blind spot equipment should be adjusted before entry.",
+        "No general weekend driving ban for freight."
+      ]
+    },
+    "IT": {
+      "name": "Italy",
+      "rules": [
+        "Sunday and holiday driving bans for trucks over 7.5 t, published annually by decree (calendario divieti).",
+        "Winter equipment obligation from 15 November to 15 April on many routes; chains must be carried.",
+        "Restricted traffic zones (ZTL) in most historic city centres - fines are automatic.",
+        "Alpine tunnel crossings (Frejus, Mont Blanc, Brenner) have separate booking, tolls and emission class rules."
+      ]
+    },
+    "LT": {
+      "name": "Lithuania",
+      "rules": [
+        "Distance-based e-toll registration required for vehicles over 3.5 t.",
+        "Winter tyres compulsory from 10 November to 1 April.",
+        "Dipped headlights mandatory at all times, all year.",
+        "Weight restrictions can apply on regional roads during the spring thaw."
+      ]
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "rules": [
+        "Eurovignette must be valid before entering the motorway network.",
+        "Ban for trucks over 7.5 t on Sundays and public holidays 21:30-21:45 in specific transit corridors.",
+        "Winter tyres compulsory in wintry conditions.",
+        "Fuel prices are typically the lowest in the region - plan refuelling here."
+      ]
+    },
+    "NL": {
+      "name": "Netherlands",
+      "rules": [
+        "Eurovignette required for the motorway network for vehicles over 12 t.",
+        "Zero emission zones for delivery vehicles are being introduced in more than 25 cities - check per city.",
+        "No general weekend ban; abnormal loads are restricted at weekends and at night.",
+        "Westerschelde and Kil tunnels have separate tolls and dangerous goods restrictions."
+      ]
+    },
+    "NO": {
+      "name": "Norway",
+      "rules": [
+        "Winter tyres with a minimum 5 mm tread mandatory for HGVs from 15 November to 31 March (longer in the north).",
+        "Chains must be carried - a minimum of seven chains for a combination in winter.",
+        "AutoPASS tag registration is compulsory for foreign HGVs.",
+        "Mountain passes close at short notice; column driving may be enforced."
+      ]
+    },
+    "PL": {
+      "name": "Poland",
+      "rules": [
+        "e-TOLL geolocation app or on-board unit mandatory for vehicles over 3.5 t.",
+        "Driving ban for trucks over 12 t on public holidays and on summer weekends (Friday 18:00-22:00, Saturday 08:00-14:00, Sunday 08:00-22:00).",
+        "Heat restrictions can be imposed for vehicles over 12 t when temperatures exceed 30 degrees Celsius.",
+        "Winter tyres are not mandatory but strongly recommended from November to March."
+      ]
+    },
+    "PT": {
+      "name": "Portugal",
+      "rules": [
+        "Several motorways use free-flow electronic tolls - a transponder or pre-registration is required.",
+        "Reflective vest and warning triangle mandatory in the cab.",
+        "No general weekend ban, but abnormal loads are restricted.",
+        "Maximum gross weight 40 t; 44 t allowed for combined transport."
+      ]
+    },
+    "RO": {
+      "name": "Romania",
+      "rules": [
+        "Rovinieta vignette must be purchased before entering the national road network.",
+        "Fetesti-Cernavoda bridge and the Danube crossings are tolled separately.",
+        "Winter tyres compulsory on snow or ice covered roads from 1 November to 31 March.",
+        "Temporary restrictions for heavy vehicles apply during heatwaves on selected national roads."
+      ]
+    },
+    "RS": {
+      "name": "Serbia",
+      "rules": [
+        "Non-EU customs procedures apply - TIR/T1 documentation and a green card are required.",
+        "Winter equipment obligation from 1 November to 1 April.",
+        "Barrier tolls; heavy combinations fall into category 3 or 4.",
+        "Border waiting times at Batrovci and Horgos can be several hours - plan rest accordingly."
+      ]
+    },
+    "SK": {
+      "name": "Slovakia",
+      "rules": [
+        "SkyToll on-board unit mandatory for vehicles over 3.5 t.",
+        "Weekend ban for trucks over 7.5 t: Sunday 00:00-22:00, extended in summer on selected roads.",
+        "Winter tyres compulsory for HGVs from 15 November to 31 March.",
+        "Bratislava has restricted access zones for heavy vehicles."
+      ]
+    },
+    "SI": {
+      "name": "Slovenia",
+      "rules": [
+        "DarsGo on-board unit mandatory for vehicles over 3.5 t.",
+        "Driving ban for trucks over 7.5 t on Sundays and holidays 08:00-21:00, extended in summer (Saturday 08:00-13:00).",
+        "Winter equipment obligation from 15 November to 15 March.",
+        "Karawanks tunnel to Austria has separate tolling and dangerous goods restrictions."
+      ]
+    },
+    "ES": {
+      "name": "Spain",
+      "rules": [
+        "Regional driving restrictions for heavy vehicles - Catalonia, Madrid and the Basque Country publish their own calendars.",
+        "Low emission zones (ZBE) are mandatory in all cities over 50,000 inhabitants.",
+        "Winter equipment required on mountain routes; chains must be carried in the Pyrenees in winter.",
+        "Maximum length for a standard articulated combination 16.50 m; 18.75 m for approved megatrucks."
+      ]
+    },
+    "SE": {
+      "name": "Sweden",
+      "rules": [
+        "Eurovignette required for vehicles over 12 t on the motorway network.",
+        "Winter tyres mandatory for HGVs from 1 December to 31 March in wintry conditions.",
+        "Congestion charges apply in Stockholm and Gothenburg on weekdays.",
+        "Higher national weight limits (BK4 up to 74 t) apply only on approved road classes."
+      ]
+    },
+    "CH": {
+      "name": "Switzerland",
+      "rules": [
+        "LSVA performance-related heavy vehicle fee applies on ALL roads - registration is mandatory before entry.",
+        "Night driving ban 22:00-05:00 and full Sunday ban for vehicles over 3.5 t.",
+        "Maximum gross weight 40 t; 44 t only for approved combined transport.",
+        "Non-EU customs formalities apply; transit documentation must be presented at the border."
+      ]
+    },
+    "TR": {
+      "name": "Turkey",
+      "rules": [
+        "HGS electronic toll sticker is mandatory - unpaid passages incur heavy penalties.",
+        "Winter tyres compulsory for commercial vehicles from 1 December to 1 April.",
+        "Non-EU customs procedures; TIR carnet or T1 required, with long border waiting times.",
+        "Bosphorus bridge crossings have separate tolls and time restrictions for heavy vehicles."
+      ]
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "rules": [
+        "HGV Levy must be paid before entering the road network.",
+        "Left-hand traffic; blind spot mirrors and a Direct Vision Standard permit are required for London.",
+        "Ultra Low Emission Zone and Low Emission Zone charges apply in London.",
+        "Post-Brexit customs: GVMS reference, safety and security declarations and a Kent Access Permit may be required."
+      ]
+    },
+    "UA": {
+      "name": "Ukraine",
+      "rules": [
+        "Check current government travel, security and insurance guidance before planning any movement.",
+        "Weight and dimension permits are required for combinations over 40 t.",
+        "Curfew hours restrict night movement in many regions.",
+        "Non-EU customs procedures apply; documentation checks at the border can take many hours."
+      ]
+    }
+  }
+}

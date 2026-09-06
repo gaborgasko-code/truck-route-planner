@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b4ea2">
+<meta name="description" content="Truck Route Planner - desktop workspace for road routing, EU driving time, tolls, rest stops and safe truck parking.">
+<title>Truck Route Planner - Desktop</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/desktop.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__mark" aria-hidden="true">&#128667;</div>
+      <div>
+        <h1 class="brand__title">Truck Route Planner</h1>
+        <div class="brand__tagline">Road routing &middot; EU driving time &middot; tolls &middot; safe parking</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="chip" id="appVersion">v2.0.0</span>
+      <span class="chip">source: <span id="dataSource">-</span></span>
+      <span class="author-badge">created by Gabor Gasko</span>
+      <button type="button" class="icon-btn" id="themeToggle" title="Toggle theme">&#9790;</button>
+      <a class="link-btn" href="mobile.html?view=mobile">Mobile view</a>
+      <a class="link-btn" href="USER_GUIDE.html" target="_blank" rel="noopener">User guide</a>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ------------------------------------------------------- sidebar -->
+    <aside class="sidebar">
+
+      <section class="sidebar__section">
+        <h3>Route</h3>
+
+        <div class="field">
+          <label for="originInput">Origin address</label>
+          <input type="text" id="originInput" autocomplete="off" spellcheck="false"
+                 placeholder="e.g. Hafenstrasse 1, Hamburg, Germany">
+          <div class="suggest" id="originSuggest" role="listbox" hidden></div>
+        </div>
+
+        <div class="swap-row">
+          <button type="button" class="swap-btn" id="swapBtn" title="Swap origin and destination">&#8645;</button>
+        </div>
+
+        <div class="field">
+          <label for="destInput">Destination address</label>
+          <input type="text" id="destInput" autocomplete="off" spellcheck="false"
+                 placeholder="e.g. Via Roma 10, Milan, Italy">
+          <div class="suggest" id="destSuggest" role="listbox" hidden></div>
+        </div>
+
+        <div class="field">
+          <label for="departureInput">Departure</label>
+          <input type="datetime-local" id="departureInput">
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="calcBtn">Calculate Route</button>
+          <button type="button" class="btn btn--accent" id="mapBtn" disabled>Show Full Itinerary Map</button>
+          <button type="button" class="btn btn--ghost" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="progress" id="progress" hidden>
+          <div class="progress__bar"><div class="progress__fill" id="progressFill"></div></div>
+          <div class="progress__text" id="progressText"></div>
+        </div>
+      </section>
+
+      <details class="sidebar__section" open>
+        <summary>Vehicle profile</summary>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="weightInput">Gross weight (t)</label>
+            <input type="number" id="weightInput" min="1" max="100" step="0.5" value="40">
+          </div>
+          <div class="field">
+            <label for="axlesSelect">Axles</label>
+            <select id="axlesSelect">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5" selected>5</option>
+              <option value="6">6+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="euroSelect">Emission class</label>
+            <select id="euroSelect">
+              <option value="VI" selected>EURO VI</option>
+              <option value="V">EURO V</option>
+              <option value="IV">EURO IV</option>
+              <option value="III">EURO III</option>
+              <option value="II">EURO II</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="speedInput">Avg speed (km/h)</label>
+            <input type="number" id="speedInput" min="30" max="130" step="1" value="70">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fuelInput">Fuel (l/100 km)</label>
+            <input type="number" id="fuelInput" min="0" max="120" step="0.5" value="30">
+          </div>
+          <div class="field">
+            <label for="fuelPriceInput">Diesel (EUR/l)</label>
+            <input type="number" id="fuelPriceInput" min="0" max="10" step="0.01" value="1.65">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox" id="adrCheck">
+            <span>ADR / dangerous goods load</span>
+          </label>
+        </div>
+      </details>
+
+      <details class="sidebar__section">
+        <summary>Toll analysis</summary>
+        <div class="field">
+          <label for="tollDetailSelect">Sampling detail</label>
+          <select id="tollDetailSelect">
+            <option value="fast">Fast - sample every 150 km</option>
+            <option value="balanced" selected>Balanced - every 100 km</option>
+            <option value="precise">Precise - every 50 km</option>
+          </select>
+        </div>
+        <p class="note">Country detection uses offline bounding boxes first and only falls back to the
+          Nominatim reverse-geocoder, which is limited to one request per second. Precise mode is the most
+          accurate but the slowest on long routes. Results are cached on this device.</p>
+      </details>
+
+      <p class="note">
+        Free services only - OpenStreetMap Nominatim for geocoding and the OSRM demo server for routing.
+        No API key, no account, no tracking.
+      </p>
+    </aside>
+
+    <!-- ----------------------------------------------------- workspace -->
+    <section class="content">
+      <nav class="tabs" role="tablist">
+        <button type="button" class="tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+        <button type="button" class="tab" role="tab" data-tab="itinerary" aria-selected="false">Itinerary</button>
+        <button type="button" class="tab" role="tab" data-tab="tolls" aria-selected="false">Tolls <span class="tab__count" id="tabTollsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="stops" aria-selected="false">Stops &amp; parking <span class="tab__count" id="tabStopsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="regulations" aria-selected="false">Regulations <span class="tab__count" id="tabRegsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="map" aria-selected="false">Map</button>
+        <button type="button" class="tab" role="tab" data-tab="report" aria-selected="false">Report</button>
+      </nav>
+
+      <div class="panels">
+        <div class="panel" data-panel="overview" id="panelOverview"></div>
+        <div class="panel" data-panel="itinerary" id="panelItinerary" hidden></div>
+        <div class="panel" data-panel="tolls" id="panelTolls" hidden></div>
+        <div class="panel" data-panel="stops" id="panelStops" hidden></div>
+        <div class="panel" data-panel="regulations" id="panelRegulations" hidden></div>
+
+        <div class="panel panel--map" data-panel="map" hidden>
+          <div class="map-shell">
+            <div class="map-canvas" id="mapCanvas"></div>
+            <div class="map-floating-actions">
+              <button type="button" class="btn btn--accent" id="openMapBtn" disabled>Open standalone map</button>
+              <button type="button" class="btn btn--ghost" id="downloadMapBtn" disabled>Download map (.html)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" data-panel="report" id="panelReport" hidden>
+          <div class="card">
+            <div class="card__title">Text report</div>
+            <div class="panel-actions">
+              <button type="button" class="btn btn--primary" id="copyReportBtn" disabled>Copy</button>
+              <button type="button" class="btn btn--ghost" id="downloadReportBtn" disabled>Download .txt</button>
+              <button type="button" class="btn btn--ghost" id="downloadGpxBtn" disabled>Download .gpx</button>
+              <button type="button" class="btn btn--ghost" id="downloadJsonBtn" disabled>Download .json</button>
+              <button type="button" class="btn btn--ghost" id="printBtn">Print</button>
+            </div>
+            <textarea class="report" id="reportText" readonly spellcheck="false"
+                      aria-label="Plain text route report"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="app-footer">
+    <span>
+      <strong>Estimates only.</strong> Distances, driving times, tolls and national regulations are planning
+      aids and are not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
+      competent national authority before departure.
+    </span>
+    <span class="spacer"></span>
+    <strong>created by Gabor Gasko</strong>
+  </footer>
+</div>
+
+<div class="toast-host" id="toastHost" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+
+<script src="js/core/config.js"></script>
+<script src="js/core/util.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/embedded-data.js"></script>
+<script src="js/core/data-store.js"></script>
+<script src="js/core/api.js"></script>
+<script src="js/core/time-model.js"></script>
+<script src="js/core/tolls.js"></script>
+<script src="js/core/stops.js"></script>
+<script src="js/core/regulations.js"></script>
+<script src="js/core/planner.js"></script>
+<script src="js/core/map-export.js"></script>
+<script src="js/core/device.js"></script>
+
+<script src="js/ui/render.js"></script>
+<script src="js/ui/map-view.js"></script>
+<script src="js/ui/app-common.js"></script>
+<script src="js/ui/desktop-app.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* offline cache is optional */ });
+    });
+  }
+</script>
+</body>
+</html>

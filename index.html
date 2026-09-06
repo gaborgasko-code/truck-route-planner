@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b4ea2">
+<meta name="description" content="Truck Route Planner - road routing, EU driving time, toll and safe parking planning for heavy goods vehicles.">
+<title>Truck Route Planner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  html, body { height: 100%; }
+  .splash {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(140deg, #062546, #0b4ea2 55%, #1360c4);
+    padding: 24px;
+  }
+  .splash__card {
+    width: min(460px, 100%);
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+    padding: 28px 26px 22px;
+    text-align: center;
+  }
+  .splash__mark {
+    width: 66px; height: 66px; margin: 0 auto 16px;
+    border-radius: 18px;
+    background: var(--yellow-400);
+    color: var(--blue-800);
+    display: grid; place-items: center;
+    font-size: 34px;
+    box-shadow: 0 8px 22px rgba(240, 180, 0, .45);
+  }
+  .splash h1 { font-size: 22px; margin-bottom: 4px; }
+  .splash__sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+  .splash__status {
+    font-size: 12.5px; color: var(--blue-700); font-weight: 600;
+    margin-bottom: 18px; min-height: 18px;
+  }
+  .splash__choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .splash__choice .btn { text-decoration: none; }
+  .splash__note { margin-top: 16px; font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+  .splash__by {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+    font-size: 12px; font-weight: 700; color: var(--blue-800);
+  }
+  .spinner {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid var(--blue-100); border-top-color: var(--blue-600);
+    display: inline-block; vertical-align: -3px; margin-right: 7px;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<main class="splash">
+  <div class="splash__card">
+    <div class="splash__mark" aria-hidden="true">&#128667;</div>
+    <h1>Truck Route Planner</h1>
+    <p class="splash__sub">Road routing, EU driving-time compliance, toll estimation and safe parking for heavy goods vehicles.</p>
+
+    <p class="splash__status" id="status"><span class="spinner"></span>Detecting your device...</p>
+
+    <div class="splash__choice">
+      <a class="btn btn--primary" href="desktop.html?view=desktop">Desktop version</a>
+      <a class="btn btn--accent" href="mobile.html?view=mobile">Mobile version</a>
+    </div>
+
+    <p class="splash__note" id="detail">
+      You are redirected automatically. Add <code>?view=desktop</code> or <code>?view=mobile</code>
+      to any link to force a version; the choice is remembered on this device.
+    </p>
+
+    <p class="splash__by">created by Gabor Gasko</p>
+  </div>
+</main>
+
+<script src="js/core/device.js"></script>
+<script>
+(function () {
+  'use strict';
+  var status = document.getElementById('status');
+  var detail = document.getElementById('detail');
+  var choice = TRP.device.resolveView();
+  var info = TRP.device.inspect();
+
+  var reasonText = {
+    url: 'Using the version requested in the address bar',
+    saved: 'Using your remembered choice',
+    auto: 'Detected automatically'
+  }[choice.reason];
+
+  status.innerHTML = '<span class="spinner"></span>' + reasonText + ': <strong>' +
+    (choice.view === 'mobile' ? 'mobile' : 'desktop') + '</strong> version';
+
+  detail.innerHTML = 'Screen ' + (info.width || '?') + ' px &middot; ' +
+    (info.coarsePointer ? 'touch' : 'pointer') + ' input &middot; ' +
+    (info.isPhoneUA ? 'phone' : info.isTabletUA ? 'tablet' : 'computer') +
+    '<br>Pick a version above to override, or add <code>?view=desktop</code> / <code>?view=mobile</code> to the link.';
+
+  setTimeout(function () {
+    location.replace((choice.view === 'mobile' ? 'mobile.html' : 'desktop.html') + '?view=' + choice.view);
+  }, 900);
+})();
+</script>
+<noscript>
+  <p style="text-align:center;padding:16px;color:#fff">
+    JavaScript is required. Choose the desktop or mobile version above.
+  </p>
+</noscript>
+</body>
+</html>

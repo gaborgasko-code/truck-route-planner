@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#0b4ea2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Route Planner">
+<meta name="description" content="Truck Route Planner - mobile route, toll, rest stop and safe parking planning for heavy goods vehicles.">
+<title>Truck Route Planner - Mobile</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__mark" aria-hidden="true">&#128667;</div>
+      <div>
+        <h1 class="brand__title">Truck Route Planner</h1>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="author-badge">created by Gabor Gasko</span>
+      <button type="button" class="icon-btn" id="m_themeToggle" title="Toggle theme">&#9790;</button>
+    </div>
+  </header>
+
+  <main class="views">
+
+    <!-- ---------------------------------------------------------- plan -->
+    <section class="view" id="viewPlan">
+      <div class="card">
+        <div class="card__title">Route</div>
+
+        <div class="field">
+          <label for="m_origin">Origin</label>
+          <input type="text" id="m_origin" autocomplete="off" spellcheck="false"
+                 placeholder="Street, city, country">
+          <div class="suggest" id="m_originSuggest" role="listbox" hidden></div>
+        </div>
+
+        <div class="swap-row" style="display:flex;justify-content:center;margin:-2px 0 8px">
+          <button type="button" class="swap-btn" id="m_swap" title="Swap"
+                  style="border:1px solid var(--line);background:var(--surface);color:var(--blue-600);border-radius:999px;width:36px;height:36px">&#8645;</button>
+        </div>
+
+        <div class="field">
+          <label for="m_dest">Destination</label>
+          <input type="text" id="m_dest" autocomplete="off" spellcheck="false"
+                 placeholder="Street, city, country">
+          <div class="suggest" id="m_destSuggest" role="listbox" hidden></div>
+        </div>
+
+        <div class="field">
+          <label for="m_departure">Departure</label>
+          <input type="datetime-local" id="m_departure">
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="m_calc">Calculate Route</button>
+          <button type="button" class="btn btn--ghost" id="m_reset">Reset</button>
+        </div>
+
+        <div class="progress" id="m_progress" hidden>
+          <div class="progress__bar"><div class="progress__fill" id="m_progressFill"></div></div>
+          <div class="progress__text" id="m_progressText"></div>
+        </div>
+      </div>
+
+      <details class="collapse">
+        <summary>Vehicle profile</summary>
+        <div class="collapse__body">
+          <div class="field-row">
+            <div class="field">
+              <label for="m_weight">Weight (t)</label>
+              <input type="number" id="m_weight" min="1" max="100" step="0.5" value="40" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="m_axles">Axles</label>
+              <select id="m_axles">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+                <option value="6">6+</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="m_euro">Emission</label>
+              <select id="m_euro">
+                <option value="VI" selected>EURO VI</option>
+                <option value="V">EURO V</option>
+                <option value="IV">EURO IV</option>
+                <option value="III">EURO III</option>
+                <option value="II">EURO II</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="m_speed">Speed (km/h)</label>
+              <input type="number" id="m_speed" min="30" max="130" step="1" value="70" inputmode="numeric">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="m_fuel">Fuel l/100km</label>
+              <input type="number" id="m_fuel" min="0" max="120" step="0.5" value="30" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="m_fuelPrice">Diesel EUR/l</label>
+              <input type="number" id="m_fuelPrice" min="0" max="10" step="0.01" value="1.65" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="collapse">
+        <summary>Toll analysis detail</summary>
+        <div class="collapse__body">
+          <div class="field">
+            <select id="m_tollDetail">
+              <option value="fast">Fast - every 150 km</option>
+              <option value="balanced" selected>Balanced - every 100 km</option>
+              <option value="precise">Precise - every 50 km</option>
+            </select>
+          </div>
+          <p class="note">Precise mode is the most accurate but slower, because border detection falls back to
+            a reverse-geocoder limited to one request per second.</p>
+        </div>
+      </details>
+
+      <p class="note">Free OpenStreetMap and OSRM services. No API key and no account required.</p>
+    </section>
+
+    <!-- -------------------------------------------------------- result -->
+    <section class="view" id="viewResult" hidden>
+      <div class="empty-state" id="m_resultEmpty">
+        <div class="empty-state__icon">&#128667;</div>
+        <p>No route yet.<br>Fill in the Plan tab and press <strong>Calculate Route</strong>.</p>
+      </div>
+
+      <div id="m_resultBody" hidden>
+        <div class="card"><div id="m_summary"></div></div>
+        <div id="m_warnings"></div>
+
+        <details class="collapse" open>
+          <summary>Driving schedule</summary>
+          <div class="collapse__body" id="m_itinerary"></div>
+        </details>
+
+        <details class="collapse">
+          <summary>Toll estimate by country</summary>
+          <div class="collapse__body" id="m_tolls"></div>
+        </details>
+
+        <details class="collapse">
+          <summary>Rest stops &amp; safe parking</summary>
+          <div class="collapse__body" id="m_stops"></div>
+        </details>
+
+        <details class="collapse">
+          <summary>Text report &amp; export</summary>
+          <div class="collapse__body">
+            <div class="btn-row btn-row--2" style="margin-bottom:10px">
+              <button type="button" class="btn btn--ghost" id="m_copyReport" disabled>Copy report</button>
+              <button type="button" class="btn btn--ghost" id="m_downloadGpx" disabled>Save .gpx</button>
+            </div>
+            <textarea class="report" id="m_report" readonly spellcheck="false"
+                      aria-label="Plain text route report"></textarea>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- map -->
+    <section class="view view--map" id="viewMap" hidden>
+      <div class="map-shell">
+        <div class="map-canvas" id="m_mapCanvas"></div>
+        <div class="map-floating-actions">
+          <button type="button" class="btn btn--accent" id="m_openMap" disabled>Full map</button>
+          <button type="button" class="btn btn--primary" id="m_downloadMap" disabled>Save map</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------- rules -->
+    <section class="view" id="viewRules" hidden>
+      <div class="section-head"><h2>Country regulations</h2></div>
+      <div id="m_rules"></div>
+    </section>
+
+    <!-- ---------------------------------------------------------- info -->
+    <section class="view" id="viewInfo" hidden>
+      <div class="card">
+        <div class="card__title">About</div>
+        <p><strong>Truck Route Planner</strong> <span id="m_appVersion">v2.0.0</span> &middot;
+           data source: <span id="m_dataSource">-</span></p>
+        <p class="small muted">Road routing by the OSRM demo server, geocoding by OpenStreetMap Nominatim.
+           Toll rates, safe parkings and national regulations come from the editable datasets in
+           <code>data/</code>.</p>
+        <p style="font-weight:700;color:var(--blue-700)">created by Gabor Gasko</p>
+      </div>
+
+      <div class="card">
+        <div class="card__title">How the times are calculated</div>
+        <ul class="reg__list">
+          <li>Driving time = distance / average truck speed (default 70 km/h).</li>
+          <li>A 45-minute break after every 4h30 of driving.</li>
+          <li>An 11-hour daily rest after every 9 hours of driving.</li>
+          <li>Rest stops are suggested every 350 km, with safe parkings within 50 km.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Links</div>
+        <p><a href="USER_GUIDE.html" target="_blank" rel="noopener">Open the user guide</a></p>
+        <p><a href="desktop.html?view=desktop">Switch to the desktop version</a></p>
+      </div>
+
+      <div class="warn-box">
+        <strong>Estimates only.</strong> Distances, driving times, tolls and national regulations are planning
+        aids and are not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
+        competent national authority before departure.
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" role="tablist">
+    <button type="button" class="nav-btn" role="tab" data-view="plan" aria-selected="true">
+      <span class="nav-btn__icon" aria-hidden="true">&#9998;</span><span>Plan</span>
+    </button>
+    <button type="button" class="nav-btn" role="tab" data-view="result" aria-selected="false">
+      <span class="nav-btn__icon" aria-hidden="true">&#9776;</span><span>Result</span>
+    </button>
+    <button type="button" class="nav-btn" role="tab" data-view="map" aria-selected="false">
+      <span class="nav-btn__icon" aria-hidden="true">&#128506;</span><span>Map</span>
+    </button>
+    <button type="button" class="nav-btn" role="tab" data-view="rules" aria-selected="false">
+      <span class="nav-btn__icon" aria-hidden="true">&#9878;</span><span>Rules</span>
+    </button>
+    <button type="button" class="nav-btn" role="tab" data-view="info" aria-selected="false">
+      <span class="nav-btn__icon" aria-hidden="true">&#8505;</span><span>Info</span>
+    </button>
+  </nav>
+</div>
+
+<div class="toast-host" id="toastHost" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+
+<script src="js/core/config.js"></script>
+<script src="js/core/util.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/embedded-data.js"></script>
+<script src="js/core/data-store.js"></script>
+<script src="js/core/api.js"></script>
+<script src="js/core/time-model.js"></script>
+<script src="js/core/tolls.js"></script>
+<script src="js/core/stops.js"></script>
+<script src="js/core/regulations.js"></script>
+<script src="js/core/planner.js"></script>
+<script src="js/core/map-export.js"></script>
+<script src="js/core/device.js"></script>
+
+<script src="js/ui/render.js"></script>
+<script src="js/ui/map-view.js"></script>
+<script src="js/ui/app-common.js"></script>
+<script src="js/ui/mobile-app.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* offline cache is optional */ });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+/*
+ * Truck Route Planner - mobile layout.
+ * Single column, large touch targets, bottom tab navigation.
+ *
+ * created by Gabor Gasko
+ */
+
+:root { --header-h: 54px; --nav-h: 60px; }
+
+html, body { height: 100%; }
+body {
+  background: var(--surface-2);
+  overscroll-behavior-y: contain;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* --------------------------------------------------------------- header */
+
+.app-header {
+  height: var(--header-h);
+  padding: 0 12px;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  padding-top: env(safe-area-inset-top);
+  height: calc(var(--header-h) + env(safe-area-inset-top));
+}
+.brand__mark { width: 32px; height: 32px; font-size: 17px; border-radius: 9px; }
+.brand__title { font-size: 15px; }
+.brand__tagline { display: none; }
+.header-meta { gap: 6px; }
+.author-badge { font-size: 10.5px; padding: 3px 8px; }
+.chip { display: none; }
+
+/* ---------------------------------------------------------------- views */
+
+.views {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.view {
+  padding: 14px 12px calc(var(--nav-h) + env(safe-area-inset-bottom) + 18px);
+}
+.view[hidden] { display: none; }
+.view--map {
+  padding: 0;
+  position: absolute;
+  inset: 0;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+}
+.view--map .map-shell,
+.view--map .map-canvas { border-radius: 0; }
+
+/* ----------------------------------------------------------- bottom nav */
+
+.bottom-nav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  z-index: 900;
+  box-shadow: 0 -3px 14px rgba(10, 40, 80, .10);
+}
+.nav-btn {
+  border: 0; background: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; font-family: inherit; font-size: 10.5px; font-weight: 600;
+  color: var(--muted); position: relative; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn__icon { font-size: 19px; line-height: 1; }
+.nav-btn[aria-selected="true"] { color: var(--blue-700); }
+[data-theme="dark"] .nav-btn[aria-selected="true"] { color: var(--yellow-400); }
+.nav-btn[aria-selected="true"]::before {
+  content: ""; position: absolute; top: 0; left: 22%; right: 22%;
+  height: 3px; border-radius: 0 0 3px 3px; background: var(--yellow-400);
+}
+.nav-btn:disabled { opacity: .35; }
+
+/* ------------------------------------------------- mobile-tuned widgets */
+
+.card { padding: 14px; border-radius: 14px; }
+
+input[type="text"], input[type="number"], input[type="datetime-local"], select {
+  padding: 13px 12px;
+  font-size: 16px; /* prevents iOS zoom on focus */
+  border-radius: 10px;
+}
+
+.btn { padding: 14px 16px; font-size: 15px; border-radius: 11px; }
+
+.stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat__value { font-size: 18px; }
+.stat__label { font-size: 9.5px; }
+
+.data-table { min-width: 460px; font-size: 12.5px; }
+
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 4px 0 10px;
+}
+.section-head h2 { font-size: 16px; margin: 0; }
+
+.collapse {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.collapse > summary {
+  cursor: pointer; list-style: none;
+  padding: 13px 14px;
+  font-size: 13.5px; font-weight: 700; color: var(--blue-700);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+[data-theme="dark"] .collapse > summary { color: var(--yellow-400); }
+.collapse > summary::-webkit-details-marker { display: none; }
+.collapse > summary::after { content: "▾"; color: var(--muted); font-size: 12px; }
+.collapse[open] > summary::after { content: "▴"; }
+.collapse__body { padding: 0 14px 14px; }
+
+.map-floating-actions {
+  position: absolute; z-index: 600; left: 10px; bottom: 12px; right: 10px;
+  display: flex; gap: 8px;
+}
+.map-floating-actions .btn { flex: 1; padding: 11px 12px; font-size: 13.5px; box-shadow: var(--shadow-lg); }
+
+.toast-host { bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px); }
+
+.report { min-height: 300px; font-size: 11px; }
+
+.app-footer {
+  font-size: 11px;
+  padding: 12px 14px calc(12px + var(--nav-h) + env(safe-area-inset-bottom));
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.app-footer .spacer { margin-left: 0; }
+
+/* Wide phones / small tablets get a two column stat grid with more room. */
+@media (min-width: 520px) {
+  .stat-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .field-row--3 { grid-template-columns: 1fr 1fr 1fr; }
+}

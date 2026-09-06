@@ -1,0 +1,11 @@
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
