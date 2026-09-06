@@ -20,7 +20,7 @@
   var STRINGS = {
 
     /* ------------------------------------------------------------- shell */
-    'app.name': { es: 'Truck Route Planner', en: 'Truck Route Planner' },
+    'app.name': { es: 'Planificador de ruta - Gabor', en: 'Route Planner - Gabor' },
     'app.tagline': {
       es: 'Rutas por carretera · tiempos de conducción UE · peajes · aparcamiento seguro',
       en: 'Road routing · EU driving time · tolls · safe parking'

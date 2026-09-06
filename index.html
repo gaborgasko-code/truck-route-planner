@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Truck Route Planner - rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
-<title>Truck Route Planner</title>
+<meta name="description" content="Planificador de ruta - Gabor: rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
+<title>Planificador de ruta - Gabor</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,9 +28,11 @@
     display: grid;
     place-items: center;
     padding: 24px;
+    /* The brand blue, lifted by two soft glows so it does not read flat. */
     background:
-      radial-gradient(900px 520px at 50% -10%, var(--accent-soft), transparent 70%),
-      var(--bg);
+      radial-gradient(900px 520px at 82% -10%, rgba(59, 122, 230, .55), transparent 62%),
+      radial-gradient(700px 520px at 4% 110%, rgba(14, 159, 142, .32), transparent 60%),
+      linear-gradient(140deg, #0b1e45 0%, #10306f 50%, #1f5fd0 100%);
   }
   .splash__card {
     width: min(440px, 100%);
@@ -83,7 +85,7 @@
 <main class="splash">
   <div class="splash__card">
     <div class="splash__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
-    <h1>Truck Route Planner</h1>
+    <h1 data-i18n="app.name">Planificador de ruta - Gabor</h1>
     <p class="splash__sub" data-i18n="app.subtitle"></p>
 
     <p class="splash__status" id="status"><span class="spinner"></span></p>
@@ -100,8 +102,7 @@
     <div class="splash__by">
       <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
          aria-label="created by Gabor Gasko - open his LinkedIn profile">
-        <svg class="author-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
-        <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+<span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
       </a>
     </div>
   </div>
@@ -151,6 +152,13 @@
     if (redirect) { clearTimeout(redirect); redirect = null; }
     TRP.i18n.set(button.getAttribute('data-lang'));
     render();
+  });
+
+  /* Only a choice made here is remembered; the in-app view links are not sticky. */
+  document.querySelector('.splash__choice').addEventListener('click', function (event) {
+    var link = event.target.closest('a[href]');
+    if (!link) return;
+    TRP.device.remember(/mobile/.test(link.getAttribute('href')) ? 'mobile' : 'desktop');
   });
 
   render();

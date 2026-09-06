@@ -39,17 +39,9 @@ body {
 .header-meta { gap: 6px; flex: none; }
 .chip { display: none; }
 
-/* The header has to fit a 375 px phone: mark, name, author, language,
-   theme. The author pill keeps its icon and name and drops to icon-only on
-   the narrowest screens; the full credit lives in the footers and on the
-   Info tab. */
-.app-header .author-link { height: 30px; padding: 0 10px 0 8px; gap: 5px; font-size: 12px; }
-.app-header .author-link__label { display: none; }
-.app-header .author-link__icon { width: 13px; height: 13px; }
-@media (max-width: 419px) {
-  .app-header .author-link { padding: 0; width: 30px; justify-content: center; }
-  .app-header .author-link__name { display: none; }
-}
+/* The header has to fit a 375 px phone: mark, product name, language and
+   theme. The author credit lives in the Plan footer and on the Info tab. */
+.app-header .author-link { display: none; }
 
 .icon-btn, .lang-select { height: 32px; }
 .icon-btn { width: 32px; }

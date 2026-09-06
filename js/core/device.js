@@ -3,8 +3,9 @@
  *
  * The entry page (index.html) uses this to send phones and small tablets to
  * the touch-optimised mobile build and everything else to the desktop build.
- * The choice can always be overridden with `?view=desktop` / `?view=mobile`
- * and is then remembered.
+ * The choice can always be overridden with `?view=desktop` / `?view=mobile`.
+ * Only a choice made on the entry page itself is remembered; the in-app
+ * "mobile view" / "desktop version" links are not sticky.
  *
  * created by Gabor Gasko
  */
@@ -12,7 +13,9 @@
   'use strict';
 
   var TRP = (global.TRP = global.TRP || {});
-  var STORAGE_KEY = 'trp.viewPreference';
+  /* v2: bumped when the URL override stopped being sticky, so a mobile
+     preference saved by the old behaviour no longer hijacks the entry page. */
+  var STORAGE_KEY = 'trp.viewPreference.v2';
 
   var MOBILE_UA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Silk/i;
   var TABLET_UA = /iPad|Tablet|PlayBook|Nexus 7|Nexus 10|KFAPWI/i;
@@ -57,8 +60,9 @@
     var s = inspect();
     if (s.isPhoneUA) return 'mobile';
     if (s.isTabletUA) return s.width && s.width >= 900 ? 'desktop' : 'mobile';
+    /* A narrow window on a mouse-driven device is still a desktop: the
+       desktop layout stacks below 900 px on its own. */
     if (s.coarsePointer && s.width && s.width < 900) return 'mobile';
-    if (s.width && s.width < 760) return 'mobile';
     return 'desktop';
   }
 
@@ -92,32 +96,18 @@
    */
   function resolveView() {
     var override = urlOverride();
-    if (override) {
-      remember(override);
-      return { view: override, reason: 'url' };
-    }
+    if (override) return { view: override, reason: 'url' };
     var saved = remembered();
     if (saved) return { view: saved, reason: 'saved' };
     return { view: detect(), reason: 'auto' };
   }
 
-  /** Navigate to the other build, remembering the choice. */
+  /** Navigate to the other build for this visit (does not change the saved preference). */
   function switchTo(view) {
-    remember(view);
     if (typeof location !== 'undefined') {
       location.href = (view === 'mobile' ? 'mobile.html' : 'desktop.html') + '?view=' + view;
     }
   }
-
-  /*
-   * Any page loaded with an explicit `?view=` records the choice, so the
-   * "Mobile view" / "Desktop version" links are sticky and the entry page
-   * stops re-detecting on the next visit.
-   */
-  (function rememberUrlChoice() {
-    var override = urlOverride();
-    if (override) remember(override);
-  })();
 
   TRP.device = {
     STORAGE_KEY: STORAGE_KEY,

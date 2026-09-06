@@ -37,13 +37,15 @@ html, body { height: 100%; overflow: hidden; }
   background: var(--surface);
 }
 .sidebar__section > h3 {
-  font-size: 13.5px; font-weight: 600; color: var(--ink);
+  font-size: 13.5px; font-weight: 600; color: var(--brand-700);
   margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
 }
+[data-theme="dark"] .sidebar__section > h3,
+[data-theme="dark"] .sidebar details.sidebar__section > summary { color: var(--accent); }
 
 .sidebar details.sidebar__section > summary {
   cursor: pointer; list-style: none;
-  font-size: 13.5px; font-weight: 600; color: var(--ink);
+  font-size: 13.5px; font-weight: 600; color: var(--brand-700);
   display: flex; align-items: center; justify-content: space-between;
   margin: -4px 0; padding: 4px 0;
 }
@@ -163,8 +165,10 @@ html, body { height: 100%; overflow: hidden; }
 @media (max-width: 1040px) {
   .brand__tagline { display: none; }
 }
-@media (max-width: 820px) {
-  /* Rather than drop the guide and mobile links, let the bar grow. */
-  .app-header { height: auto; min-height: var(--header-h); flex-wrap: wrap; padding: 8px 14px; }
-  .header-meta { margin-left: 0; }
+@media (max-width: 900px) {
+  /* Below the two-column layout the bar grows to two rows rather than
+     dropping the guide and mobile links or squeezing the product name. */
+  .app-header { height: auto; min-height: var(--header-h); flex-wrap: wrap; padding: 8px 14px; row-gap: 8px; }
+  .brand { flex: 1 1 100%; }
+  .header-meta { margin-left: 0; flex-wrap: wrap; }
 }

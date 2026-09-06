@@ -12,7 +12,7 @@
   var TRP = (global.TRP = global.TRP || {});
 
   var CONFIG = {
-    APP_NAME: 'Truck Route Planner',
+    APP_NAME: 'Planificador de ruta - Gabor',
     APP_VERSION: '2.1.0',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',

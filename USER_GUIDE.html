@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
 <meta name="description" content="Guia de usuario de Truck Route Planner: instalacion, uso, paradas legales UE, peajes, mapa y aparcamiento seguro. created by Gabor Gasko">
-<title>Truck Route Planner - Guía de usuario / User Guide</title>
+<title>Planificador de ruta - Gabor · Guía de usuario / User Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -18,23 +18,26 @@
   [data-guide-lang="es"] .lang--en { display: none; }
   [data-guide-lang="en"] .lang--es { display: none; }
 
-  .guide-hero { background: var(--surface); border-bottom: 1px solid var(--line); padding: 28px 24px; }
+  .guide-hero { background: var(--grad-header); color: #fff; padding: 30px 24px 28px; }
   .guide-hero__inner { max-width: 1080px; margin: 0 auto; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .guide-hero__mark {
     width: 52px; height: 52px; border-radius: 14px;
-    background: var(--accent); color: #fff;
+    background: #fff; color: var(--brand-700);
     display: grid; place-items: center; flex: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
   }
   .guide-hero__mark svg { width: 28px; height: 28px; }
-  .guide-hero h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -.02em; }
-  .guide-hero p { margin: 0; color: var(--muted); font-size: 14px; }
+  .guide-hero h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -.02em; color: #fff; }
+  .guide-hero p { margin: 0; color: rgba(255, 255, 255, .78); font-size: 14px; }
   .guide-hero__side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .guide-hero .author-link { background: rgba(255, 255, 255, .14); border-color: rgba(255, 255, 255, .32); color: #fff; }
+  .guide-hero .author-link:hover { background: rgba(255, 255, 255, .24); color: #fff; }
   .lang-switch { display: flex; gap: 6px; }
   .lang-switch button {
-    border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    border: 1px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .12); color: #fff;
     border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
   }
-  .lang-switch button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .lang-switch button[aria-pressed="true"] { background: #fff; color: var(--brand-800); border-color: #fff; font-weight: 600; }
 
   .guide-wrap {
     max-width: 1080px; margin: 0 auto; padding: 26px 20px 40px;
@@ -144,7 +147,7 @@
   <div class="guide-hero__inner">
     <div class="guide-hero__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
     <div>
-      <h1>Truck Route Planner</h1>
+      <h1><span class="lang lang--es">Planificador de ruta - Gabor</span><span class="lang lang--en">Route Planner - Gabor</span></h1>
       <p><span class="lang lang--es">Guía de usuario</span><span class="lang lang--en">User guide</span>
          &middot; <span class="lang lang--es">rutas, tiempos de conducción UE, paradas legales, peajes y aparcamiento seguro</span><span class="lang lang--en">routing, EU driving time, legal stops, tolls and safe parking</span>
          &middot; v2.1.0</p>
@@ -156,8 +159,7 @@
       </div>
       <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
          aria-label="created by Gabor Gasko - open his LinkedIn profile">
-        <svg class="author-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
-        <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+<span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
       </a>
     </div>
   </div>
@@ -190,7 +192,7 @@
 
       <div class="lang lang--es">
         <p>
-          Truck Route Planner convierte dos direcciones en un plan de transporte completo y conforme
+          Planificador de ruta - Gabor convierte dos direcciones en un plan de transporte completo y conforme
           a la normativa: la ruta real por carretera, cuánto dura legalmente con pausas y descansos,
           qué paradas obligatorias exige el Reglamento (CE) 561/2006, cuánto cuestan los peajes país
           por país, dónde parar y qué normas nacionales se aplican a lo largo del recorrido.
@@ -198,7 +200,7 @@
       </div>
       <div class="lang lang--en">
         <p>
-          Truck Route Planner turns two addresses into a complete, compliance-aware transport plan:
+          Route Planner - Gabor turns two addresses into a complete, compliance-aware transport plan:
           the real road route, how long it legally takes with breaks and rests, which mandatory stops
           Regulation (EC) 561/2006 requires, what the tolls cost country by country, where to stop and
           which national rules apply along the way.
@@ -227,12 +229,6 @@
         <code>index.html</code> detects your device and forwards you to the right one.
       </p>
 
-      <div class="callout">
-        <strong class="lang lang--es">Sin cuenta, sin clave de API, sin coste.</strong>
-        <strong class="lang lang--en">No account, no API key, no cost.</strong>
-        <span class="lang lang--es">La geocodificación usa Nominatim de OpenStreetMap y las rutas el servidor de demostración OSRM. No se hace seguimiento y solo salen del dispositivo las direcciones que usted escribe.</span>
-        <span class="lang lang--en">Geocoding uses OpenStreetMap Nominatim and routing uses the OSRM demo server. Nothing is tracked and nothing but the addresses you type ever leaves your device.</span>
-      </div>
     </section>
 
     <!-- ------------------------------------------------------ language -->
@@ -897,14 +893,14 @@ total_hours          = driving_hours + break_minutes/60 + overnight_rest_hours</
 <footer class="guide-footer">
   <div class="guide-footer__inner">
     <span class="lang lang--es">
-      <strong>Truck Route Planner</strong> versión 2.1.0 &mdash; guía de usuario.
+      <strong>Planificador de ruta - Gabor</strong> versión 2.1.0 &mdash; guía de usuario.
       Todas las distancias, tiempos, peajes, paradas legales y normativas son estimaciones para la
       planificación y no son jurídicamente vinculantes. Verifique las restricciones de circulación,
       las tarifas de peaje y las limitaciones del vehículo con la autoridad nacional competente antes
       de la salida.
     </span>
     <span class="lang lang--en">
-      <strong>Truck Route Planner</strong> version 2.1.0 &mdash; user guide.
+      <strong>Route Planner - Gabor</strong> version 2.1.0 &mdash; user guide.
       All distances, times, tolls, legal stops and regulations are estimates for planning only and are
       not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
       competent national authority before departure.
@@ -912,8 +908,7 @@ total_hours          = driving_hours + break_minutes/60 + overnight_rest_hours</
     <div class="guide-footer__by">
       <a class="author-link author-link--onDark" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
          aria-label="created by Gabor Gasko - open his LinkedIn profile">
-        <svg class="author-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
-        <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+<span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
       </a>
     </div>
   </div>

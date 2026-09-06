@@ -9,50 +9,62 @@
  */
 
 :root {
-  /* Surfaces and lines */
-  --bg: #f5f6f8;
+  /* Brand blues: the header, the splash and the primary actions. */
+  --brand-900: #0b1e45;
+  --brand-800: #10306f;
+  --brand-700: #164393;
+  --brand-600: #1f5fd0;
+  --brand-500: #3b7ae6;
+  --grad-header: linear-gradient(100deg, #0f2a62 0%, #164393 55%, #1f5fd0 100%);
+
+  /* Surfaces and lines: cool, slightly blue-tinted neutrals. */
+  --bg: #f3f6fb;
   --surface: #ffffff;
-  --surface-2: #f8f9fb;
-  --surface-3: #f0f2f5;
-  --line: #e4e7ec;
-  --line-strong: #d0d5dd;
+  --surface-2: #f7f9fc;
+  --surface-3: #eef2f8;
+  --line: #dfe6ef;
+  --line-strong: #c9d4e3;
 
   /* Text */
-  --ink: #101828;
-  --ink-soft: #344054;
-  --muted: #667085;
-  --muted-2: #98a2b3;
+  --ink: #0f1f3a;
+  --ink-soft: #33465f;
+  --muted: #61738c;
+  --muted-2: #93a3b8;
 
-  /* The one accent */
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --accent-soft: #eef4ff;
-  --accent-line: #b9d0fb;
+  /* Accent (royal blue) and its tints */
+  --accent: #1f5fd0;
+  --accent-hover: #174dae;
+  --accent-soft: #e8f0fd;
+  --accent-line: #b5cdf5;
   --on-accent: #ffffff;
 
+  /* Secondary hues used for the stat tiles and highlights */
+  --teal: #0e9f8e;    --teal-bg: #e6f7f4;   --teal-line: #a8e3da;
+  --violet: #6b5bd6;  --violet-bg: #efedfb; --violet-line: #cdc7f2;
+
   /* Status: text / tinted background / border */
-  --ok: #067647;       --ok-bg: #ecfdf3;     --ok-line: #abefc6;
-  --warn: #b54708;     --warn-bg: #fffaeb;   --warn-line: #fedf89;
-  --danger: #b42318;   --danger-bg: #fef3f2; --danger-line: #fecdca;
+  --ok: #0f8a5f;       --ok-bg: #e9f8f1;     --ok-line: #a9e4c8;
+  --warn: #b86e00;     --warn-bg: #fff6e5;   --warn-line: #fbd98a;
+  --danger: #c73a3a;   --danger-bg: #fdefef; --danger-line: #f6c2c2;
 
   /* Solid marker colours (white text on top). */
-  --ok-solid: #17b26a;
-  --danger-solid: #f04438;
-  --warn-solid: #f79009;
+  --ok-solid: #16a36b;
+  --danger-solid: #e5484d;
+  --warn-solid: #f2a615;
 
   /* Aliases kept for older rules and the light-only map popups. */
-  --blue-900: #0f1f3d;
-  --blue-800: #1e3a8a;
-  --blue-700: var(--accent);
+  --blue-900: var(--brand-900);
+  --blue-800: var(--brand-800);
+  --blue-700: var(--brand-700);
   --blue-600: var(--accent);
-  --blue-500: #3b82f6;
+  --blue-500: var(--brand-500);
   --blue-100: var(--accent-soft);
-  --blue-050: #f5f8ff;
-  --yellow-600: #b54708;
-  --yellow-500: #dc6803;
-  --yellow-400: #f79009;
-  --yellow-200: #fedf89;
-  --yellow-100: #fffaeb;
+  --blue-050: #f4f8fe;
+  --yellow-600: #b86e00;
+  --yellow-500: #d98c0a;
+  --yellow-400: #f2a615;
+  --yellow-200: #fbd98a;
+  --yellow-100: #fff6e5;
 
   --radius: 12px;
   --radius-sm: 8px;
@@ -62,7 +74,7 @@
   --shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 1px 2px rgba(16, 24, 40, .04);
   --shadow-md: 0 4px 8px -2px rgba(16, 24, 40, .08), 0 2px 4px -2px rgba(16, 24, 40, .04);
   --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, .10), 0 4px 6px -2px rgba(16, 24, 40, .04);
-  --focus: 0 0 0 4px rgba(37, 99, 235, .18);
+  --focus: 0 0 0 4px rgba(31, 95, 208, .20);
 
   --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono", "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -72,31 +84,34 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0b0e14;
-  --surface: #12161f;
-  --surface-2: #161b26;
-  --surface-3: #1c2230;
-  --line: #262d3b;
-  --line-strong: #343d4f;
-  --ink: #f2f4f7;
-  --ink-soft: #cdd3de;
-  --muted: #8b95a8;
-  --muted-2: #667085;
-  --accent: #5b8def;
-  --accent-hover: #7aa3ff;
-  --accent-soft: rgba(91, 141, 239, .14);
-  --accent-line: rgba(91, 141, 239, .40);
+  --grad-header: linear-gradient(100deg, #0a1a3d 0%, #10306f 55%, #164393 100%);
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --surface-2: #152039;
+  --surface-3: #1b2842;
+  --line: #24334f;
+  --line-strong: #324565;
+  --ink: #eef3fb;
+  --ink-soft: #c6d2e6;
+  --muted: #8a9bb8;
+  --muted-2: #62748f;
+  --accent: #5b8ff0;
+  --accent-hover: #7aa6ff;
+  --accent-soft: rgba(91, 143, 240, .16);
+  --accent-line: rgba(91, 143, 240, .42);
+  --teal: #3ec9b6;   --teal-bg: rgba(62, 201, 182, .14);   --teal-line: rgba(62, 201, 182, .40);
+  --violet: #a094f0; --violet-bg: rgba(160, 148, 240, .14); --violet-line: rgba(160, 148, 240, .40);
   --ok: #4ade80;     --ok-bg: rgba(74, 222, 128, .12);     --ok-line: rgba(74, 222, 128, .35);
   --warn: #fbbf24;   --warn-bg: rgba(251, 191, 36, .12);   --warn-line: rgba(251, 191, 36, .35);
   --danger: #f87171; --danger-bg: rgba(248, 113, 113, .12); --danger-line: rgba(248, 113, 113, .35);
-  --blue-050: rgba(91, 141, 239, .08);
+  --blue-050: rgba(91, 143, 240, .08);
   --yellow-100: rgba(251, 191, 36, .12);
   --yellow-200: rgba(251, 191, 36, .35);
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, .40);
   --shadow: 0 1px 3px rgba(0, 0, 0, .50), 0 1px 2px rgba(0, 0, 0, .30);
   --shadow-md: 0 4px 10px -2px rgba(0, 0, 0, .50);
   --shadow-lg: 0 14px 24px -6px rgba(0, 0, 0, .60);
-  --focus: 0 0 0 4px rgba(91, 141, 239, .28);
+  --focus: 0 0 0 4px rgba(91, 143, 240, .30);
   color-scheme: dark;
 }
 
@@ -142,9 +157,9 @@ a:hover { color: var(--accent-hover); }
   gap: 12px;
   padding: 0 20px;
   height: var(--header-h);
-  background: var(--surface);
-  color: var(--ink);
-  border-bottom: 1px solid var(--line);
+  background: var(--grad-header);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 2px 12px rgba(11, 30, 69, .25);
   position: relative;
   z-index: 30;
 }
@@ -152,19 +167,21 @@ a:hover { color: var(--accent-hover); }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .brand > div { min-width: 0; }
 
+/* White tile with the blue truck: reads as a logo against the blue bar. */
 .brand__mark {
   width: 32px; height: 32px;
   border-radius: 9px;
-  background: var(--accent);
-  color: #fff;
+  background: #fff;
+  color: var(--brand-700);
   display: grid; place-items: center;
   flex: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .18);
 }
 .brand__mark svg { width: 19px; height: 19px; }
 
-.brand__title { font-size: 15px; font-weight: 600; margin: 0; white-space: nowrap; color: var(--ink); }
+.brand__title { font-size: 15px; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
 .brand__tagline {
-  font-size: 12px; color: var(--muted);
+  font-size: 12px; color: rgba(255, 255, 255, .72);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -173,24 +190,24 @@ a:hover { color: var(--accent-hover); }
 .chip {
   display: inline-flex; align-items: center; gap: 5px;
   height: 26px; padding: 0 9px; border-radius: 999px;
-  background: var(--surface-3); color: var(--ink-soft);
+  background: rgba(255, 255, 255, .14); color: #fff;
   font-size: 12px; font-weight: 500; white-space: nowrap;
 }
-.chip--sm { height: 20px; padding: 0 7px; font-size: 11px; }
+.chip--sm { height: 20px; padding: 0 7px; font-size: 11px; background: var(--surface-3); color: var(--ink-soft); }
 
-/* Shared look for the small header controls. */
+/* Shared look for the small header controls: translucent on the blue bar. */
 .icon-btn, .link-btn, .lang-select {
   height: 34px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink-soft);
+  border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
   border-radius: var(--radius-sm);
   font-family: inherit; font-size: 13px; font-weight: 500;
   cursor: pointer;
   transition: background .15s, border-color .15s, color .15s;
 }
 .icon-btn:hover, .link-btn:hover, .lang-select:hover {
-  background: var(--surface-2); border-color: var(--line-strong); color: var(--ink);
+  background: rgba(255, 255, 255, .22); border-color: rgba(255, 255, 255, .45); color: #fff;
 }
 
 .icon-btn { width: 34px; padding: 0; display: grid; place-items: center; }
@@ -204,31 +221,38 @@ a:hover { color: var(--accent-hover); }
 /* ------------------------------------------------- author credit / link */
 
 /*
- * The author credit is a link to the author's LinkedIn profile. LinkedIn's
- * own blue makes it read instantly as "profile", and it is the only strong
- * colour in the header apart from the brand mark.
+ * The author credit is a link to the author's profile, styled as a quiet
+ * pill in the app's own palette. On the blue header it turns translucent
+ * white; on light surfaces it is a tinted blue chip.
  */
 .author-link {
-  display: inline-flex; align-items: center; gap: 7px;
-  height: 32px; padding: 0 12px 0 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 13px;
   border-radius: 999px;
-  background: #0a66c2;
-  color: #fff;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  color: var(--brand-700);
   font-size: 12.5px; font-weight: 500;
   text-decoration: none; white-space: nowrap;
-  box-shadow: var(--shadow-xs);
-  transition: background .15s, box-shadow .15s;
+  transition: background .15s, border-color .15s, color .15s;
 }
-.author-link:hover { background: #004182; color: #fff; }
-.author-link:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(10, 102, 194, .28); }
+.author-link:hover { background: var(--accent-line); color: var(--brand-800); }
+.author-link:focus-visible { outline: none; box-shadow: var(--focus); }
+/* A small "opens elsewhere" arrow, so the pill reads as a link. */
+.author-link::after { content: "\2197"; font-size: 11px; opacity: .7; margin-left: 1px; }
 
-.author-link__icon { width: 15px; height: 15px; flex: none; fill: currentColor; }
 .author-link__label { opacity: .85; }
 .author-link__name { font-weight: 600; }
 
+.app-header .author-link {
+  background: rgba(255, 255, 255, .14);
+  border-color: rgba(255, 255, 255, .32);
+  color: #fff;
+}
+.app-header .author-link:hover { background: rgba(255, 255, 255, .24); border-color: rgba(255, 255, 255, .5); color: #fff; }
+
 /* Larger variant for the splash, the mobile Info tab and the guide hero. */
-.author-link--lg { height: 40px; padding: 0 16px 0 13px; font-size: 14px; gap: 9px; }
-.author-link--lg .author-link__icon { width: 18px; height: 18px; }
+.author-link--lg { height: 40px; padding: 0 17px; font-size: 14px; gap: 8px; }
 
 /* ----------------------------------------------------------- app footer */
 
@@ -318,8 +342,12 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn svg { width: 16px; height: 16px; }
 
-.btn--primary { background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-xs); }
-.btn--primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn--primary {
+  background: linear-gradient(180deg, var(--brand-500), var(--accent));
+  color: var(--on-accent);
+  box-shadow: 0 1px 2px rgba(11, 30, 69, .25), 0 4px 12px rgba(31, 95, 208, .22);
+}
+.btn--primary:hover:not(:disabled) { background: linear-gradient(180deg, var(--accent), var(--accent-hover)); }
 
 /* Secondary action: quiet, bordered. */
 .btn--accent { background: var(--surface); color: var(--ink-soft); border-color: var(--line-strong); box-shadow: var(--shadow-xs); }
@@ -336,7 +364,7 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
 .progress { margin-top: 14px; }
 .progress[hidden] { display: none; }
 .progress__bar { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
-.progress__fill { height: 100%; width: 0; background: var(--accent); border-radius: 999px; transition: width .25s ease; }
+.progress__fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width .25s ease; }
 .progress__text { margin-top: 8px; font-size: 12.5px; color: var(--muted); }
 
 /* ---------------------------------------------------------------- cards */
@@ -350,10 +378,11 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
   margin-bottom: 14px;
 }
 .card__title {
-  font-size: 13.5px; font-weight: 600; color: var(--ink);
+  font-size: 13.5px; font-weight: 600; color: var(--brand-700);
   margin-bottom: 12px;
   display: flex; align-items: center; gap: 8px;
 }
+[data-theme="dark"] .card__title { color: var(--accent); }
 
 /* ---------------------------------------------------- route heading/stats */
 
@@ -374,14 +403,16 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 12px;
 }
+/* Each tile carries a coloured top edge; the key figures get a tinted fill. */
 .stat {
   background: var(--surface);
   border: 1px solid var(--line);
+  border-top: 3px solid var(--accent-line);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
 }
-.stat--accent { background: var(--accent-soft); border-color: var(--accent-line); }
-.stat--toll { background: var(--warn-bg); border-color: var(--warn-line); }
+.stat--accent { background: var(--accent-soft); border-color: var(--accent-line); border-top-color: var(--accent); }
+.stat--toll { background: var(--warn-bg); border-color: var(--warn-line); border-top-color: var(--warn-solid); }
 .stat__label { font-size: 12px; color: var(--muted); font-weight: 500; }
 .stat__value {
   font-size: 22px; font-weight: 600; margin: 4px 0 2px;

@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.2.0';
+var CACHE_VERSION = 'trp-shell-v2.2.1';
 
 var SHELL = [
   './',
