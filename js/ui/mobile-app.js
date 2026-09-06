@@ -30,7 +30,7 @@
   function cacheElements() {
     [
       'm_origin', 'm_originSuggest', 'm_dest', 'm_destSuggest', 'm_swap',
-      'm_weight', 'm_axles', 'm_euro', 'm_speed', 'm_fuel', 'm_fuelPrice',
+      'm_weight', 'm_axles', 'm_euro', 'm_speed', 'm_fuel', 'm_fuelPrice', 'm_drivers', 'm_driversNote',
       'm_departure', 'm_tollDetail', 'm_calc', 'm_reset',
       'm_progress', 'm_progressFill', 'm_progressText',
       'viewPlan', 'viewResult', 'viewMap', 'viewRules', 'viewInfo',
@@ -87,6 +87,7 @@
       speedKmh: Number(el.m_speed.value),
       fuelL100: Number(el.m_fuel.value),
       fuelPrice: Number(el.m_fuelPrice.value),
+      drivers: Number(el.m_drivers.value),
       departure: el.m_departure.value,
       tollDetail: el.m_tollDetail.value
     };
@@ -104,8 +105,15 @@
     el.m_speed.value = v.speedKmh;
     el.m_fuel.value = v.fuelL100;
     el.m_fuelPrice.value = v.fuelPrice;
+    el.m_drivers.value = String(v.drivers || 1);
+    syncDriversNote();
     el.m_departure.value = (values && values.departure) || app.defaultDepartureValue();
     el.m_tollDetail.value = (values && values.tollDetail) || CONFIG.DEFAULT_TOLL_DETAIL;
+  }
+
+  /* The team-driving explanation only matters once two drivers are chosen. */
+  function syncDriversNote() {
+    el.m_driversNote.hidden = el.m_drivers.value !== '2';
   }
 
   function validate(values) {
@@ -206,7 +214,8 @@
         euroClass: values.euroClass,
         speedKmh: values.speedKmh,
         fuelL100: values.fuelL100,
-        fuelPrice: values.fuelPrice
+        fuelPrice: values.fuelPrice,
+        drivers: values.drivers
       },
       departure: values.departure ? new Date(values.departure).toISOString() : null,
       tollDetail: values.tollDetail
@@ -239,6 +248,7 @@
     });
 
     el.m_calc.addEventListener('click', calculate);
+    el.m_drivers.addEventListener('change', syncDriversNote);
 
     el.m_reset.addEventListener('click', function () {
       el.m_origin.value = '';

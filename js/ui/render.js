@@ -68,8 +68,11 @@
           : t('stat.notConfigured'))),
       statTile(t('stat.totalCost'), util.formatNumber(r.costs.total, 2) + ' <span class="unit">' + cur + '</span>',
         util.formatNumber(r.costs.perKm, 3) + ' ' + cur + '/km', 'accent'),
-      statTile(t('stat.legalBreaks'), String(m.breaksCount) + ' <span class="unit">' + esc(t('stat.times45')) + '</span>',
-        esc(t('stat.legalBreaksSub', { days: m.fullDays, h: CONFIG.DAILY_REST_H })))
+      m.multiManning
+        ? statTile(t('stat.driverSwaps'), String(m.swapsCount) + ' <span class="unit">' + esc(t('stat.every430')) + '</span>',
+          esc(t('stat.legalBreaksSub', { days: m.fullDays, h: m.dailyRestH })))
+        : statTile(t('stat.legalBreaks'), String(m.breaksCount) + ' <span class="unit">' + esc(t('stat.times45')) + '</span>',
+          esc(t('stat.legalBreaksSub', { days: m.fullDays, h: m.dailyRestH })))
     ];
 
     return '<div class="route-heading">' +
@@ -95,7 +98,7 @@
   function itineraryHtml(r) {
     if (!r.itinerary || !r.itinerary.length) return '<p class="muted">-</p>';
     var rows = r.itinerary.map(function (ev) {
-      var icon = iconFor({ 'break': 'coffee', rest: 'moon', depart: 'play', arrive: 'flag' }[ev.type] || 'navigation');
+      var icon = iconFor({ 'break': 'coffee', rest: 'moon', depart: 'play', arrive: 'flag', swap: 'swap' }[ev.type] || 'navigation');
       return '<li class="tl__item tl__item--' + esc(ev.type) + '">' +
         '<span class="tl__icon" aria-hidden="true">' + icon + '</span>' +
         '<span class="tl__body">' +
@@ -298,7 +301,7 @@
     var hasPlan = r && r.legal;
     return '<div class="card"><div class="card__title">' + esc(t('legal.planTitle')) + '</div>' +
       (hasPlan ? legalPlanHtml(r) : '<p class="muted">' + esc(t('legal.empty')) + '</p>') +
-      '<p class="warn-box">' + t('legal.disclaimer') + '</p></div>' +
+      '<p class="warn-box">' + t(r.time && r.time.multiManning ? 'legal.disclaimerTeam' : 'legal.disclaimer') + '</p></div>' +
       (hasPlan
         ? '<div class="card"><div class="card__title">' + esc(t('legal.checksTitle')) + '</div>' +
           legalChecksHtml(r) + '</div>'
@@ -348,9 +351,14 @@
     L.push(pad(t('report.roadDistance'), 22) + ': ' + util.formatNumber(r.route.distanceKm, 1) + ' km');
     L.push(pad(t('report.avgSpeed'), 22) + ': ' + util.formatNumber(m.speedKmh, 0) + ' km/h');
     L.push(pad(t('report.pureDriving'), 22) + ': ' + util.formatDuration(m.drivingHours));
-    L.push(pad(t('report.breaks'), 22) + ': ' + m.breaksCount + ' x ' + CONFIG.MANDATORY_BREAK_MIN +
-      ' min = ' + util.formatDuration(m.breakHours));
-    L.push(pad(t('report.dailyRests'), 22) + ': ' + m.fullDays + ' x ' + CONFIG.DAILY_REST_H +
+    L.push(pad(t('report.drivers'), 22) + ': ' + m.drivers + (m.multiManning ? ' (' + t('report.teamDriving') + ')' : ''));
+    if (m.multiManning) {
+      L.push(pad(t('report.swaps'), 22) + ': ' + m.swapsCount);
+    } else {
+      L.push(pad(t('report.breaks'), 22) + ': ' + m.breaksCount + ' x ' + m.breakMin +
+        ' min = ' + util.formatDuration(m.breakHours));
+    }
+    L.push(pad(t('report.dailyRests'), 22) + ': ' + m.fullDays + ' x ' + m.dailyRestH +
       ' h = ' + util.formatDuration(m.overnightRestHours));
     L.push(pad(t('report.totalTime'), 22) + ': ' + util.formatDuration(m.totalHours));
     L.push(pad(t('report.departure'), 22) + ': ' + util.formatDateTime(r.departure));

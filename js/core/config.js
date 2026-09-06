@@ -13,7 +13,7 @@
 
   var CONFIG = {
     APP_NAME: 'Planificador de ruta - Gabor',
-    APP_VERSION: '2.1.0',
+    APP_VERSION: '2.2.0',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',
     AUTHOR_URL: 'https://www.linkedin.com/in/gaborgasko/',
@@ -23,6 +23,9 @@
     MANDATORY_BREAK_MIN: 45,
     MAX_DAILY_DRIVING_H: 9,
     DAILY_REST_H: 11,
+    /* Multi-manning (Art. 8.5): each driver rests 9 h within a 30 h period. */
+    MULTI_MANNING_DAILY_REST_H: 9,
+    MULTI_MANNING_WINDOW_H: 30,
     AVG_TRUCK_SPEED_KMH: 70,
 
     /* ---- Planning parameters ---- */
@@ -68,7 +71,8 @@
       speedKmh: 70,
       fuelL100: 30,
       fuelPrice: 1.65,
-      adr: false
+      adr: false,
+      drivers: 1
     },
 
     /* ---- Toll multipliers (indicative) ---- */

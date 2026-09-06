@@ -110,17 +110,20 @@
           altKey: 'legal.splitBreakHint'
         });
       } else if (ev.type === 'rest') {
+        /* Two drivers rest 9 h within 30 h (Art. 8.5) instead of 11 h in 24 h. */
+        var team = !!(model && model.multiManning);
         plan.push({
           n: plan.length + 1,
           type: 'dailyRest',
           at: ev.at,
           km: ev.km,
           drivenH: drivenH,
-          minMinutes: L.regular_daily_rest_h * 60,
-          article: 'Art. 8.2',
-          altKey: 'legal.splitRestHint'
+          minMinutes: (team ? L.multi_manning_rest_h : L.regular_daily_rest_h) * 60,
+          article: team ? 'Art. 8.5' : 'Art. 8.2',
+          altKey: team ? 'legal.multiManningHint' : 'legal.splitRestHint'
         });
       }
+      /* Driver changes ('swap') are not stops and never enter the plan. */
     });
 
     /* A weekly rest becomes due after six 24-hour periods from departure. */
@@ -152,6 +155,12 @@
   function complianceChecks(model, events, doc) {
     var L = limits(doc);
     var checks = [];
+    /* Weekly and fortnightly ceilings apply to each driver, so a team
+       shares the hours; the daily ceiling is the crew's. */
+    var drivers = (model && model.drivers) || 1;
+    var perDriverH = model.drivingHours / drivers;
+    var dailyCap = (model && model.maxDailyDrivingH) || L.max_daily_driving_h;
+    var perDriverNote = drivers > 1 ? 'legal.perDriver' : null;
 
     var longestDrive = 0;
     (events || []).forEach(function (ev) {
@@ -167,13 +176,13 @@
     });
 
     var drivingDays = model.drivingHours > 0
-      ? Math.ceil(model.drivingHours / L.max_daily_driving_h)
+      ? Math.ceil(model.drivingHours / dailyCap)
       : 0;
     checks.push({
       id: 'dailyDriving',
       labelKey: 'legal.checkDailyDriving',
       value: drivingDays,
-      limit: util.formatShortDuration(L.max_daily_driving_h),
+      limit: util.formatShortDuration(dailyCap),
       ok: true,
       noteKey: drivingDays > 1 ? 'legal.days' : null,
       noteParams: { n: drivingDays }
@@ -182,17 +191,19 @@
     checks.push({
       id: 'weeklyDriving',
       labelKey: 'legal.checkWeeklyDriving',
-      value: util.formatShortDuration(model.drivingHours),
+      value: util.formatShortDuration(perDriverH),
       limit: L.max_weekly_driving_h + ' h',
-      ok: model.drivingHours <= L.max_weekly_driving_h
+      ok: perDriverH <= L.max_weekly_driving_h,
+      noteKey: perDriverNote
     });
 
     checks.push({
       id: 'fortnightly',
       labelKey: 'legal.checkFortnightly',
-      value: util.formatShortDuration(model.drivingHours),
+      value: util.formatShortDuration(perDriverH),
       limit: L.max_fortnightly_driving_h + ' h',
-      ok: model.drivingHours <= L.max_fortnightly_driving_h
+      ok: perDriverH <= L.max_fortnightly_driving_h,
+      noteKey: perDriverNote
     });
 
     var weeklyRestDue = model.totalHours > L.weekly_window_h;
@@ -215,11 +226,12 @@
   function warnings(model, doc) {
     var L = limits(doc);
     var out = [];
-    if (model.drivingHours > L.max_weekly_driving_h) {
-      out.push({ key: 'warn.weeklyDriving', params: { h: util.formatShortDuration(model.drivingHours) } });
+    var perDriverH = model.drivingHours / ((model && model.drivers) || 1);
+    if (perDriverH > L.max_weekly_driving_h) {
+      out.push({ key: 'warn.weeklyDriving', params: { h: util.formatShortDuration(perDriverH) } });
     }
-    if (model.drivingHours > L.max_fortnightly_driving_h) {
-      out.push({ key: 'warn.fortnightlyDriving', params: { h: util.formatShortDuration(model.drivingHours) } });
+    if (perDriverH > L.max_fortnightly_driving_h) {
+      out.push({ key: 'warn.fortnightlyDriving', params: { h: util.formatShortDuration(perDriverH) } });
     }
     if (model.totalHours > L.weekly_window_h) {
       out.push({ key: 'warn.weeklyRest', params: {} });

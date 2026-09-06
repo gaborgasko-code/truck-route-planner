@@ -160,7 +160,8 @@
 
       report(step(34, 'prog.time'));
       var itinerary = TRP.timeModel.buildItinerary(route.distanceKm, request.departure, {
-        speedKmh: vehicle.speedKmh
+        speedKmh: vehicle.speedKmh,
+        drivers: vehicle.drivers
       });
       state.time = itinerary.model;
       state.itinerary = itinerary.events;

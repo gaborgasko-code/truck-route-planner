@@ -28,7 +28,7 @@
     [
       'originInput', 'originSuggest', 'destInput', 'destSuggest', 'swapBtn',
       'weightInput', 'axlesSelect', 'euroSelect', 'speedInput', 'fuelInput',
-      'fuelPriceInput', 'adrCheck', 'departureInput', 'tollDetailSelect',
+      'fuelPriceInput', 'adrCheck', 'driversSelect', 'driversNote', 'departureInput', 'tollDetailSelect',
       'calcBtn', 'mapBtn', 'resetBtn', 'progress', 'progressFill', 'progressText',
       'panelOverview', 'panelItinerary', 'panelTolls', 'panelStops', 'panelLegal',
       'panelRegulations', 'panelReport', 'mapCanvas', 'reportText',
@@ -91,6 +91,7 @@
       fuelL100: Number(el.fuelInput.value),
       fuelPrice: Number(el.fuelPriceInput.value),
       adr: el.adrCheck.checked,
+      drivers: Number(el.driversSelect.value),
       departure: el.departureInput.value,
       tollDetail: el.tollDetailSelect.value
     };
@@ -109,8 +110,15 @@
     el.fuelInput.value = v.fuelL100;
     el.fuelPriceInput.value = v.fuelPrice;
     el.adrCheck.checked = !!v.adr;
+    el.driversSelect.value = String(v.drivers || 1);
+    syncDriversNote();
     el.departureInput.value = (values && values.departure) || app.defaultDepartureValue();
     el.tollDetailSelect.value = (values && values.tollDetail) || CONFIG.DEFAULT_TOLL_DETAIL;
+  }
+
+  /* The team-driving explanation only matters once two drivers are chosen. */
+  function syncDriversNote() {
+    el.driversNote.hidden = el.driversSelect.value !== '2';
   }
 
   function validate(values) {
@@ -237,7 +245,8 @@
         speedKmh: values.speedKmh,
         fuelL100: values.fuelL100,
         fuelPrice: values.fuelPrice,
-        adr: values.adr
+        adr: values.adr,
+        drivers: values.drivers
       },
       departure: values.departure ? new Date(values.departure).toISOString() : null,
       tollDetail: values.tollDetail
@@ -271,6 +280,7 @@
 
   function bindEvents() {
     el.calcBtn.addEventListener('click', calculate);
+    el.driversSelect.addEventListener('change', syncDriversNote);
 
     [el.originInput, el.destInput].forEach(function (input) {
       input.addEventListener('keydown', function (event) {

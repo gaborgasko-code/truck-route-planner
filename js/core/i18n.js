@@ -72,6 +72,13 @@
     'form.fuelShort': { es: 'Consumo l/100 km', en: 'Fuel l/100km' },
     'form.fuelPrice': { es: 'Gasóleo (EUR/l)', en: 'Diesel (EUR/l)' },
     'form.adr': { es: 'Carga ADR / mercancías peligrosas', en: 'ADR / dangerous goods load' },
+    'form.drivers': { es: 'Conductores', en: 'Drivers' },
+    'form.drivers1': { es: '1 conductor', en: '1 driver' },
+    'form.drivers2': { es: '2 conductores (conducción en equipo)', en: '2 drivers (multi-manning)' },
+    'form.driversNote': {
+      es: 'Con dos conductores la pausa de 45 min se hace en el asiento del acompañante sin detener el vehículo (cambio de conductor cada 4 h 30 min), se acumulan hasta 18 h de conducción y el descanso diario es de 9 h dentro de un periodo de 30 h, con el vehículo parado (art. 8.5).',
+      en: 'With two drivers the 45-minute break is taken in the passenger seat without stopping the vehicle (driver change every 4h30), up to 18 h of driving accumulate, and the daily rest is 9 h within a 30-hour period with the vehicle stationary (Art. 8.5).'
+    },
 
     'form.tollAnalysis': { es: 'Análisis de peajes', en: 'Toll analysis' },
     'form.tollDetail': { es: 'Detalle del muestreo', en: 'Sampling detail' },
@@ -129,6 +136,8 @@
     'stat.legalBreaks': { es: 'Pausas obligatorias', en: 'Legal breaks' },
     'stat.legalBreaksSub': { es: '{days} descanso(s) diario(s) de {h} h', en: '{days} daily rest(s) of {h} h' },
     'stat.times45': { es: '× 45 min', en: '× 45 min' },
+    'stat.driverSwaps': { es: 'Cambios de conductor', en: 'Driver changes' },
+    'stat.every430': { es: 'cada 4 h 30 min', en: 'every 4h30' },
     'overview.warnings': { es: 'Avisos de planificación', en: 'Planning warnings' },
     'overview.stopsPreview': { es: 'Vista previa de las paradas', en: 'Rest stops preview' },
     'overview.empty': {
@@ -157,6 +166,7 @@
     'ev.drive': { es: 'Conducir {d}', en: 'Drive {d}' },
     'ev.break': { es: 'Pausa obligatoria de {m} min', en: 'Mandatory break {m} min' },
     'ev.rest': { es: 'Descanso diario de {h} h', en: 'Daily rest {h} h' },
+    'ev.swap': { es: 'Cambio de conductor', en: 'Driver change' },
     'itinerary.note': {
       es: 'Las pausas y los descansos diarios se aplican de forma acumulativa, por lo que la hora de llegada es un peor caso conservador. La planificación real depende del historial del tacógrafo y de las ventanas de carga.',
       en: 'Breaks and daily rests are applied cumulatively, so the arrival time is a conservative worst case. Actual scheduling depends on tachograph history and loading windows.'
@@ -258,6 +268,15 @@
     'legal.checkDailyDriving': { es: 'Jornadas de conducción necesarias', en: 'Driving days required' },
     'legal.checkWeeklyRest': { es: 'Descanso semanal', en: 'Weekly rest' },
     'legal.checkContinuous': { es: 'Conducción continua (máx. 4 h 30 min)', en: 'Continuous driving (max 4h30)' },
+    'legal.perDriver': { es: 'por conductor', en: 'per driver' },
+    'legal.multiManningHint': {
+      es: 'Conducción en equipo (art. 8.5): cada conductor debe iniciar un nuevo descanso diario de al menos 9 h dentro de las 30 h siguientes al final de su descanso anterior. El tiempo en el asiento del acompañante no cuenta como descanso: el vehículo debe estar parado.',
+      en: 'Multi-manning (Art. 8.5): each driver must start a new daily rest of at least 9 h within 30 h of the end of the previous one. Time in the passenger seat does not count as rest: the vehicle must be stationary.'
+    },
+    'legal.disclaimerTeam': {
+      es: '<strong>El modelo no conoce el tacógrafo de los conductores.</strong> Supone dos conductores que inician una jornada limpia y se alternan cada 4 h 30 min, con el descanso diario de 9 h tomado con el vehículo parado, sin descansos reducidos adicionales, sin jornadas ampliadas, sin reglas de ferri o tren y sin tiempos de carga o descarga. Contraste siempre el plan con las horas realmente registradas.',
+      en: '<strong>The model does not know the drivers\' tachographs.</strong> It assumes two fresh drivers who alternate every 4h30, with the 9 h daily rest taken with the vehicle stationary, no further reduced rests, no extended driving days, no ferry or train rules and no loading or unloading time. Always check the plan against the hours actually recorded.'
+    },
     'legal.days': { es: '{n} jornada(s)', en: '{n} day(s)' },
     'legal.ofLimit': { es: '{value} de {limit}', en: '{value} of {limit}' },
     'legal.weeklyRestNotDue': {
@@ -340,6 +359,9 @@
     'report.pureDriving': { es: 'Conducción efectiva', en: 'Pure driving time' },
     'report.breaks': { es: 'Pausas obligatorias', en: 'Mandatory breaks' },
     'report.dailyRests': { es: 'Descansos diarios', en: 'Daily rest periods' },
+    'report.drivers': { es: 'Conductores', en: 'Drivers' },
+    'report.teamDriving': { es: 'conducción en equipo', en: 'multi-manning' },
+    'report.swaps': { es: 'Cambios de conductor', en: 'Driver changes' },
     'report.totalTime': { es: 'TIEMPO TOTAL DE VIAJE', en: 'TOTAL TRIP TIME' },
     'report.departure': { es: 'Salida', en: 'Departure' },
     'report.arrival': { es: 'Llegada estimada', en: 'Estimated arrival' },

@@ -127,6 +127,14 @@
               <input type="number" id="m_fuelPrice" min="0" max="10" step="0.01" value="1.65" inputmode="decimal">
             </div>
           </div>
+          <div class="field">
+            <label for="m_drivers" data-i18n="form.drivers"></label>
+            <select id="m_drivers">
+              <option value="1" selected data-i18n="form.drivers1"></option>
+              <option value="2" data-i18n="form.drivers2"></option>
+            </select>
+            <p class="note" id="m_driversNote" data-i18n="form.driversNote" hidden></p>
+          </div>
         </div>
       </details>
 
@@ -218,7 +226,7 @@
     <section class="view" id="viewInfo" hidden>
       <div class="card">
         <div class="card__title" data-i18n="info.about"></div>
-        <p><strong data-i18n="app.name">Planificador de ruta - Gabor</strong> <span id="m_appVersion">v2.1.0</span> &middot;
+        <p><strong data-i18n="app.name">Planificador de ruta - Gabor</strong> <span id="m_appVersion">v2.2.0</span> &middot;
            <span data-i18n="info.dataSource"></span>: <span id="m_dataSource">-</span></p>
         <p class="small muted" data-i18n-html="info.aboutText"></p>
         <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
