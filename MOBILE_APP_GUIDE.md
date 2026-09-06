@@ -70,7 +70,7 @@ npx cap init "Truck Route Planner" "online.ggabor.routeplanner" --web-dir=www
 ```bash
 mkdir www
 cp -r ../truck_route_planner_web/* www/
-rm -rf www/tests www/tools www/.claude
+rm -rf www/tests www/tools
 ```
 
 Then make `mobile.html` the entry point, because the native shell already knows
@@ -220,6 +220,8 @@ The web app was written with the native wrapper in mind:
 | Hidden-tab map | `invalidateSize()` before drawing and after layout settles, SVG renderer to keep the polyline aligned |
 | Orientation change | Map re-measures on `orientationchange` |
 | Offline start | Service worker caches the app shell and the datasets |
+| Language | Spanish by default, English in the header; the choice persists in `localStorage` and survives an app update as long as `appId` and the scheme stay the same |
+| Legal stops | The EU rule dataset ships with the app, so the compliance view works with no connection |
 | Rate limits | Nominatim calls are serialised at 1 req/s with an offline bounding-box pre-filter and a persistent cache |
 
 ---
@@ -265,8 +267,10 @@ Everything else runs unchanged.
       (`versionCode`/`versionName`) and Xcode (`CFBundleShortVersionString`)
 - [ ] Tested on a real phone in both portrait and landscape
 - [ ] Tested in airplane mode: the shell opens and shows a clear network error
-- [ ] Store listing states clearly that tolls, times and regulations are
-      **estimates only**
+- [ ] Store listing prepared in **Spanish and English**, matching the in-app default
+- [ ] Store listing states clearly that tolls, times, **legal stops** and
+      regulations are **estimates only**, and that the 561/2006 summary does not
+      replace the legal text
 - [ ] Privacy note included: addresses typed by the user are sent to
       OpenStreetMap Nominatim and the OSRM routing service; nothing else leaves
       the device, and no analytics or tracking is used

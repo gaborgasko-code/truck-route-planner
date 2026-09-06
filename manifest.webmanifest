@@ -2,7 +2,7 @@
   "name": "Truck Route Planner",
   "short_name": "Route Planner",
   "description": "Road routing, EU driving time, toll estimation, rest stops and safe truck parking for heavy goods vehicles. created by Gabor Gasko",
-  "id": "/truck-route-planner/",
+  "id": "/",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
