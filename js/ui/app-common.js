@@ -49,7 +49,7 @@
     document.documentElement.setAttribute('data-theme', theme);
     util.storageSet(THEME_KEY, theme);
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#062546' : '#0b4ea2');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#06182f' : '#114a86');
   }
 
   function currentTheme() {

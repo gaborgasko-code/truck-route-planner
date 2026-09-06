@@ -16,6 +16,7 @@
     APP_VERSION: '2.1.0',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',
+    AUTHOR_URL: 'https://www.linkedin.com/in/gaborgasko/',
 
     /* ---- EU driving and rest time model (Regulation (EC) 561/2006) ---- */
     MAX_CONTINUOUS_DRIVING_H: 4.5,

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b4ea2">
+<meta name="theme-color" content="#114a86">
 <meta name="description" content="Guia de usuario de Truck Route Planner: instalacion, uso, paradas legales UE, peajes, mapa y aparcamiento seguro. created by Gabor Gasko">
 <title>Truck Route Planner - Guía de usuario / User Guide</title>
 <link rel="stylesheet" href="css/theme.css">
@@ -30,10 +30,7 @@
   .guide-hero h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.3px; }
   .guide-hero p { margin: 0; color: #cfe1f8; font-size: 14px; }
   .guide-hero__side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-  .guide-hero__by {
-    background: var(--yellow-400); color: var(--blue-900);
-    font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px;
-  }
+  /* The hero credit is the shared .author-link pill (see css/theme.css). */
   .lang-switch { display: flex; gap: 6px; }
   .lang-switch button {
     border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.12); color: #fff;
@@ -133,12 +130,11 @@
   .art { font-family: var(--mono); font-size: 12px; color: var(--blue-700); white-space: nowrap; }
   [data-theme="dark"] .art { color: var(--yellow-400); }
 
-  .guide-footer { background: var(--blue-900); color: #b9cbe4; padding: 22px 24px; font-size: 12.5px; line-height: 1.6; }
+  .guide-footer { background: var(--blue-900); color: #a9bfdb; padding: 22px 24px; font-size: 12.5px; line-height: 1.6; }
   .guide-footer__inner { max-width: 1080px; margin: 0 auto; }
   .guide-footer strong { color: var(--yellow-400); }
   .guide-footer__by {
     margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.15);
-    font-size: 14px; font-weight: 700; color: var(--yellow-400);
   }
 
   @media (max-width: 860px) {
@@ -170,7 +166,11 @@
         <button type="button" data-lang="es" aria-pressed="true">Español</button>
         <button type="button" data-lang="en" aria-pressed="false">English</button>
       </div>
-      <div class="guide-hero__by">created by Gabor Gasko</div>
+      <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
+         aria-label="created by Gabor Gasko - open his LinkedIn profile">
+        <svg class="author-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
+        <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+      </a>
     </div>
   </div>
 </header>
@@ -921,7 +921,13 @@ total_hours          = driving_hours + break_minutes/60 + overnight_rest_hours</
       not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
       competent national authority before departure.
     </span>
-    <div class="guide-footer__by">created by Gabor Gasko</div>
+    <div class="guide-footer__by">
+      <a class="author-link author-link--onDark" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
+         aria-label="created by Gabor Gasko - open his LinkedIn profile">
+        <svg class="author-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
+        <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+      </a>
+    </div>
   </div>
 </footer>
 

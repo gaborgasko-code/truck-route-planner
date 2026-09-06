@@ -175,8 +175,8 @@
 
       /* Route: yellow casing under a blue line, matching the app palette. */
       layers.route = L.layerGroup([
-        L.polyline(latlngs, { color: '#ffcc00', weight: 11, opacity: 0.85, lineCap: 'round' }),
-        L.polyline(latlngs, { color: '#0b4ea2', weight: 5, opacity: 0.95, lineCap: 'round' })
+        L.polyline(latlngs, { color: '#f2b73d', weight: 11, opacity: 0.85, lineCap: 'round' }),
+        L.polyline(latlngs, { color: '#114a86', weight: 5, opacity: 0.95, lineCap: 'round' })
       ]).addTo(map);
 
       layers.endpoints = L.layerGroup([

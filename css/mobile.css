@@ -35,7 +35,8 @@ body {
 .brand__title { font-size: 15px; }
 .brand__tagline { display: none; }
 .header-meta { gap: 6px; }
-.author-badge { font-size: 10.5px; padding: 3px 8px; }
+.app-header .author-link { font-size: 10.5px; gap: 5px; padding: 4px 9px 4px 7px; }
+.app-header .author-link__icon { width: 13px; height: 13px; }
 .chip { display: none; }
 
 /* ---------------------------------------------------------------- views */
@@ -158,7 +159,8 @@ input[type="text"], input[type="number"], input[type="datetime-local"], select {
 
 /* Keep the header on one line on narrow phones. */
 .brand__title { font-size: 13.5px; white-space: nowrap; }
-.author-badge { font-size: 10px; padding: 3px 7px; }
+.app-header .author-link { font-size: 10px; gap: 4px; padding: 3px 8px 3px 6px; }
+.app-header .author-link__label { display: none; }
 .header-meta { gap: 6px; flex: none; }
 .brand { min-width: 0; overflow: hidden; }
 
@@ -168,9 +170,15 @@ input[type="text"], input[type="number"], input[type="datetime-local"], select {
   padding: 12px 14px;
   border-radius: 12px;
   background: var(--blue-900);
-  color: #b9cbe4;
+  color: #a9bfdb;
   font-size: 11px;
   line-height: 1.5;
+  border: 1px solid rgba(242, 183, 61, .22);
+  /* The disclaimer and the author pill stack rather than running together. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 .view-footer strong { color: var(--yellow-400); }
 
@@ -178,5 +186,5 @@ input[type="text"], input[type="number"], input[type="datetime-local"], select {
    The author credit stays in the Plan footer and the Info tab. */
 .lang-select { padding: 5px 4px; font-size: 12px; }
 @media (max-width: 419px) {
-  .app-header .author-badge { display: none; }
+  .app-header .author-link { display: none; }
 }
