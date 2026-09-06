@@ -9,18 +9,33 @@
   var TRP = (global.TRP = global.TRP || {});
   if (typeof require === 'function') {
     if (!TRP.CONFIG) require('./config.js');
+    if (!TRP.i18n) require('./i18n.js');
   }
   var CONFIG = TRP.CONFIG;
 
-  /** Accept the full document or a plain `{DE: [...]}` map. */
+  /** Resolve a `{es, en}` value to the active language, or pass it through. */
+  function pick(value) {
+    return TRP.i18n ? TRP.i18n.pick(value) : value;
+  }
+
+  /**
+   * Accept the full document, a plain `{DE: [...]}` map, schema v1 (rules as a
+   * flat array) or schema v2 (rules keyed by language).
+   */
   function normalise(source) {
     var raw = source && source.regulations ? source.regulations : (source || {});
     var out = {};
     Object.keys(raw).forEach(function (code) {
       var entry = raw[code];
       var key = String(code).toUpperCase();
-      if (Array.isArray(entry)) out[key] = { name: key, rules: entry.slice() };
-      else if (entry && Array.isArray(entry.rules)) out[key] = { name: entry.name || key, rules: entry.rules.slice() };
+      if (Array.isArray(entry)) {
+        out[key] = { name: key, rules: entry.slice() };
+        return;
+      }
+      if (!entry || !entry.rules) return;
+      var rules = pick(entry.rules);
+      if (!Array.isArray(rules)) return;
+      out[key] = { name: pick(entry.name) || key, rules: rules.slice() };
     });
     return out;
   }

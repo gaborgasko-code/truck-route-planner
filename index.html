@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b4ea2">
-<meta name="description" content="Truck Route Planner - road routing, EU driving time, toll and safe parking planning for heavy goods vehicles.">
+<meta name="description" content="Truck Route Planner - rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
 <title>Truck Route Planner</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="css/theme.css">
+<script>
+  /* Match the theme chosen in the app before anything paints. */
+  (function () {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('trp.theme')); } catch (e) { /* ignore */ }
+    var dark = saved === 'dark' ||
+      (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+</script>
 <style>
   html, body { height: 100%; }
   .splash {
@@ -43,6 +53,14 @@
   .splash__choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .splash__choice .btn { text-decoration: none; }
   .splash__note { margin-top: 16px; font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+  .splash__lang { margin-top: 14px; display: flex; justify-content: center; gap: 8px; }
+  .splash__lang button {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    border-radius: 999px; padding: 5px 15px; font: inherit; font-size: 12px; cursor: pointer;
+  }
+  .splash__lang button[aria-pressed="true"] {
+    background: var(--blue-700); color: #fff; border-color: var(--blue-700); font-weight: 700;
+  }
   .splash__by {
     margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
     font-size: 12px; font-weight: 700; color: var(--blue-800);
@@ -54,6 +72,8 @@
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  [data-theme="dark"] .splash__by,
+  [data-theme="dark"] .splash__status { color: var(--yellow-400); }
 </style>
 </head>
 <body>
@@ -62,55 +82,80 @@
   <div class="splash__card">
     <div class="splash__mark" aria-hidden="true">&#128667;</div>
     <h1>Truck Route Planner</h1>
-    <p class="splash__sub">Road routing, EU driving-time compliance, toll estimation and safe parking for heavy goods vehicles.</p>
+    <p class="splash__sub" data-i18n="app.subtitle"></p>
 
-    <p class="splash__status" id="status"><span class="spinner"></span>Detecting your device...</p>
+    <p class="splash__status" id="status"><span class="spinner"></span></p>
 
     <div class="splash__choice">
-      <a class="btn btn--primary" href="desktop.html?view=desktop">Desktop version</a>
-      <a class="btn btn--accent" href="mobile.html?view=mobile">Mobile version</a>
+      <a class="btn btn--primary" href="desktop.html?view=desktop" data-i18n="splash.desktop"></a>
+      <a class="btn btn--accent" href="mobile.html?view=mobile" data-i18n="splash.mobile"></a>
     </div>
 
-    <p class="splash__note" id="detail">
-      You are redirected automatically. Add <code>?view=desktop</code> or <code>?view=mobile</code>
-      to any link to force a version; the choice is remembered on this device.
-    </p>
+    <p class="splash__note" id="detail"></p>
+
+    <div class="splash__lang" id="langButtons"></div>
 
     <p class="splash__by">created by Gabor Gasko</p>
   </div>
 </main>
 
+<script src="js/core/config.js"></script>
+<script src="js/core/i18n.js"></script>
 <script src="js/core/device.js"></script>
 <script>
 (function () {
   'use strict';
+  var t = TRP.i18n.t;
+  var redirect = null;
+
+  TRP.i18n.init();
+
   var status = document.getElementById('status');
   var detail = document.getElementById('detail');
+  var langButtons = document.getElementById('langButtons');
   var choice = TRP.device.resolveView();
   var info = TRP.device.inspect();
 
-  var reasonText = {
-    url: 'Using the version requested in the address bar',
-    saved: 'Using your remembered choice',
-    auto: 'Detected automatically'
-  }[choice.reason];
+  function renderLanguages() {
+    langButtons.innerHTML = TRP.i18n.available().map(function (code) {
+      return '<button type="button" data-lang="' + code + '" aria-pressed="' +
+        (code === TRP.i18n.lang()) + '">' + TRP.i18n.languageName(code) + '</button>';
+    }).join('');
+  }
 
-  status.innerHTML = '<span class="spinner"></span>' + reasonText + ': <strong>' +
-    (choice.view === 'mobile' ? 'mobile' : 'desktop') + '</strong> version';
+  function render() {
+    TRP.i18n.applyDom(document);
+    var reason = { url: 'splash.reasonUrl', saved: 'splash.reasonSaved', auto: 'splash.reasonAuto' }[choice.reason];
+    status.innerHTML = '<span class="spinner"></span>' + t(reason) + ': <strong>' +
+      t(choice.view === 'mobile' ? 'splash.mobile' : 'splash.desktop') + '</strong>';
 
-  detail.innerHTML = 'Screen ' + (info.width || '?') + ' px &middot; ' +
-    (info.coarsePointer ? 'touch' : 'pointer') + ' input &middot; ' +
-    (info.isPhoneUA ? 'phone' : info.isTabletUA ? 'tablet' : 'computer') +
-    '<br>Pick a version above to override, or add <code>?view=desktop</code> / <code>?view=mobile</code> to the link.';
+    detail.innerHTML = t('splash.screen', { w: info.width || '?' }) + ' &middot; ' +
+      t(info.coarsePointer ? 'splash.touch' : 'splash.pointer') + ' &middot; ' +
+      t(info.isPhoneUA ? 'splash.phone' : info.isTabletUA ? 'splash.tablet' : 'splash.computer') +
+      '<br>' + t('splash.override');
+    renderLanguages();
+  }
 
-  setTimeout(function () {
+  langButtons.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-lang]');
+    if (!button) return;
+    /* Choosing a language means the visitor wants to read this page first. */
+    if (redirect) { clearTimeout(redirect); redirect = null; }
+    TRP.i18n.set(button.getAttribute('data-lang'));
+    render();
+  });
+
+  render();
+
+  redirect = setTimeout(function () {
     location.replace((choice.view === 'mobile' ? 'mobile.html' : 'desktop.html') + '?view=' + choice.view);
-  }, 900);
+  }, 1400);
 })();
 </script>
 <noscript>
   <p style="text-align:center;padding:16px;color:#fff">
-    JavaScript is required. Choose the desktop or mobile version above.
+    Se necesita JavaScript. Elija arriba la version de escritorio o la version movil.
+    &mdash; JavaScript is required. Choose the desktop or mobile version above.
   </p>
 </noscript>
 </body>

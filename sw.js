@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.0.0';
+var CACHE_VERSION = 'trp-shell-v2.1.0';
 
 var SHELL = [
   './',
@@ -28,13 +28,16 @@ var SHELL = [
   'data/toll_rates.json',
   'data/safe_parkings.json',
   'data/trailer_regulations.json',
+  'data/eu_driving_rules.json',
   'js/core/config.js',
+  'js/core/i18n.js',
   'js/core/util.js',
   'js/core/geo.js',
   'js/core/embedded-data.js',
   'js/core/data-store.js',
   'js/core/api.js',
   'js/core/time-model.js',
+  'js/core/eu-rules.js',
   'js/core/tolls.js',
   'js/core/stops.js',
   'js/core/regulations.js',
@@ -81,18 +84,28 @@ self.addEventListener('fetch', function (event) {
   /* Map tiles: network only, they have their own browser cache. */
   if (/tile\.openstreetmap\.org/.test(url.hostname)) return;
 
-  /* Same-origin shell: cache first, then refresh in the background. */
+  /*
+   * Same-origin app files: network first, cache as a fallback.
+   *
+   * Cache-first would be faster, but it also serves a stale UI for one extra
+   * load after every edit, which is confusing during development and after a
+   * deployment. Network-first keeps the app current and still works offline.
+   */
   if (url.origin === self.location.origin) {
     event.respondWith(
-      caches.match(request).then(function (cached) {
-        var network = fetch(request).then(function (response) {
-          if (response && response.ok) {
-            var copy = response.clone();
-            caches.open(CACHE_VERSION).then(function (cache) { cache.put(request, copy); });
-          }
-          return response;
-        }).catch(function () { return cached; });
-        return cached || network;
+      fetch(request).then(function (response) {
+        if (response && response.ok) {
+          var copy = response.clone();
+          caches.open(CACHE_VERSION).then(function (cache) { cache.put(request, copy); });
+        }
+        return response;
+      }).catch(function () {
+        return caches.match(request).then(function (cached) {
+          return cached || new Response('Offline and not cached.', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain' }
+          });
+        });
       })
     );
     return;

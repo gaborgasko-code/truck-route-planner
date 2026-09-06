@@ -16,14 +16,18 @@
   var FILES = {
     tollRates: 'data/toll_rates.json',
     parkings: 'data/safe_parkings.json',
-    regulations: 'data/trailer_regulations.json'
+    regulations: 'data/trailer_regulations.json',
+    euRules: 'data/eu_driving_rules.json'
   };
 
   var cache = null;
   var pending = null;
 
   function embedded() {
-    return TRP.EMBEDDED_DATA || { tollRates: { rates: {} }, parkings: { parkings: [] }, regulations: { regulations: {} } };
+    return TRP.EMBEDDED_DATA || {
+      tollRates: { rates: {} }, parkings: { parkings: [] },
+      regulations: { regulations: {} }, euRules: { groups: [] }
+    };
   }
 
   function fetchJson(url) {
@@ -63,6 +67,7 @@
         parkingsDoc: loaded.parkings || { parkings: [] },
         parkings: (loaded.parkings && loaded.parkings.parkings) || [],
         regulations: loaded.regulations || { regulations: {} },
+        euRules: loaded.euRules || { groups: [] },
         source: usedFallback ? 'embedded' : 'files'
       };
       pending = null;

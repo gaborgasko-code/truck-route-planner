@@ -17,6 +17,16 @@
   var CONFIG = TRP.CONFIG;
   var util = TRP.util;
 
+  /** Translate, tolerating i18n not being loaded (e.g. in unit tests). */
+  function t(key, params) {
+    return TRP.i18n ? TRP.i18n.t(key, params) : key;
+  }
+
+  /** Language Nominatim should answer in. */
+  function acceptLanguage() {
+    return TRP.i18n ? TRP.i18n.locale() : 'es-ES';
+  }
+
   /* ------------------------------------------------------------ HTTP core */
 
   function withTimeout(url, options, timeoutMs) {
@@ -28,7 +38,7 @@
     var timeout = new Promise(function (_, reject) {
       timer = setTimeout(function () {
         if (controller) controller.abort();
-        reject(util.TrpError('TIMEOUT', 'The request timed out after ' + Math.round(timeoutMs / 1000) + ' s.'));
+        reject(util.TrpError('TIMEOUT', t('err.TIMEOUT_MSG', { s: Math.round(timeoutMs / 1000) })));
       }, timeoutMs);
     });
 
@@ -53,8 +63,7 @@
       return withTimeout(url, { headers: { Accept: 'application/json' } }, timeoutMs)
         .then(function (response) {
           if (!response.ok) {
-            throw util.TrpError('HTTP_' + response.status,
-              'The routing service replied with HTTP ' + response.status + '.');
+            throw util.TrpError('HTTP_' + response.status, t('err.HTTP_MSG', { code: response.status }));
           }
           return response.json();
         })
@@ -65,8 +74,7 @@
             });
           }
           if (err && err.code) throw err;
-          throw util.TrpError('NETWORK',
-            'Network error - check the internet connection and try again.', err);
+          throw util.TrpError('NETWORK', t('err.NETWORK_MSG'), err);
         });
     }
 
@@ -101,15 +109,15 @@
   function geocode(query, limit) {
     var text = String(query || '').trim();
     if (!text) {
-      return Promise.reject(util.TrpError('EMPTY_QUERY', 'Please enter an address.'));
+      return Promise.reject(util.TrpError('EMPTY_QUERY', t('err.EMPTY_QUERY')));
     }
     var url = CONFIG.NOMINATIM_BASE + '/search?format=jsonv2&addressdetails=1&limit=' +
-      (limit || 5) + '&q=' + encodeURIComponent(text);
+      (limit || 5) + '&accept-language=' + encodeURIComponent(acceptLanguage()) +
+      '&q=' + encodeURIComponent(text);
 
     return throttled(function () { return getJson(url); }).then(function (results) {
       if (!Array.isArray(results) || results.length === 0) {
-        throw util.TrpError('NOT_FOUND',
-          'No location found for "' + text + '". Try a more specific address, e.g. "Street 1, City, Country".');
+        throw util.TrpError('NOT_FOUND', t('err.NOT_FOUND_MSG', { q: text }));
       }
       return results.map(function (r) {
         return {
@@ -133,7 +141,8 @@
    * Resolves to `null` (never rejects) when the country cannot be determined.
    */
   function reverseCountry(lat, lon) {
-    var url = CONFIG.NOMINATIM_BASE + '/reverse?format=jsonv2&zoom=5&addressdetails=1&lat=' +
+    var url = CONFIG.NOMINATIM_BASE + '/reverse?format=jsonv2&zoom=5&addressdetails=1' +
+      '&accept-language=' + encodeURIComponent(acceptLanguage()) + '&lat=' +
       encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lon);
     return throttled(function () { return getJson(url, { retries: 0 }); })
       .then(function (result) {
@@ -158,15 +167,13 @@
 
     return getJson(url).then(function (data) {
       if (!data || data.code !== 'Ok' || !data.routes || !data.routes.length) {
-        throw util.TrpError('NO_ROUTE',
-          'No drivable road route was found between these two points. ' +
-          'Check the addresses - island or overseas locations may need a ferry leg.');
+        throw util.TrpError('NO_ROUTE', t('err.NO_ROUTE_MSG'));
       }
       var route = data.routes[0];
       var line = (route.geometry && route.geometry.coordinates) || [];
       var coords = line.map(function (c) { return { lat: c[1], lon: c[0] }; });
       if (coords.length < 2) {
-        throw util.TrpError('NO_ROUTE', 'The routing service returned an empty route geometry.');
+        throw util.TrpError('NO_ROUTE', t('err.EMPTY_GEOMETRY'));
       }
       return {
         distanceKm: route.distance / 1000,

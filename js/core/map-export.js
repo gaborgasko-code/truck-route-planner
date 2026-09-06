@@ -14,7 +14,31 @@
   var CONFIG = TRP.CONFIG;
   var util = TRP.util;
 
+  function t(key, params) {
+    return TRP.i18n ? TRP.i18n.t(key, params) : key;
+  }
+
   var MAX_POLYLINE_POINTS = 2500;
+
+  /** Every label the exported document needs, already translated. */
+  function labels() {
+    return {
+      summary: t('map.summary'), summaryShort: t('map.summaryShort'),
+      regulations: t('map.regulations'), regulationsShort: t('map.regulationsShort'),
+      legalStops: t('map.legalStops'),
+      distance: t('map.distance'), totalTime: t('map.totalTime'), driving: t('map.driving'),
+      breaksRests: t('map.breaksRests'), departure: t('map.departure'), arrival: t('map.arrival'),
+      toll: t('map.toll'), fuel: t('map.fuel'), totalCost: t('map.totalCost'), ctry: t('map.ctry'),
+      origin: t('map.origin'), destination: t('map.destination'),
+      restStop: t('stops.restStopShort', { n: '{n}' }),
+      noParking: t('stops.noneNearbyShort', { radius: '{radius}' }),
+      securedLevel: t('stops.securedLevel', { level: '{level}' }),
+      standardParking: t('stops.standardParking'),
+      spaces: t('stops.spaces', { n: '{n}' }),
+      minDuration: t('legal.minDuration'),
+      noRegulations: t('reg.none')
+    };
+  }
 
   /** Compact, JSON-serialisable payload for the exported page. */
   function buildPayload(r) {
@@ -29,6 +53,8 @@
       tileUrl: CONFIG.TILE_URL,
       attribution: CONFIG.TILE_ATTRIBUTION,
       currency: CONFIG.CURRENCY,
+      lang: TRP.i18n ? TRP.i18n.lang() : 'es',
+      labels: labels(),
       parkingRadiusKm: CONFIG.PARKING_SEARCH_RADIUS_KM,
       origin: { label: r.origin.label, lat: r.origin.lat, lon: r.origin.lon },
       destination: { label: r.destination.label, lat: r.destination.lat, lon: r.destination.lon },
@@ -70,7 +96,18 @@
       regulations: (r.regulations || []).map(function (e) {
         return { country: e.country, name: e.name, rules: e.rules };
       }),
-      warnings: r.warnings || [],
+      legalStops: ((r.legal && r.legal.plan) || []).map(function (stop) {
+        return {
+          type: t('legal.type.' + stop.type),
+          at: util.formatDateTime(stop.at),
+          km: stop.km,
+          minutes: util.formatShortDuration(stop.minMinutes / 60),
+          article: stop.article
+        };
+      }),
+      warnings: (r.warnings || []).map(function (w) {
+        return TRP.render ? TRP.render.warningText(w) : String(w && w.key || w);
+      }),
       disclaimer: CONFIG.DISCLAIMER
     };
   }
@@ -117,11 +154,17 @@
     '.mk-a{background:#1a9c53}.mk-b{background:#c8322e}.mk-s{background:#ffcc00;color:#0f1c2e}',
     '.mk-p{background:#5b6b84;font-size:11px}.mk-ps{background:#0b4ea2;font-size:11px}',
     '.leaflet-popup-content{font-size:12.5px}',
-    '.leaflet-popup-content ul{margin:4px 0 0;padding-left:16px}'
+    '.leaflet-popup-content ul{margin:4px 0 0;padding-left:16px}',
+    '.bd{max-height:52vh;overflow:auto}',
+    '.pnl.cmp{max-width:46vw;font-size:11.5px;padding:7px 8px}',
+    '.pnl.cmp .bd{max-height:38vh}',
+    '.pnl.cmp .tgl{padding:5px 7px;font-size:11.5px}'
   ].join('');
 
   var SCRIPT = [
     'var D = window.__TRP_ROUTE__;',
+    'var LB = D.labels || {};',
+    'function fill(tpl, map){ return String(tpl||"").replace(/\{(\w+)\}/g, function(m,k){ return map[k]!=null?map[k]:m; }); }',
     'function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){',
     'return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;"}[c];});}',
     'function n(v,d){return Number(v).toLocaleString("en-GB",{minimumFractionDigits:d,maximumFractionDigits:d});}',
@@ -132,53 +175,65 @@
     'function icon(cls,txt,size){return L.divIcon({className:"",html:\'<div class="mk \'+cls+\'">\'+txt+"</div>",',
     'iconSize:[size,size],iconAnchor:[size/2,size/2]});}',
     'L.marker([D.origin.lat,D.origin.lon],{icon:icon("mk-a","A",30)}).addTo(map)',
-    '.bindPopup("<b>Origin</b><br>"+esc(D.origin.label));',
+    '.bindPopup("<b>"+esc(LB.origin)+"</b><br>"+esc(D.origin.label));',
     'L.marker([D.destination.lat,D.destination.lon],{icon:icon("mk-b","B",30)}).addTo(map)',
-    '.bindPopup("<b>Destination</b><br>"+esc(D.destination.label));',
+    '.bindPopup("<b>"+esc(LB.destination)+"</b><br>"+esc(D.destination.label));',
     'D.stops.forEach(function(s){',
     ' var li = s.parkings.map(function(p){return "<li>"+(p.secured?"&#128274; ":"")+esc(p.name)+" - "+n(p.distanceKm,1)+" km</li>";}).join("");',
     ' L.marker([s.lat,s.lon],{icon:icon("mk-s",String(s.index),28)}).addTo(map)',
-    '  .bindPopup("<b>Rest stop "+s.index+"</b><br>km "+n(s.km,0)+(li?"<ul>"+li+"</ul>":"<br><i>no safe parking within "+D.parkingRadiusKm+" km</i>"));',
+    '  .bindPopup("<b>"+esc(fill(LB.restStop,{n:s.index}))+"</b><br>km "+n(s.km,0)+',
+    '   (li?"<ul>"+li+"</ul>":"<br><i>"+esc(fill(LB.noParking,{radius:D.parkingRadiusKm}))+"</i>"));',
     '});',
     'var pk = (typeof L.markerClusterGroup === "function") ? L.markerClusterGroup({maxClusterRadius:45}) : L.layerGroup();',
     'D.parkings.forEach(function(p){',
     ' pk.addLayer(L.marker([p.lat,p.lon],{icon:icon(p.secured?"mk-ps":"mk-p","P",22)})',
     '  .bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.city||"")+" ("+esc(p.country)+")<br>"+',
-    '   (p.secured?"Secured, level "+(p.security_level||3):"Standard parking")+"<br>"+',
-    '   (p.spaces?p.spaces+" spaces<br>":"")+esc((p.facilities||[]).join(", "))));',
+    '   esc(p.secured?fill(LB.securedLevel,{level:p.security_level||3}):LB.standardParking)+"<br>"+',
+    '   (p.spaces?esc(fill(LB.spaces,{n:p.spaces}))+"<br>":"")+esc((p.facilities||[]).join(", "))));',
     '});',
     'map.addLayer(pk);',
     'map.fitBounds(L.latLngBounds(D.coords),{padding:[40,40]});',
     'var S = D.summary;',
     'var rows = D.tolls.map(function(c){return "<tr><td>"+esc(c.country)+"</td><td class=num>"+n(c.km,0)+',
     '"</td><td class=num>"+n(c.cost,2)+"</td></tr>";}).join("");',
+    'var COMPACT = (window.innerWidth || 1024) < 760;',
+    'function panel(title, body, collapsible, open){',
+    ' if(!collapsible) return "<h3>"+esc(title)+"</h3><div class=bd>"+body+"</div>";',
+    ' return "<button class=tgl type=button><span>"+esc(title)+"</span><span>"+(open?"&#9650;":"&#9660;")+',
+    '  "</span></button><div class=bd"+(open?"":" style=\'display:none\'")+">"+body+"</div>";}',
+    'function wire(d){var btn=d.querySelector(".tgl"), bd=d.querySelector(".bd");',
+    ' if(!btn||!bd) return;',
+    ' btn.onclick=function(){var open = bd.style.display !== "none";',
+    '  bd.style.display = open ? "none" : "block";',
+    '  btn.lastChild.innerHTML = open ? "&#9660;" : "&#9650;";};}',
     'var sum = L.control({position:"topleft"});',
-    'sum.onAdd = function(){var d=L.DomUtil.create("div","pnl");',
-    ' d.innerHTML = "<h3>Route summary</h3>"+',
-    '  "<div class=kv><span>Distance</span><b>"+n(S.distanceKm,1)+" km</b></div>"+',
-    '  "<div class=kv><span>Total time</span><b>"+esc(S.totalLabel)+"</b></div>"+',
-    '  "<div class=kv><span>Driving</span><b>"+esc(S.drivingLabel)+"</b></div>"+',
-    '  "<div class=kv><span>Breaks / rests</span><b>"+S.breaksCount+" / "+S.fullDays+"</b></div>"+',
-    '  "<div class=kv><span>Departure</span><b>"+esc(S.departure)+"</b></div>"+',
-    '  "<div class=kv><span>Arrival</span><b>"+esc(S.arrival)+"</b></div>"+',
-    '  "<div class=kv><span>Toll</span><b>"+n(S.tollCost,2)+" "+D.currency+"</b></div>"+',
-    '  "<div class=kv><span>Fuel</span><b>"+n(S.fuelCost,2)+" "+D.currency+"</b></div>"+',
-    '  "<div class=\'kv tot\'><span>Total cost</span><b>"+n(S.totalCost,2)+" "+D.currency+"</b></div>"+',
-    '  (rows?"<table><thead><tr><th>Country</th><th class=num>km</th><th class=num>"+D.currency+"</th></tr></thead><tbody>"+rows+"</tbody></table>":"")+',
+    'sum.onAdd = function(){var d=L.DomUtil.create("div","pnl"+(COMPACT?" cmp":""));',
+    ' var body = ',
+    '  "<div class=kv><span>"+esc(LB.distance)+"</span><b>"+n(S.distanceKm,1)+" km</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.totalTime)+"</span><b>"+esc(S.totalLabel)+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.driving)+"</span><b>"+esc(S.drivingLabel)+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.breaksRests)+"</span><b>"+S.breaksCount+" / "+S.fullDays+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.departure)+"</span><b>"+esc(S.departure)+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.arrival)+"</span><b>"+esc(S.arrival)+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.toll)+"</span><b>"+n(S.tollCost,2)+" "+D.currency+"</b></div>"+',
+    '  "<div class=kv><span>"+esc(LB.fuel)+"</span><b>"+n(S.fuelCost,2)+" "+D.currency+"</b></div>"+',
+    '  "<div class=\'kv tot\'><span>"+esc(LB.totalCost)+"</span><b>"+n(S.totalCost,2)+" "+D.currency+"</b></div>"+',
+    '  (rows?"<table><thead><tr><th>"+esc(LB.ctry)+"</th><th class=num>km</th><th class=num>"+D.currency+"</th></tr></thead><tbody>"+rows+"</tbody></table>":"")+',
     '  "<div class=foot>"+esc(D.author)+"</div>";',
+    ' d.innerHTML = panel(COMPACT?LB.summaryShort:LB.summary, body, COMPACT, false);',
+    ' wire(d);',
     ' L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d;};',
     'sum.addTo(map);',
     'var reg = L.control({position:"topright"});',
-    'reg.onAdd = function(){var d=L.DomUtil.create("div","pnl");',
+    'reg.onAdd = function(){var d=L.DomUtil.create("div","pnl"+(COMPACT?" cmp":""));',
     ' var body = D.regulations.map(function(e){return "<h4>"+esc(e.country)+" - "+esc(e.name)+"</h4><ul>"+',
     '  e.rules.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+"</ul>";}).join("");',
-    ' d.innerHTML = "<button class=tgl type=button>Country regulations <span>&#9650;</span></button>"+',
-    '  "<div class=reg id=regbody>"+(body||"<p>No regulations resolved.</p>")+',
-    '  "<div class=warn>"+esc(D.disclaimer)+"</div><div class=foot>"+esc(D.author)+"</div></div>";',
-    ' var btn = d.querySelector(".tgl"), bd = d.querySelector("#regbody");',
-    ' btn.onclick = function(){var open = bd.style.display !== "none";',
-    '  bd.style.display = open ? "none" : "block";',
-    '  btn.querySelector("span").innerHTML = open ? "&#9660;" : "&#9650;";};',
+    ' var ls = (D.legalStops||[]).map(function(x){ return "<li><b>"+esc(x.type)+"</b> - "+esc(x.at)+", km "+n(x.km,0)+", "+esc(LB.minDuration)+" "+esc(x.minutes)+" ["+esc(x.article)+"]</li>"; }).join("");',
+    ' if (ls) body = "<h4>"+esc(LB.legalStops)+"</h4><ul>"+ls+"</ul>"+body;',
+    ' body = (body||"<p>"+esc(LB.noRegulations)+"</p>")+',
+    '  "<div class=warn>"+esc(D.disclaimer)+"</div><div class=foot>"+esc(D.author)+"</div>";',
+    ' d.innerHTML = panel(COMPACT?LB.regulationsShort:LB.regulations, body, true, !COMPACT);',
+    ' wire(d);',
     ' L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d;};',
     'reg.addTo(map);'
   ].join('\n');

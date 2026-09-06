@@ -155,3 +155,28 @@ input[type="text"], input[type="number"], input[type="datetime-local"], select {
   .stat-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .field-row--3 { grid-template-columns: 1fr 1fr 1fr; }
 }
+
+/* Keep the header on one line on narrow phones. */
+.brand__title { font-size: 13.5px; white-space: nowrap; }
+.author-badge { font-size: 10px; padding: 3px 7px; }
+.header-meta { gap: 6px; flex: none; }
+.brand { min-width: 0; overflow: hidden; }
+
+/* Compact in-view footer (the disclaimer lives in full on the Info tab). */
+.view-footer {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--blue-900);
+  color: #b9cbe4;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.view-footer strong { color: var(--yellow-400); }
+
+/* The header has to fit a 375 px phone: product name, language, theme.
+   The author credit stays in the Plan footer and the Info tab. */
+.lang-select { padding: 5px 4px; font-size: 12px; }
+@media (max-width: 419px) {
+  .app-header .author-badge { display: none; }
+}

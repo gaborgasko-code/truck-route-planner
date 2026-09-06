@@ -19,11 +19,13 @@ const root = path.resolve(__dirname, '..');
 /* Load order matters: each module reads the ones before it off globalThis. */
 [
   'js/core/config.js',
+  'js/core/i18n.js',
   'js/core/util.js',
   'js/core/geo.js',
   'js/core/embedded-data.js',
   'js/core/data-store.js',
   'js/core/time-model.js',
+  'js/core/eu-rules.js',
   'js/core/tolls.js',
   'js/core/stops.js',
   'js/core/regulations.js',
@@ -31,7 +33,9 @@ const root = path.resolve(__dirname, '..');
   'tests/harness.js',
   'tests/test_time_estimation.js',
   'tests/test_toll_estimation.js',
-  'tests/test_stop_suggestions.js'
+  'tests/test_stop_suggestions.js',
+  'tests/test_legal_stops.js',
+  'tests/test_i18n.js'
 ].forEach((file) => require(path.join(root, file)));
 
 const E = String.fromCharCode(27);

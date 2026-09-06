@@ -19,7 +19,8 @@ const root = path.resolve(__dirname, '..');
 const datasets = [
   ['tollRates', 'toll_rates.json'],
   ['parkings', 'safe_parkings.json'],
-  ['regulations', 'trailer_regulations.json']
+  ['regulations', 'trailer_regulations.json'],
+  ['euRules', 'eu_driving_rules.json']
 ];
 
 const parts = datasets.map(([key, file]) => {

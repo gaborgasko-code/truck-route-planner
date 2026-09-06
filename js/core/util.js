@@ -9,6 +9,11 @@
   var TRP = (global.TRP = global.TRP || {});
   var CONFIG = TRP.CONFIG || (typeof require === 'function' ? require('./config.js') : {});
 
+  /** Active BCP-47 locale, defaulting to Spanish before i18n has loaded. */
+  function locale() {
+    return (TRP.i18n && TRP.i18n.locale()) || 'es-ES';
+  }
+
   /** Clamp a number into [min, max]. */
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -34,7 +39,7 @@
   function formatNumber(value, decimals) {
     var n = Number(value);
     if (!isFinite(n)) return '-';
-    return n.toLocaleString('en-GB', {
+    return n.toLocaleString(locale(), {
       minimumFractionDigits: decimals == null ? 0 : decimals,
       maximumFractionDigits: decimals == null ? 0 : decimals
     });
@@ -76,15 +81,19 @@
     return (n < 10 ? '0' : '') + n;
   }
 
-  /** Format an ISO timestamp as `Mon 12 May, 14:30`. */
+  /** Format an ISO timestamp for the active locale, e.g. `lun, 12 may, 14:30`. */
   function formatDateTime(iso) {
     if (!iso) return '-';
     var d = iso instanceof Date ? iso : new Date(iso);
     if (isNaN(d.getTime())) return '-';
-    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] +
-      ', ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    try {
+      return d.toLocaleString(locale(), {
+        weekday: 'short', day: 'numeric', month: 'short',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      });
+    } catch (e) {
+      return d.toISOString().slice(0, 16).replace('T', ' ');
+    }
   }
 
   /** Add decimal hours to a Date and return a new Date. */
@@ -164,6 +173,7 @@
   }
 
   TRP.util = {
+    locale: locale,
     clamp: clamp,
     round: round,
     escapeHtml: escapeHtml,

@@ -18,6 +18,16 @@
   var util = TRP.util;
   var geo = TRP.geo;
 
+  /** Translate, tolerating i18n not being loaded. */
+  function t(key, params) {
+    return TRP.i18n ? TRP.i18n.t(key, params) : key;
+  }
+
+  /** Progress event carrying both the key and the rendered message. */
+  function step(pct, key, params) {
+    return { pct: pct, key: key, params: params || {}, message: t(key, params) };
+  }
+
   /* --------------------------------------------------- country resolution */
 
   /**
@@ -74,11 +84,11 @@
 
   function checkCancelled(token) {
     if (token && token.cancelled) {
-      throw util.TrpError('CANCELLED', 'Calculation cancelled.');
+      throw util.TrpError('CANCELLED', t('err.CANCELLED'));
     }
   }
 
-  function resolveEndpoint(input, label) {
+  function resolveEndpoint(input, errorKey) {
     var value = input || {};
     var text = String(value.text || '').trim();
     if (isFinite(Number(value.lat)) && isFinite(Number(value.lon)) && value.lat !== null && value.lat !== '') {
@@ -91,7 +101,7 @@
       });
     }
     if (!text) {
-      return Promise.reject(util.TrpError('EMPTY_QUERY', 'Please enter the ' + label + ' address.'));
+      return Promise.reject(util.TrpError('EMPTY_QUERY', t(errorKey)));
     }
     return TRP.api.geocodeOne(text).then(function (hit) {
       return {
@@ -123,32 +133,32 @@
 
     var state = { warnings: [] };
 
-    report({ pct: 3, message: 'Loading toll, parking and regulation data...' });
+    report(step(3, 'prog.data'));
 
     return TRP.dataStore.load().then(function (data) {
       state.data = data;
       if (data.source === 'embedded') {
-        state.warnings.push('Datasets were read from the built-in offline copy (the JSON files could not be fetched).');
+        state.warnings.push({ key: 'warn.embeddedData', params: {} });
       }
       checkCancelled(token);
 
-      report({ pct: 8, message: 'Locating the origin address...' });
-      return resolveEndpoint(request.origin, 'origin');
+      report(step(8, 'prog.origin'));
+      return resolveEndpoint(request.origin, 'err.EMPTY_ORIGIN');
     }).then(function (origin) {
       state.origin = origin;
       checkCancelled(token);
-      report({ pct: 16, message: 'Locating the destination address...' });
-      return resolveEndpoint(request.destination, 'destination');
+      report(step(16, 'prog.destination'));
+      return resolveEndpoint(request.destination, 'err.EMPTY_DESTINATION');
     }).then(function (destination) {
       state.destination = destination;
       checkCancelled(token);
-      report({ pct: 24, message: 'Requesting the road route from OSRM...' });
+      report(step(24, 'prog.route'));
       return TRP.api.getRoute(state.origin, state.destination);
     }).then(function (route) {
       state.route = route;
       checkCancelled(token);
 
-      report({ pct: 34, message: 'Applying EU driving and rest time rules...' });
+      report(step(34, 'prog.time'));
       var itinerary = TRP.timeModel.buildItinerary(route.distanceKm, request.departure, {
         speedKmh: vehicle.speedKmh
       });
@@ -170,10 +180,7 @@
       function resolve(lat, lon, i, total) {
         checkCancelled(token);
         var pct = 36 + Math.round((i / Math.max(1, total)) * 40);
-        report({
-          pct: pct,
-          message: 'Analysing country segments ' + (i + 1) + ' / ' + total + '...'
-        });
+        report(step(pct, 'prog.countries', { i: i + 1, n: total }));
 
         var key = cacheKey(lat, lon);
         if (cache[key]) return Promise.resolve(cache[key]);
@@ -207,20 +214,19 @@
           var fallbackCode = state.origin.countryCode || state.destination.countryCode;
           if (fallbackCode) {
             state.countrySegments = [{ country: fallbackCode, km: route.distanceKm, fromKm: 0, toKm: route.distanceKm }];
-            state.warnings.push('Country detection was unavailable; the whole route was attributed to ' +
-              fallbackCode + '. The toll figure is a rough approximation.');
+            state.warnings.push({ key: 'warn.countryFallback', params: { code: fallbackCode } });
           } else {
-            state.warnings.push('Country detection was unavailable, so no toll estimate could be produced.');
+            state.warnings.push({ key: 'warn.countryUnavailable', params: {} });
           }
         } else if (failures > 0) {
-          state.warnings.push(failures + ' of ' + result.samples.length +
-            ' sample points could not be attributed to a country; their distance is excluded from the toll estimate.');
+          state.warnings.push({ key: 'warn.samplesUnresolved',
+            params: { failed: failures, total: result.samples.length } });
         }
         return state;
       });
     }).then(function () {
       checkCancelled(token);
-      report({ pct: 80, message: 'Estimating tolls and fuel...' });
+      report(step(80, 'prog.tolls'));
 
       var vehicleFactor = TRP.tolls.vehicleTollFactor(vehicle);
       state.tolls = TRP.tolls.estimateTolls(state.countrySegments, state.data.tollRates, {
@@ -236,22 +242,26 @@
           : 0
       };
       if (state.tolls.unknownCountries.length) {
-        state.warnings.push('No toll rate on file for: ' + state.tolls.unknownCountries.join(', ') +
-          '. Those kilometres are costed at zero.');
+        state.warnings.push({ key: 'warn.noTollRate',
+          params: { codes: state.tolls.unknownCountries.join(', ') } });
       }
 
-      report({ pct: 88, message: 'Suggesting rest stops and safe parkings...' });
+      report(step(88, 'prog.stops'));
       var stops = TRP.stops.suggestStops(state.route.coords, CONFIG.REST_STOP_INTERVAL_KM);
       state.stops = TRP.stops.attachParkings(stops, state.data.parkings,
         CONFIG.PARKING_SEARCH_RADIUS_KM, CONFIG.PARKING_RESULTS_PER_STOP);
       state.parkings = TRP.stops.collectParkings(state.stops);
       var withoutParking = state.stops.filter(function (s) { return !s.parkings.length; }).length;
       if (withoutParking > 0) {
-        state.warnings.push(withoutParking + ' suggested stop(s) have no known safe parking within ' +
-          CONFIG.PARKING_SEARCH_RADIUS_KM + ' km in the sample dataset.');
+        state.warnings.push({ key: 'warn.stopsWithoutParking',
+          params: { n: withoutParking, radius: CONFIG.PARKING_SEARCH_RADIUS_KM } });
       }
 
-      report({ pct: 94, message: 'Collecting national regulations...' });
+      report(step(92, 'prog.legal'));
+      state.legal = TRP.euRules.analyse(state.time, state.itinerary, state.data.euRules);
+      state.warnings = state.warnings.concat(state.legal.warnings);
+
+      report(step(94, 'prog.regs'));
       var codes = state.countrySegments
         .map(function (s) { return s.country; })
         .filter(function (c) { return c && c !== CONFIG.UNKNOWN_COUNTRY; });
@@ -275,7 +285,7 @@
       state.appVersion = CONFIG.APP_VERSION;
       state.author = CONFIG.AUTHOR;
 
-      report({ pct: 100, message: 'Route plan complete.' });
+      report(step(100, 'prog.done'));
       return state;
     });
   }

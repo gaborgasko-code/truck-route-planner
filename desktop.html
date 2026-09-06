@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b4ea2">
-<meta name="description" content="Truck Route Planner - desktop workspace for road routing, EU driving time, tolls, rest stops and safe truck parking.">
+<meta name="description" content="Truck Route Planner - rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
 <title>Truck Route Planner - Desktop</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -22,16 +22,17 @@
       <div class="brand__mark" aria-hidden="true">&#128667;</div>
       <div>
         <h1 class="brand__title">Truck Route Planner</h1>
-        <div class="brand__tagline">Road routing &middot; EU driving time &middot; tolls &middot; safe parking</div>
+        <div class="brand__tagline" data-i18n="app.tagline"></div>
       </div>
     </div>
     <div class="header-meta">
-      <span class="chip" id="appVersion">v2.0.0</span>
-      <span class="chip">source: <span id="dataSource">-</span></span>
+      <span class="chip" id="appVersion">v2.1.0</span>
+      <span class="chip"><span data-i18n="app.source"></span>: <span id="dataSource">-</span></span>
       <span class="author-badge">created by Gabor Gasko</span>
-      <button type="button" class="icon-btn" id="themeToggle" title="Toggle theme">&#9790;</button>
-      <a class="link-btn" href="mobile.html?view=mobile">Mobile view</a>
-      <a class="link-btn" href="USER_GUIDE.html" target="_blank" rel="noopener">User guide</a>
+      <select class="lang-select" id="langSelect" aria-label="Idioma / Language"></select>
+      <button type="button" class="icon-btn" id="themeToggle">&#9790;</button>
+      <a class="link-btn" href="mobile.html?view=mobile" data-i18n="app.mobileView"></a>
+      <a class="link-btn" href="USER_GUIDE.html" target="_blank" rel="noopener" data-i18n="app.userGuide"></a>
     </div>
   </header>
 
@@ -41,35 +42,36 @@
     <aside class="sidebar">
 
       <section class="sidebar__section">
-        <h3>Route</h3>
+        <h3 data-i18n="form.route"></h3>
 
         <div class="field">
-          <label for="originInput">Origin address</label>
+          <label for="originInput" data-i18n="form.origin"></label>
           <input type="text" id="originInput" autocomplete="off" spellcheck="false"
-                 placeholder="e.g. Hafenstrasse 1, Hamburg, Germany">
+                 data-i18n-attr="placeholder:form.originPlaceholder">
           <div class="suggest" id="originSuggest" role="listbox" hidden></div>
         </div>
 
         <div class="swap-row">
-          <button type="button" class="swap-btn" id="swapBtn" title="Swap origin and destination">&#8645;</button>
+          <button type="button" class="swap-btn" id="swapBtn"
+                  data-i18n-attr="title:form.swap">&#8645;</button>
         </div>
 
         <div class="field">
-          <label for="destInput">Destination address</label>
+          <label for="destInput" data-i18n="form.destination"></label>
           <input type="text" id="destInput" autocomplete="off" spellcheck="false"
-                 placeholder="e.g. Via Roma 10, Milan, Italy">
+                 data-i18n-attr="placeholder:form.destinationPlaceholder">
           <div class="suggest" id="destSuggest" role="listbox" hidden></div>
         </div>
 
         <div class="field">
-          <label for="departureInput">Departure</label>
+          <label for="departureInput" data-i18n="form.departure"></label>
           <input type="datetime-local" id="departureInput">
         </div>
 
         <div class="btn-row">
-          <button type="button" class="btn btn--primary" id="calcBtn">Calculate Route</button>
-          <button type="button" class="btn btn--accent" id="mapBtn" disabled>Show Full Itinerary Map</button>
-          <button type="button" class="btn btn--ghost" id="resetBtn">Reset</button>
+          <button type="button" class="btn btn--primary" id="calcBtn" data-i18n="form.calculate"></button>
+          <button type="button" class="btn btn--accent" id="mapBtn" data-i18n="form.showMap" disabled></button>
+          <button type="button" class="btn btn--ghost" id="resetBtn" data-i18n="form.reset"></button>
         </div>
 
         <div class="progress" id="progress" hidden>
@@ -79,15 +81,15 @@
       </section>
 
       <details class="sidebar__section" open>
-        <summary>Vehicle profile</summary>
+        <summary data-i18n="form.vehicle"></summary>
 
         <div class="field-row">
           <div class="field">
-            <label for="weightInput">Gross weight (t)</label>
+            <label for="weightInput" data-i18n="form.weight"></label>
             <input type="number" id="weightInput" min="1" max="100" step="0.5" value="40">
           </div>
           <div class="field">
-            <label for="axlesSelect">Axles</label>
+            <label for="axlesSelect" data-i18n="form.axles"></label>
             <select id="axlesSelect">
               <option value="2">2</option>
               <option value="3">3</option>
@@ -100,7 +102,7 @@
 
         <div class="field-row">
           <div class="field">
-            <label for="euroSelect">Emission class</label>
+            <label for="euroSelect" data-i18n="form.emission"></label>
             <select id="euroSelect">
               <option value="VI" selected>EURO VI</option>
               <option value="V">EURO V</option>
@@ -110,18 +112,18 @@
             </select>
           </div>
           <div class="field">
-            <label for="speedInput">Avg speed (km/h)</label>
+            <label for="speedInput" data-i18n="form.speed"></label>
             <input type="number" id="speedInput" min="30" max="130" step="1" value="70">
           </div>
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label for="fuelInput">Fuel (l/100 km)</label>
+            <label for="fuelInput" data-i18n="form.fuel"></label>
             <input type="number" id="fuelInput" min="0" max="120" step="0.5" value="30">
           </div>
           <div class="field">
-            <label for="fuelPriceInput">Diesel (EUR/l)</label>
+            <label for="fuelPriceInput" data-i18n="form.fuelPrice"></label>
             <input type="number" id="fuelPriceInput" min="0" max="10" step="0.01" value="1.65">
           </div>
         </div>
@@ -129,47 +131,44 @@
         <div class="field">
           <label class="checkbox">
             <input type="checkbox" id="adrCheck">
-            <span>ADR / dangerous goods load</span>
+            <span data-i18n="form.adr"></span>
           </label>
         </div>
       </details>
 
       <details class="sidebar__section">
-        <summary>Toll analysis</summary>
+        <summary data-i18n="form.tollAnalysis"></summary>
         <div class="field">
-          <label for="tollDetailSelect">Sampling detail</label>
+          <label for="tollDetailSelect" data-i18n="form.tollDetail"></label>
           <select id="tollDetailSelect">
-            <option value="fast">Fast - sample every 150 km</option>
-            <option value="balanced" selected>Balanced - every 100 km</option>
-            <option value="precise">Precise - every 50 km</option>
+            <option value="fast" data-i18n="form.tollFast"></option>
+            <option value="balanced" selected data-i18n="form.tollBalanced"></option>
+            <option value="precise" data-i18n="form.tollPrecise"></option>
           </select>
         </div>
-        <p class="note">Country detection uses offline bounding boxes first and only falls back to the
-          Nominatim reverse-geocoder, which is limited to one request per second. Precise mode is the most
-          accurate but the slowest on long routes. Results are cached on this device.</p>
+        <p class="note" data-i18n="form.tollNote"></p>
       </details>
 
-      <p class="note">
-        Free services only - OpenStreetMap Nominatim for geocoding and the OSRM demo server for routing.
-        No API key, no account, no tracking.
-      </p>
+      <p class="note" data-i18n="form.servicesNote"></p>
     </aside>
 
     <!-- ----------------------------------------------------- workspace -->
     <section class="content">
       <nav class="tabs" role="tablist">
-        <button type="button" class="tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
-        <button type="button" class="tab" role="tab" data-tab="itinerary" aria-selected="false">Itinerary</button>
-        <button type="button" class="tab" role="tab" data-tab="tolls" aria-selected="false">Tolls <span class="tab__count" id="tabTollsCount">0</span></button>
-        <button type="button" class="tab" role="tab" data-tab="stops" aria-selected="false">Stops &amp; parking <span class="tab__count" id="tabStopsCount">0</span></button>
-        <button type="button" class="tab" role="tab" data-tab="regulations" aria-selected="false">Regulations <span class="tab__count" id="tabRegsCount">0</span></button>
-        <button type="button" class="tab" role="tab" data-tab="map" aria-selected="false">Map</button>
-        <button type="button" class="tab" role="tab" data-tab="report" aria-selected="false">Report</button>
+        <button type="button" class="tab" role="tab" data-tab="overview" aria-selected="true"><span data-i18n="tab.overview"></span></button>
+        <button type="button" class="tab" role="tab" data-tab="itinerary" aria-selected="false"><span data-i18n="tab.itinerary"></span></button>
+        <button type="button" class="tab" role="tab" data-tab="legal" aria-selected="false"><span data-i18n="tab.legal"></span> <span class="tab__count" id="tabLegalCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="tolls" aria-selected="false"><span data-i18n="tab.tolls"></span> <span class="tab__count" id="tabTollsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="stops" aria-selected="false"><span data-i18n="tab.stops"></span> <span class="tab__count" id="tabStopsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="regulations" aria-selected="false"><span data-i18n="tab.regulations"></span> <span class="tab__count" id="tabRegsCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="map" aria-selected="false"><span data-i18n="tab.map"></span></button>
+        <button type="button" class="tab" role="tab" data-tab="report" aria-selected="false"><span data-i18n="tab.report"></span></button>
       </nav>
 
       <div class="panels">
         <div class="panel" data-panel="overview" id="panelOverview"></div>
         <div class="panel" data-panel="itinerary" id="panelItinerary" hidden></div>
+        <div class="panel" data-panel="legal" id="panelLegal" hidden></div>
         <div class="panel" data-panel="tolls" id="panelTolls" hidden></div>
         <div class="panel" data-panel="stops" id="panelStops" hidden></div>
         <div class="panel" data-panel="regulations" id="panelRegulations" hidden></div>
@@ -178,24 +177,24 @@
           <div class="map-shell">
             <div class="map-canvas" id="mapCanvas"></div>
             <div class="map-floating-actions">
-              <button type="button" class="btn btn--accent" id="openMapBtn" disabled>Open standalone map</button>
-              <button type="button" class="btn btn--ghost" id="downloadMapBtn" disabled>Download map (.html)</button>
+              <button type="button" class="btn btn--accent" id="openMapBtn" data-i18n="map.openStandalone" disabled></button>
+              <button type="button" class="btn btn--ghost" id="downloadMapBtn" data-i18n="map.downloadMap" disabled></button>
             </div>
           </div>
         </div>
 
         <div class="panel" data-panel="report" id="panelReport" hidden>
           <div class="card">
-            <div class="card__title">Text report</div>
+            <div class="card__title" data-i18n="report.title"></div>
             <div class="panel-actions">
-              <button type="button" class="btn btn--primary" id="copyReportBtn" disabled>Copy</button>
-              <button type="button" class="btn btn--ghost" id="downloadReportBtn" disabled>Download .txt</button>
-              <button type="button" class="btn btn--ghost" id="downloadGpxBtn" disabled>Download .gpx</button>
-              <button type="button" class="btn btn--ghost" id="downloadJsonBtn" disabled>Download .json</button>
-              <button type="button" class="btn btn--ghost" id="printBtn">Print</button>
+              <button type="button" class="btn btn--primary" id="copyReportBtn" data-i18n="report.copy" disabled></button>
+              <button type="button" class="btn btn--ghost" id="downloadReportBtn" data-i18n="report.downloadTxt" disabled></button>
+              <button type="button" class="btn btn--ghost" id="downloadGpxBtn" data-i18n="report.downloadGpx" disabled></button>
+              <button type="button" class="btn btn--ghost" id="downloadJsonBtn" data-i18n="report.downloadJson" disabled></button>
+              <button type="button" class="btn btn--ghost" id="printBtn" data-i18n="report.print"></button>
             </div>
             <textarea class="report" id="reportText" readonly spellcheck="false"
-                      aria-label="Plain text route report"></textarea>
+                      data-i18n-attr="aria-label:report.title"></textarea>
           </div>
         </div>
       </div>
@@ -203,11 +202,7 @@
   </div>
 
   <footer class="app-footer">
-    <span>
-      <strong>Estimates only.</strong> Distances, driving times, tolls and national regulations are planning
-      aids and are not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
-      competent national authority before departure.
-    </span>
+    <span data-i18n-html="app.footerDisclaimer"></span>
     <span class="spacer"></span>
     <strong>created by Gabor Gasko</strong>
   </footer>
@@ -219,12 +214,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 
 <script src="js/core/config.js"></script>
+<script src="js/core/i18n.js"></script>
 <script src="js/core/util.js"></script>
 <script src="js/core/geo.js"></script>
 <script src="js/core/embedded-data.js"></script>
 <script src="js/core/data-store.js"></script>
 <script src="js/core/api.js"></script>
 <script src="js/core/time-model.js"></script>
+<script src="js/core/eu-rules.js"></script>
 <script src="js/core/tolls.js"></script>
 <script src="js/core/stops.js"></script>
 <script src="js/core/regulations.js"></script>

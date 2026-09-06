@@ -109,7 +109,8 @@
 
     events.push({
       type: 'depart',
-      title: 'Departure',
+      titleKey: 'ev.depart',
+      titleParams: {},
       at: cursor.toISOString(),
       km: 0,
       durationH: 0
@@ -130,7 +131,8 @@
       cursor = util.addHours(cursor, chunk);
       events.push({
         type: 'drive',
-        title: 'Drive ' + util.formatShortDuration(chunk),
+        titleKey: 'ev.drive',
+        titleParams: { d: util.formatShortDuration(chunk) },
         at: cursor.toISOString(),
         km: Math.round(drivenKm),
         durationH: chunk
@@ -144,7 +146,8 @@
         cursor = util.addHours(cursor, breakH);
         events.push({
           type: 'break',
-          title: 'Mandatory break ' + CONFIG.MANDATORY_BREAK_MIN + ' min',
+          titleKey: 'ev.break',
+          titleParams: { m: CONFIG.MANDATORY_BREAK_MIN },
           at: cursor.toISOString(),
           km: Math.round(drivenKm),
           durationH: breakH
@@ -159,7 +162,8 @@
         cursor = util.addHours(cursor, CONFIG.DAILY_REST_H);
         events.push({
           type: 'rest',
-          title: 'Daily rest ' + CONFIG.DAILY_REST_H + ' h',
+          titleKey: 'ev.rest',
+          titleParams: { h: CONFIG.DAILY_REST_H },
           at: cursor.toISOString(),
           km: Math.round(drivenKm),
           durationH: CONFIG.DAILY_REST_H
@@ -173,7 +177,8 @@
       cursor = util.addHours(cursor, CONFIG.MANDATORY_BREAK_MIN / 60);
       events.push({
         type: 'break',
-        title: 'Mandatory break ' + CONFIG.MANDATORY_BREAK_MIN + ' min',
+        titleKey: 'ev.break',
+        titleParams: { m: CONFIG.MANDATORY_BREAK_MIN },
         at: cursor.toISOString(),
         km: Math.round(drivenKm),
         durationH: CONFIG.MANDATORY_BREAK_MIN / 60
@@ -184,7 +189,8 @@
       cursor = util.addHours(cursor, CONFIG.DAILY_REST_H);
       events.push({
         type: 'rest',
-        title: 'Daily rest ' + CONFIG.DAILY_REST_H + ' h',
+        titleKey: 'ev.rest',
+        titleParams: { h: CONFIG.DAILY_REST_H },
         at: cursor.toISOString(),
         km: Math.round(drivenKm),
         durationH: CONFIG.DAILY_REST_H
@@ -193,7 +199,8 @@
 
     events.push({
       type: 'arrive',
-      title: 'Arrival',
+      titleKey: 'ev.arrive',
+      titleParams: {},
       at: cursor.toISOString(),
       km: Math.round(model.distanceKm),
       durationH: 0
@@ -209,10 +216,10 @@
   function weekendWarnings(departure, arrival) {
     var warnings = [];
     if (departure && util.isWeekend(new Date(departure))) {
-      warnings.push('Departure falls on a weekend - HGV driving bans apply in many countries (typically Saturday afternoon to Sunday evening).');
+      warnings.push({ key: 'warn.weekendDeparture', params: {} });
     }
     if (arrival && util.isWeekend(new Date(arrival))) {
-      warnings.push('Estimated arrival falls on a weekend - check destination-country driving bans and delivery windows.');
+      warnings.push({ key: 'warn.weekendArrival', params: {} });
     }
     return warnings;
   }

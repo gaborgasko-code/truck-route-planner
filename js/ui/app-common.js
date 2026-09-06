@@ -16,6 +16,33 @@
   var FORM_KEY = 'trp.form.v1';
   var THEME_KEY = 'trp.theme';
 
+  function t(key, params) {
+    return TRP.i18n ? TRP.i18n.t(key, params) : key;
+  }
+
+  /* ------------------------------------------------------------ language */
+
+  /**
+   * Wire the language selector. Spanish is the default; the choice is stored
+   * per device. `onChange` runs after the DOM has been re-translated, so the
+   * app can re-render any result already on screen.
+   */
+  function initLanguage(select, onChange, short) {
+    TRP.i18n.init();
+    TRP.i18n.applyDom(document);
+    if (!select) return;
+    select.innerHTML = TRP.i18n.available().map(function (code) {
+      var label = short ? TRP.i18n.languageShort(code) : TRP.i18n.languageName(code);
+      return '<option value="' + code + '">' + label + '</option>';
+    }).join('');
+    select.value = TRP.i18n.lang();
+    select.addEventListener('change', function () {
+      TRP.i18n.set(select.value);
+      TRP.i18n.applyDom(document);
+      if (typeof onChange === 'function') onChange(TRP.i18n.lang());
+    });
+  }
+
   /* ---------------------------------------------------------------- theme */
 
   function applyTheme(theme) {
@@ -32,16 +59,16 @@
   }
 
   function initTheme(button) {
-    var theme = currentTheme();
-    applyTheme(theme);
+    applyTheme(currentTheme());
     if (!button) return;
     function sync() {
-      var t = document.documentElement.getAttribute('data-theme');
-      button.textContent = t === 'dark' ? '☀' : '☾';
-      button.setAttribute('title', t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+      var active = document.documentElement.getAttribute('data-theme');
+      button.textContent = active === 'dark' ? '☀' : '☾';
+      button.setAttribute('title', t(active === 'dark' ? 'app.themeToLight' : 'app.themeToDark'));
       button.setAttribute('aria-label', button.getAttribute('title'));
     }
     sync();
+    TRP.i18n.onChange(sync);
     button.addEventListener('click', function () {
       applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
       sync();
@@ -84,23 +111,13 @@
 
   /* ------------------------------------------------------ error messages */
 
-  var ERROR_HINTS = {
-    EMPTY_QUERY: 'Enter both an origin and a destination address.',
-    NOT_FOUND: 'Try a more complete address, for example "Bahnhofstrasse 1, Munich, Germany".',
-    NO_ROUTE: 'No road route exists between these points. Sea crossings and islands need a ferry leg.',
-    TIMEOUT: 'The free routing service did not answer in time. Wait a moment and try again.',
-    NETWORK: 'No connection to the routing service. Check the internet connection.',
-    CANCELLED: 'Calculation cancelled.'
-  };
-
+  /** Message plus a practical hint, both in the active language. */
   function friendlyError(err) {
-    if (!err) return 'Unexpected error.';
+    if (!err) return t('err.generic');
     var code = err.code || '';
     var base = err.message || String(err);
-    var hint = ERROR_HINTS[code];
-    if (code.indexOf('HTTP_') === 0) {
-      hint = 'The free OSRM / Nominatim demo servers are rate limited. Wait a minute and retry.';
-    }
+    var hintKey = code.indexOf('HTTP_') === 0 ? 'err.HTTP' : 'err.' + code;
+    var hint = TRP.i18n && TRP.i18n.has(hintKey) ? t(hintKey) : '';
     return hint && hint !== base ? base + ' ' + hint : base;
   }
 
@@ -277,6 +294,8 @@
 
   TRP.appCommon = {
     FORM_KEY: FORM_KEY,
+    initLanguage: initLanguage,
+    t: t,
     applyTheme: applyTheme,
     currentTheme: currentTheme,
     initTheme: initTheme,

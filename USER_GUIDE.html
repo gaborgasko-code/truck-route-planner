@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b4ea2">
+<meta name="description" content="Guia de usuario de Truck Route Planner: instalacion, uso, paradas legales UE, peajes, mapa y aparcamiento seguro. created by Gabor Gasko">
+<title>Truck Route Planner - Guía de usuario / User Guide</title>
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  html, body { height: auto; overflow: visible; }
+  body { background: var(--surface-2); }
+
+  /* Only the active language is shown. */
+  [data-guide-lang="es"] .lang--en { display: none; }
+  [data-guide-lang="en"] .lang--es { display: none; }
+
+  .guide-hero {
+    background: linear-gradient(135deg, var(--blue-800), var(--blue-700) 55%, var(--blue-600));
+    color: #fff;
+    padding: 30px 24px 26px;
+  }
+  .guide-hero__inner { max-width: 1080px; margin: 0 auto; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .guide-hero__mark {
+    width: 60px; height: 60px; border-radius: 16px;
+    background: var(--yellow-400); color: var(--blue-800);
+    display: grid; place-items: center; font-size: 30px; flex: none;
+    box-shadow: 0 8px 22px rgba(0,0,0,.3);
+  }
+  .guide-hero h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.3px; }
+  .guide-hero p { margin: 0; color: #cfe1f8; font-size: 14px; }
+  .guide-hero__side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .guide-hero__by {
+    background: var(--yellow-400); color: var(--blue-900);
+    font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px;
+  }
+  .lang-switch { display: flex; gap: 6px; }
+  .lang-switch button {
+    border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.12); color: #fff;
+    border-radius: 999px; padding: 5px 15px; font: inherit; font-size: 12.5px; cursor: pointer;
+  }
+  .lang-switch button[aria-pressed="true"] { background: #fff; color: var(--blue-800); font-weight: 700; }
+
+  .guide-wrap {
+    max-width: 1080px; margin: 0 auto; padding: 26px 20px 40px;
+    display: grid; grid-template-columns: 240px 1fr; gap: 30px; align-items: start;
+  }
+
+  .toc {
+    position: sticky; top: 18px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
+  }
+  .toc h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); margin-bottom: 8px; }
+  .toc a {
+    display: block; padding: 6px 9px; border-radius: 7px;
+    font-size: 13px; color: var(--ink-soft); text-decoration: none;
+    border-left: 3px solid transparent;
+  }
+  .toc a:hover { background: var(--blue-050); color: var(--blue-700); border-left-color: var(--yellow-400); }
+
+  .guide-main > section {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 22px 24px; margin-bottom: 18px;
+    scroll-margin-top: 16px;
+  }
+  .guide-main h2 {
+    font-size: 19px; color: var(--blue-700);
+    padding-bottom: 9px; margin-bottom: 14px;
+    border-bottom: 3px solid var(--yellow-400);
+    display: inline-block;
+  }
+  [data-theme="dark"] .guide-main h2 { color: var(--yellow-400); }
+  .guide-main h3 { font-size: 14.5px; color: var(--ink); margin: 18px 0 7px; }
+  .guide-main p, .guide-main li { font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+  .guide-main ul, .guide-main ol { padding-left: 22px; margin: 0 0 12px; }
+  .guide-main li { margin-bottom: 5px; }
+  .guide-main code {
+    font-family: var(--mono); font-size: 12.5px;
+    background: var(--surface-3); padding: 1.5px 5px; border-radius: 4px; color: var(--blue-700);
+  }
+  [data-theme="dark"] .guide-main code { color: var(--yellow-400); }
+  .guide-main pre {
+    background: var(--blue-900); color: #dbe7f7;
+    padding: 13px 15px; border-radius: var(--radius-sm);
+    overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55;
+    border-left: 4px solid var(--yellow-400);
+  }
+  .guide-main pre code { background: none; color: inherit; padding: 0; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps > li { counter-increment: step; position: relative; padding: 0 0 14px 44px; margin: 0; }
+  .steps > li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: -1px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--blue-700); color: #fff;
+    display: grid; place-items: center; font-weight: 800; font-size: 13px;
+  }
+  .steps > li strong { color: var(--ink); }
+
+  .kbd {
+    display: inline-block; font-family: var(--mono); font-size: 11.5px;
+    border: 1px solid var(--line); border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; background: var(--surface-2);
+  }
+
+  .callout {
+    border-left: 4px solid var(--blue-600); background: var(--blue-050);
+    padding: 12px 15px; border-radius: var(--radius-sm); margin: 14px 0; font-size: 13.5px;
+  }
+  .callout--warn { border-left-color: var(--yellow-400); background: var(--yellow-100); }
+  .callout--danger { border-left-color: var(--danger); background: rgba(200,50,46,.08); }
+  [data-theme="dark"] .callout { background: rgba(26,111,212,.10); }
+  [data-theme="dark"] .callout--warn { background: rgba(255,204,0,.10); }
+  .callout strong:first-child { color: var(--ink); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tile { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--surface-2); }
+  .tile h4 { margin: 0 0 5px; font-size: 13.5px; color: var(--blue-700); }
+  [data-theme="dark"] .tile h4 { color: var(--yellow-400); }
+  .tile p { margin: 0; font-size: 12.5px; }
+
+  .guide-main table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 14px; }
+  .guide-main th, .guide-main td {
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top;
+  }
+  .guide-main thead th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); border-bottom: 2px solid var(--line);
+  }
+  .art { font-family: var(--mono); font-size: 12px; color: var(--blue-700); white-space: nowrap; }
+  [data-theme="dark"] .art { color: var(--yellow-400); }
+
+  .guide-footer { background: var(--blue-900); color: #b9cbe4; padding: 22px 24px; font-size: 12.5px; line-height: 1.6; }
+  .guide-footer__inner { max-width: 1080px; margin: 0 auto; }
+  .guide-footer strong { color: var(--yellow-400); }
+  .guide-footer__by {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.15);
+    font-size: 14px; font-weight: 700; color: var(--yellow-400);
+  }
+
+  @media (max-width: 860px) {
+    .guide-wrap { grid-template-columns: 1fr; padding: 18px 14px 30px; }
+    .toc { position: static; }
+    .toc a { display: inline-block; }
+    .split { grid-template-columns: 1fr; }
+    .guide-hero__side { margin-left: 0; align-items: flex-start; }
+  }
+  @media print {
+    .toc, .guide-hero__side { display: none; }
+    .guide-main > section { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="guide-hero">
+  <div class="guide-hero__inner">
+    <div class="guide-hero__mark" aria-hidden="true">&#128667;</div>
+    <div>
+      <h1>Truck Route Planner</h1>
+      <p><span class="lang lang--es">Guía de usuario</span><span class="lang lang--en">User guide</span>
+         &middot; <span class="lang lang--es">rutas, tiempos de conducción UE, paradas legales, peajes y aparcamiento seguro</span><span class="lang lang--en">routing, EU driving time, legal stops, tolls and safe parking</span>
+         &middot; v2.1.0</p>
+    </div>
+    <div class="guide-hero__side">
+      <div class="lang-switch" id="langSwitch">
+        <button type="button" data-lang="es" aria-pressed="true">Español</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+      </div>
+      <div class="guide-hero__by">created by Gabor Gasko</div>
+    </div>
+  </div>
+</header>
+
+<div class="guide-wrap">
+
+  <nav class="toc" aria-label="Contents">
+    <h2><span class="lang lang--es">Contenido</span><span class="lang lang--en">Contents</span></h2>
+    <a href="#overview">1. <span class="lang lang--es">Descripción general</span><span class="lang lang--en">Overview</span></a>
+    <a href="#language">2. <span class="lang lang--es">Idioma</span><span class="lang lang--en">Language</span></a>
+    <a href="#setup">3. <span class="lang lang--es">Instalación</span><span class="lang lang--en">Setup</span></a>
+    <a href="#usage">4. <span class="lang lang--es">Planificar una ruta</span><span class="lang lang--en">Planning a route</span></a>
+    <a href="#results">5. <span class="lang lang--es">Leer los resultados</span><span class="lang lang--en">Reading the results</span></a>
+    <a href="#legal">6. <span class="lang lang--es">Paradas legales (UE)</span><span class="lang lang--en">Legal stops (EU)</span></a>
+    <a href="#tolls">7. <span class="lang lang--es">Cálculo de peajes</span><span class="lang lang--en">How tolls are calculated</span></a>
+    <a href="#map">8. <span class="lang lang--es">El mapa</span><span class="lang lang--en">The map</span></a>
+    <a href="#parking">9. <span class="lang lang--es">Paradas y aparcamiento seguro</span><span class="lang lang--en">Stops and safe parking</span></a>
+    <a href="#exports">10. <span class="lang lang--es">Informes y exportación</span><span class="lang lang--en">Reports and exports</span></a>
+    <a href="#technical">11. <span class="lang lang--es">Detalles técnicos</span><span class="lang lang--en">Technical details</span></a>
+    <a href="#troubleshooting">12. <span class="lang lang--es">Resolución de problemas</span><span class="lang lang--en">Troubleshooting</span></a>
+    <a href="#legal-notice">13. <span class="lang lang--es">Aviso legal</span><span class="lang lang--en">Legal notice</span></a>
+  </nav>
+
+  <main class="guide-main">
+
+    <!-- ------------------------------------------------------ overview -->
+    <section id="overview">
+      <h2>1. <span class="lang lang--es">Descripción general</span><span class="lang lang--en">Overview</span></h2>
+
+      <div class="lang lang--es">
+        <p>
+          Truck Route Planner convierte dos direcciones en un plan de transporte completo y conforme
+          a la normativa: la ruta real por carretera, cuánto dura legalmente con pausas y descansos,
+          qué paradas obligatorias exige el Reglamento (CE) 561/2006, cuánto cuestan los peajes país
+          por país, dónde parar y qué normas nacionales se aplican a lo largo del recorrido.
+        </p>
+      </div>
+      <div class="lang lang--en">
+        <p>
+          Truck Route Planner turns two addresses into a complete, compliance-aware transport plan:
+          the real road route, how long it legally takes with breaks and rests, which mandatory stops
+          Regulation (EC) 561/2006 requires, what the tolls cost country by country, where to stop and
+          which national rules apply along the way.
+        </p>
+      </div>
+
+      <div class="split">
+        <div class="tile">
+          <h4><span class="lang lang--es">Versión de escritorio</span><span class="lang lang--en">Desktop version</span></h4>
+          <p class="lang lang--es">Para tráfico y planificación. Panel de control a la izquierda, espacio de trabajo con pestañas, tablas anchas, mapa a pantalla completa e informe de texto.</p>
+          <p class="lang lang--en">For dispatchers and planners. Control sidebar on the left, tabbed workspace with wide tables, a full-size map and a text report.</p>
+        </div>
+        <div class="tile">
+          <h4><span class="lang lang--es">Versión móvil</span><span class="lang lang--en">Mobile version</span></h4>
+          <p class="lang lang--es">Para conductores. Una sola columna, botones grandes, secciones plegables y cinco pestañas inferiores: Plan, Resultado, Mapa, Normas e Info.</p>
+          <p class="lang lang--en">For drivers. One column, large touch targets, collapsible sections and five bottom tabs: Plan, Result, Map, Rules and Info.</p>
+        </div>
+      </div>
+
+      <p class="lang lang--es">
+        Las dos versiones usan el mismo motor de cálculo, por lo que las cifras son siempre idénticas.
+        Al abrir <code>index.html</code> se detecta el dispositivo y se redirige a la versión adecuada.
+      </p>
+      <p class="lang lang--en">
+        Both versions run the same calculation engine, so the figures are always identical. Opening
+        <code>index.html</code> detects your device and forwards you to the right one.
+      </p>
+
+      <div class="callout">
+        <strong class="lang lang--es">Sin cuenta, sin clave de API, sin coste.</strong>
+        <strong class="lang lang--en">No account, no API key, no cost.</strong>
+        <span class="lang lang--es">La geocodificación usa Nominatim de OpenStreetMap y las rutas el servidor de demostración OSRM. No se hace seguimiento y solo salen del dispositivo las direcciones que usted escribe.</span>
+        <span class="lang lang--en">Geocoding uses OpenStreetMap Nominatim and routing uses the OSRM demo server. Nothing is tracked and nothing but the addresses you type ever leaves your device.</span>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ language -->
+    <section id="language">
+      <h2>2. <span class="lang lang--es">Idioma</span><span class="lang lang--en">Language</span></h2>
+
+      <div class="lang lang--es">
+        <p>
+          <strong>El español es el idioma predeterminado</strong> de la aplicación. El inglés está
+          disponible en el selector de la cabecera: <code>ES</code> / <code>EN</code> en el móvil,
+          <em>Español</em> / <em>English</em> en el escritorio.
+        </p>
+        <ul>
+          <li>La elección se guarda en el dispositivo y se aplica también a la pantalla de inicio.</li>
+          <li>Al cambiar de idioma, el resultado que ya está en pantalla se vuelve a generar al momento: no hace falta recalcular la ruta.</li>
+          <li>Los números y las fechas siguen el idioma: <code>1.234,5 km</code> y <code>lun, 11 may, 14:30</code> en español; <code>1,234.5 km</code> y <code>Mon 11 May, 14:30</code> en inglés.</li>
+          <li>Las búsquedas de direcciones se piden a Nominatim en el idioma activo, así que los topónimos salen en español por defecto.</li>
+          <li>La normativa nacional y las reglas europeas están traducidas en los propios conjuntos de datos, no generadas automáticamente.</li>
+        </ul>
+      </div>
+      <div class="lang lang--en">
+        <p>
+          <strong>Spanish is the default language.</strong> English is available from the selector in
+          the header: <code>ES</code> / <code>EN</code> on mobile, <em>Español</em> / <em>English</em>
+          on the desktop.
+        </p>
+        <ul>
+          <li>The choice is stored on the device and also applies to the entry screen.</li>
+          <li>Switching language re-renders the result already on screen straight away: there is no need to recalculate the route.</li>
+          <li>Numbers and dates follow the language: <code>1.234,5 km</code> and <code>lun, 11 may, 14:30</code> in Spanish; <code>1,234.5 km</code> and <code>Mon 11 May, 14:30</code> in English.</li>
+          <li>Address searches ask Nominatim for the active language, so place names come back in Spanish by default.</li>
+          <li>National regulations and the European rules are translated inside the datasets themselves, not machine generated.</li>
+        </ul>
+      </div>
+
+      <div class="callout">
+        <span class="lang lang--es">¿Necesita otro idioma? Añada la clave a <code>js/core/i18n.js</code> y las variantes <code>es</code>/<code>en</code> de los ficheros de <code>data/</code>. No hay que compilar nada.</span>
+        <span class="lang lang--en">Need another language? Add it to <code>js/core/i18n.js</code> and to the <code>es</code>/<code>en</code> variants in the <code>data/</code> files. There is nothing to compile.</span>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------- setup -->
+    <section id="setup">
+      <h2>3. <span class="lang lang--es">Instalación</span><span class="lang lang--en">Setup</span></h2>
+
+      <h3><span class="lang lang--es">Opción A: abrirlo sin más</span><span class="lang lang--en">Option A - just open it</span></h3>
+      <p class="lang lang--es">Haga doble clic en <code>index.html</code>. Esa es toda la instalación.</p>
+      <p class="lang lang--en">Double-click <code>index.html</code>. That is the whole installation.</p>
+      <p class="lang lang--es">
+        Al abrirlo directamente desde el sistema de ficheros el navegador no puede leer los JSON de
+        <code>data/</code>, así que la aplicación usa una copia integrada de los mismos datos. Todo
+        funciona; la cabecera simplemente indica <code>origen: datos integrados</code>.
+      </p>
+      <p class="lang lang--en">
+        When opened straight from the file system the browser cannot read the JSON files in
+        <code>data/</code>, so the app falls back to a built-in copy of the same data. Everything
+        works; the header simply shows <code>source: built-in data</code>.
+      </p>
+
+      <h3><span class="lang lang--es">Opción B: servidor local (recomendada)</span><span class="lang lang--en">Option B - local server (recommended)</span></h3>
+      <p class="lang lang--es">
+        Un servidor local permite editar los conjuntos de datos sin reconstruir nada, activa el modo
+        sin conexión e instalar la aplicación en el móvil. Necesita Node.js.
+      </p>
+      <p class="lang lang--en">
+        A local server lets you edit the datasets without rebuilding, enables the offline service
+        worker and allows installing the app on a phone. It needs Node.js.
+      </p>
+      <pre><code>node tools/serve.js</code></pre>
+      <p class="lang lang--es">En Windows puede hacer doble clic en <code>start-server.cmd</code>. Después abra <code>http://localhost:8080/</code>.</p>
+      <p class="lang lang--en">On Windows you can double-click <code>start-server.cmd</code> instead. Then open <code>http://localhost:8080/</code>.</p>
+
+      <h3><span class="lang lang--es">Instalar en el móvil</span><span class="lang lang--en">Install on a phone</span></h3>
+      <ol>
+        <li><span class="lang lang--es">Publique la carpeta por HTTPS, o acceda al servidor de su ordenador desde el móvil.</span><span class="lang lang--en">Host the folder over HTTPS, or reach your computer's server from the phone.</span></li>
+        <li><strong>iPhone:</strong> <span class="lang lang--es">Safari &rarr; Compartir &rarr; <em>Añadir a pantalla de inicio</em>.</span><span class="lang lang--en">Safari &rarr; Share &rarr; <em>Add to Home Screen</em>.</span></li>
+        <li><strong>Android:</strong> <span class="lang lang--es">Chrome &rarr; menú &rarr; <em>Instalar aplicación</em>.</span><span class="lang lang--en">Chrome &rarr; menu &rarr; <em>Install app</em>.</span></li>
+      </ol>
+      <div class="callout">
+        <strong class="lang lang--es">Aplicaciones nativas.</strong><strong class="lang lang--en">Native apps.</strong>
+        <span class="lang lang--es">La compilación para App Store y Play Store a partir de este mismo código se describe en <code>MOBILE_APP_GUIDE.md</code>.</span>
+        <span class="lang lang--en">A full App Store and Play Store build from this same code base is described in <code>MOBILE_APP_GUIDE.md</code>.</span>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------- usage -->
+    <section id="usage">
+      <h2>4. <span class="lang lang--es">Planificar una ruta</span><span class="lang lang--en">Planning a route</span></h2>
+
+      <ol class="steps">
+        <li>
+          <strong class="lang lang--es">Escriba el origen.</strong><strong class="lang lang--en">Enter the origin.</strong>
+          <span class="lang lang--es"> A partir de tres caracteres aparecen sugerencias. Elegir una fija las coordenadas exactas y ahorra un paso de geocodificación. También vale escribir la dirección entera: cuanto más completa (<code>Calle 1, Ciudad, País</code>), mejor.</span>
+          <span class="lang lang--en"> Type at least three characters and suggestions appear. Choosing one pins the exact coordinates and skips a geocoding step. A plain typed address works too - the more complete it is (<code>Street 1, City, Country</code>), the better.</span>
+        </li>
+        <li>
+          <strong class="lang lang--es">Escriba el destino.</strong><strong class="lang lang--en">Enter the destination.</strong>
+          <span class="lang lang--es"> El botón <span class="kbd">&#8645;</span> entre los dos campos los intercambia para el viaje de vuelta.</span>
+          <span class="lang lang--en"> The <span class="kbd">&#8645;</span> button between the two fields swaps them for the return leg.</span>
+        </li>
+        <li>
+          <strong class="lang lang--es">Fije la salida.</strong><strong class="lang lang--en">Set the departure.</strong>
+          <span class="lang lang--es"> Por defecto el siguiente cuarto de hora. Determina todo el itinerario, la hora de llegada y los avisos de restricción de fin de semana.</span>
+          <span class="lang lang--en"> Defaults to the next quarter hour. It drives the whole itinerary, the arrival estimate and the weekend driving-ban warnings.</span>
+        </li>
+        <li>
+          <strong class="lang lang--es">Ajuste el perfil del vehículo</strong><strong class="lang lang--en">Adjust the vehicle profile</strong>
+          <span class="lang lang--es"> (opcional): MMA, número de ejes, clase EURO, velocidad media, consumo y precio del gasóleo. Los valores por defecto describen un conjunto articulado de 40 t, 5 ejes y EURO VI a 70 km/h.</span>
+          <span class="lang lang--en"> (optional): gross weight, axle count, EURO class, average speed, diesel consumption and price. The defaults describe a 40 t, 5-axle, EURO VI articulated combination at 70 km/h.</span>
+        </li>
+        <li>
+          <strong class="lang lang--es">Elija el detalle de peajes</strong><strong class="lang lang--en">Choose the toll detail</strong>
+          <span class="lang lang--es"> (opcional): rápido, equilibrado o preciso. Véase la <a href="#tolls">sección 7</a>.</span>
+          <span class="lang lang--en"> (optional): fast, balanced or precise - see <a href="#tolls">section 7</a>.</span>
+        </li>
+        <li>
+          <strong class="lang lang--es">Pulse Calcular ruta.</strong><strong class="lang lang--en">Press Calculate Route.</strong>
+          <span class="lang lang--es"> En el escritorio funciona <span class="kbd">Ctrl</span>+<span class="kbd">Intro</span> desde cualquier campo. Una barra de progreso informa de cada fase.</span>
+          <span class="lang lang--en"> On the desktop <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> works from anywhere. A progress bar reports each stage.</span>
+        </li>
+      </ol>
+
+      <div class="callout">
+        <strong class="lang lang--es">Todo se recuerda.</strong><strong class="lang lang--en">Everything is remembered.</strong>
+        <span class="lang lang--es">Direcciones, perfil del vehículo, idioma, tema y países ya resueltos se guardan solo en su dispositivo, de modo que la siguiente ruta parte de donde lo dejó y va más rápida.</span>
+        <span class="lang lang--en">Addresses, vehicle profile, language, theme and resolved countries are stored on your device only, so the next run starts where you left off and is faster.</span>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------- results -->
+    <section id="results">
+      <h2>5. <span class="lang lang--es">Leer los resultados</span><span class="lang lang--en">Reading the results</span></h2>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Dónde</span><span class="lang lang--en">Where</span></th>
+          <th><span class="lang lang--es">Qué muestra</span><span class="lang lang--en">What it shows</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Resumen / Overview</strong></td>
+            <td><span class="lang lang--es">Distancia, tiempo total, conducción efectiva, llegada estimada, peajes, combustible, coste total y número de pausas y descansos, además de los avisos de planificación.</span>
+                <span class="lang lang--en">Distance, total trip time, pure driving time, estimated arrival, toll, fuel, total run cost, break and rest counts, plus planning warnings.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Itinerario / Itinerary</strong></td>
+            <td><span class="lang lang--es">El viaje hora a hora: bloques de conducción, pausas de 45 minutos y descansos diarios de 11 horas, cada uno con hora real y kilómetro.</span>
+                <span class="lang lang--en">The trip hour by hour: driving blocks, 45-minute breaks and 11-hour daily rests, each with a real timestamp and a kilometre marker.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Paradas legales / Legal stops</strong></td>
+            <td><span class="lang lang--es">Las paradas que exige la normativa, con su base legal, y las comprobaciones de cumplimiento del viaje. Véase la <a href="#legal">sección 6</a>.</span>
+                <span class="lang lang--en">The stops the regulation requires, with their legal basis, and the trip compliance checks. See <a href="#legal">section 6</a>.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Peajes / Tolls</strong></td>
+            <td><span class="lang lang--es">Tabla por país: kilómetros, tarifa base, tarifa aplicada tras el factor del vehículo, coste y nombre del sistema nacional de peaje.</span>
+                <span class="lang lang--en">Per-country table: kilometres, base rate, applied rate after the vehicle factor, cost, and the name of the national toll system.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Paradas y aparcamiento / Stops &amp; parking</strong></td>
+            <td><span class="lang lang--es">Cada parada sugerida con su kilómetro, coordenadas y los aparcamientos seguros más cercanos.</span>
+                <span class="lang lang--en">Every suggested rest stop with its kilometre marker, coordinates and the nearest safe parkings.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Normativa / Regulations</strong></td>
+            <td><span class="lang lang--es">Las normas nacionales principales de cada país atravesado, más la base común de la UE.</span>
+                <span class="lang lang--en">The top national rules for each country crossed, plus the general EU baseline.</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mapa / Map</strong> &middot; <strong>Informe / Report</strong></td>
+            <td><span class="lang lang--es">El mapa interactivo y una versión en texto plano de todo, lista para pegar en una orden de transporte.</span>
+                <span class="lang lang--en">The interactive route map, and a plain-text version of everything ready to paste into a transport order.</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3><span class="lang lang--es">Cifras clave</span><span class="lang lang--en">Key figures explained</span></h3>
+      <ul>
+        <li><span class="lang lang--es"><strong>Distancia por carretera</strong>: la distancia real de conducción devuelta por el motor de rutas, no una línea recta.</span>
+            <span class="lang lang--en"><strong>Road distance</strong> - the actual driving distance returned by the routing engine, not a straight line.</span></li>
+        <li><span class="lang lang--es"><strong>Conducción efectiva</strong>: solo con el vehículo en marcha, a su velocidad media.</span>
+            <span class="lang lang--en"><strong>Pure driving</strong> - wheels turning only, at your average speed.</span></li>
+        <li><span class="lang lang--es"><strong>Tiempo total del viaje</strong>: conducción más todas las pausas y descansos obligatorios.</span>
+            <span class="lang lang--en"><strong>Total trip time</strong> - driving plus every mandatory break and daily rest.</span></li>
+        <li><span class="lang lang--es"><strong>Coste total</strong>: peajes más gasóleo. No incluye salarios, ferris, túneles, tasas urbanas ni viñetas.</span>
+            <span class="lang lang--en"><strong>Total run cost</strong> - tolls plus diesel. Wages, ferries, tunnels, city charges and vignettes are <em>not</em> included.</span></li>
+      </ul>
+    </section>
+
+    <!-- --------------------------------------------------- legal stops -->
+    <section id="legal">
+      <h2>6. <span class="lang lang--es">Paradas legales (UE)</span><span class="lang lang--en">Legal stops (EU)</span></h2>
+
+      <div class="lang lang--es">
+        <p>
+          La pestaña <strong>Paradas legales</strong> (en el móvil, la pestaña <strong>Normas</strong>)
+          responde a la pregunta práctica: <em>¿dónde y cuánto tiempo tengo que parar por ley?</em>
+          Contiene tres bloques.
+        </p>
+        <h3>Plan de paradas obligatorias</h3>
+        <p>
+          Cada parada que exige la normativa, con la hora prevista, el kilómetro, la conducción
+          acumulada hasta ese punto, la <strong>duración mínima</strong>, el <strong>artículo</strong>
+          que la impone y la <strong>alternativa permitida</strong> (por ejemplo, dividir la pausa de
+          45 minutos en 15 + 30). Las paradas proceden del mismo itinerario que se muestra en la
+          pestaña Itinerario, así que ambos nunca pueden discrepar.
+        </p>
+        <h3>Comprobaciones de cumplimiento</h3>
+        <p>
+          El viaje contrastado con los techos legales: conducción continua, jornadas necesarias,
+          conducción semanal (56 h), conducción en dos semanas consecutivas (90 h) y el plazo del
+          descanso semanal. Lo que sobrepasa un límite se marca en ámbar y genera un aviso.
+        </p>
+        <h3>Normativa europea de referencia</h3>
+        <p>
+          Un resumen de siete bloques del Reglamento (CE) 561/2006 (modificado por el Reglamento (UE)
+          2020/1054), del Reglamento (UE) 165/2014 sobre tacógrafos y de la Directiva 2002/15/CE de
+          tiempo de trabajo, con la referencia de artículo de cada regla. Está disponible aunque
+          todavía no haya calculado ninguna ruta.
+        </p>
+      </div>
+      <div class="lang lang--en">
+        <p>
+          The <strong>Legal stops</strong> tab (the <strong>Rules</strong> tab on mobile) answers the
+          practical question: <em>where, and for how long, am I required to stop?</em> It holds three
+          blocks.
+        </p>
+        <h3>Mandatory stop plan</h3>
+        <p>
+          Every stop the regulation requires, with the expected time, the kilometre marker, the driving
+          accumulated up to that point, the <strong>minimum duration</strong>, the <strong>article</strong>
+          that imposes it and the <strong>permitted alternative</strong> (for example splitting the
+          45-minute break into 15 + 30). The stops come from the same itinerary shown on the Itinerary
+          tab, so the two can never disagree.
+        </p>
+        <h3>Compliance checks</h3>
+        <p>
+          The trip measured against the legal ceilings: continuous driving, driving days required,
+          weekly driving (56 h), driving over two consecutive weeks (90 h) and the weekly rest deadline.
+          Anything over a limit is flagged in amber and raises a warning.
+        </p>
+        <h3>Reference rules</h3>
+        <p>
+          A seven-block summary of Regulation (EC) 561/2006 (as amended by Regulation (EU) 2020/1054),
+          Regulation (EU) 165/2014 on tachographs and Directive 2002/15/EC on working time, with the
+          article reference for every rule. It is available even before you calculate a route.
+        </p>
+      </div>
+
+      <h3><span class="lang lang--es">Los límites que aplica la herramienta</span><span class="lang lang--en">The limits the tool applies</span></h3>
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Regla</span><span class="lang lang--en">Rule</span></th>
+          <th><span class="lang lang--es">Valor</span><span class="lang lang--en">Value</span></th>
+          <th><span class="lang lang--es">Base</span><span class="lang lang--en">Basis</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="lang lang--es">Conducción continua máxima</span><span class="lang lang--en">Maximum continuous driving</span></td><td>4 h 30 min</td><td class="art">Art. 7</td></tr>
+          <tr><td><span class="lang lang--es">Pausa obligatoria posterior</span><span class="lang lang--en">Mandatory break after that</span></td><td>45 min (15 + 30)</td><td class="art">Art. 7</td></tr>
+          <tr><td><span class="lang lang--es">Conducción diaria máxima</span><span class="lang lang--en">Maximum daily driving</span></td><td><span class="lang lang--es">9 h (10 h dos veces por semana)</span><span class="lang lang--en">9 h (10 h twice a week)</span></td><td class="art">Art. 6.1</td></tr>
+          <tr><td><span class="lang lang--es">Conducción semanal máxima</span><span class="lang lang--en">Maximum weekly driving</span></td><td>56 h</td><td class="art">Art. 6.2</td></tr>
+          <tr><td><span class="lang lang--es">Conducción en dos semanas</span><span class="lang lang--en">Driving over two weeks</span></td><td>90 h</td><td class="art">Art. 6.3</td></tr>
+          <tr><td><span class="lang lang--es">Descanso diario regular</span><span class="lang lang--en">Regular daily rest</span></td><td><span class="lang lang--es">11 h (3 + 9, o 9 h reducido)</span><span class="lang lang--en">11 h (3 + 9, or 9 h reduced)</span></td><td class="art">Art. 8.2 / 8.4</td></tr>
+          <tr><td><span class="lang lang--es">Descanso semanal</span><span class="lang lang--en">Weekly rest</span></td><td><span class="lang lang--es">45 h (24 h reducido), tras seis periodos de 24 h</span><span class="lang lang--en">45 h (24 h reduced), after six 24-hour periods</span></td><td class="art">Art. 8.6</td></tr>
+          <tr><td><span class="lang lang--es">Velocidad media del camión</span><span class="lang lang--en">Average truck speed</span></td><td><span class="lang lang--es">70 km/h (configurable)</span><span class="lang lang--en">70 km/h (configurable)</span></td><td>-</td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>driving_hours        = distance_km / average_speed
+breaks_count         = floor(driving_hours / 4.5)
+break_minutes        = breaks_count &times; 45
+full_days            = floor(driving_hours / 9)
+overnight_rest_hours = full_days &times; 11
+total_hours          = driving_hours + break_minutes/60 + overnight_rest_hours</code></pre>
+
+      <p class="lang lang--es">
+        Las pausas y los descansos diarios se cuentan de forma <strong>acumulativa</strong>, por lo que
+        la hora de llegada es un peor caso deliberado. Un plan real puede ser más corto cuando una
+        pausa queda absorbida por un periodo de descanso.
+      </p>
+      <p class="lang lang--en">
+        Breaks and daily rests are counted <strong>cumulatively</strong>, so the arrival time is a
+        deliberate worst case. A real schedule can be shorter when a break is absorbed into a rest
+        period.
+      </p>
+
+      <div class="callout callout--warn">
+        <strong class="lang lang--es">El modelo no conoce su tacógrafo.</strong>
+        <strong class="lang lang--en">The model does not know your tachograph.</strong>
+        <span class="lang lang--es">Supone un conductor que empieza una jornada limpia, en conducción individual, sin descansos reducidos, sin jornadas ampliadas, sin reglas de ferri o tren, sin tiempos de carga y descarga y sin tráfico. Contraste siempre el plan con las horas realmente registradas por el conductor.</span>
+        <span class="lang lang--en">It assumes a fresh driver starting a clean shift, single manning, no reduced rests, no extended driving days, no ferry or train rules, no loading and unloading time, and no traffic. Always check the plan against the driver's actual recorded hours.</span>
+      </div>
+
+      <h3><span class="lang lang--es">Restricciones de fin de semana y festivos</span><span class="lang lang--en">Weekend and holiday bans</span></h3>
+      <p class="lang lang--es">
+        Si la salida o la llegada estimada caen en sábado o domingo aparece un aviso: la mayoría de los
+        países europeos restringen los vehículos pesados desde el sábado por la tarde o el domingo por
+        la mañana hasta el domingo por la noche, y los calendarios de festivos difieren. El panel de
+        Normativa detalla la prohibición concreta de cada país de la ruta.
+      </p>
+      <p class="lang lang--en">
+        If the departure or the estimated arrival falls on a Saturday or Sunday, a warning appears: most
+        European countries restrict heavy vehicles from Saturday afternoon or Sunday morning until
+        Sunday evening, and national holiday calendars differ. The Regulations panel lists the specific
+        ban for each country on the route.
+      </p>
+    </section>
+
+    <!-- --------------------------------------------------------- tolls -->
+    <section id="tolls">
+      <h2>7. <span class="lang lang--es">Cálculo de peajes</span><span class="lang lang--en">How tolls are calculated</span></h2>
+
+      <ol>
+        <li><span class="lang lang--es">La línea de la ruta se muestrea a intervalos fijos, incluyendo siempre los dos extremos.</span>
+            <span class="lang lang--en">The route line is sampled at a fixed interval, always including both ends.</span></li>
+        <li><span class="lang lang--es">Cada punto de muestreo se resuelve a un país.</span>
+            <span class="lang lang--en">Each sample point is resolved to a country.</span></li>
+        <li><span class="lang lang--es">La distancia entre dos muestras consecutivas se atribuye al país de la primera; los países iguales consecutivos se fusionan en un tramo.</span>
+            <span class="lang lang--en">The distance between two consecutive samples is credited to the country of the earlier one; consecutive identical countries merge into one segment.</span></li>
+        <li><code>coste = km &times; tarifa base &times; factor del vehículo</code></li>
+      </ol>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Nivel</span><span class="lang lang--en">Level</span></th>
+          <th><span class="lang lang--es">Muestra cada</span><span class="lang lang--en">Sample every</span></th>
+          <th><span class="lang lang--es">Cuándo usarlo</span><span class="lang lang--en">Use when</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="lang lang--es">Rápido</span><span class="lang lang--en">Fast</span></td><td>150 km</td>
+              <td><span class="lang lang--es">Rutas largas, presupuestos rápidos, pocas fronteras</span><span class="lang lang--en">Long routes, quick quotes, few border crossings</span></td></tr>
+          <tr><td><span class="lang lang--es">Equilibrado <em>(por defecto)</em></span><span class="lang lang--en">Balanced <em>(default)</em></span></td><td>100 km</td>
+              <td><span class="lang lang--es">Planificación diaria</span><span class="lang lang--en">Everyday planning</span></td></tr>
+          <tr><td><span class="lang lang--es">Preciso</span><span class="lang lang--en">Precise</span></td><td>50 km</td>
+              <td><span class="lang lang--es">Tránsitos cortos con una frontera cerca de la ruta</span><span class="lang lang--en">Short transit legs where a border sits close to the route</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="lang lang--es">Por qué la detección de país es rápida</span><span class="lang lang--en">Why country detection is fast</span></h3>
+      <p class="lang lang--es">
+        Cada país del fichero de tarifas lleva cajas delimitadoras generosas. Cuando un punto cae dentro
+        de una sola caja, el país es seguro y no hace falta ninguna llamada de red. Solo los puntos
+        realmente ambiguos, típicamente cerca de una frontera, van al geocodificador inverso, limitado
+        a una petición por segundo. Los resultados se guardan en el dispositivo, así que el mismo
+        corredor va mucho más rápido la segunda vez.
+      </p>
+      <p class="lang lang--en">
+        Every country in the rate file carries generous bounding boxes. When a sample point falls inside
+        exactly one box, the country is certain and no network call is made. Only genuinely ambiguous
+        points - typically near borders - go to the reverse-geocoder, which is limited to one request
+        per second. Results are cached on your device, so the same corridor is much faster the second
+        time.
+      </p>
+
+      <h3><span class="lang lang--es">El factor del vehículo</span><span class="lang lang--en">The vehicle factor</span></h3>
+      <p class="lang lang--es">
+        Las tarifas publicadas describen un conjunto de 40 t, 5 ejes y EURO VI (factor <code>1,000</code>).
+        Los vehículos más ligeros, con menos ejes y motores más limpios pagan menos; las clases de
+        emisión antiguas pagan más. El factor realmente aplicado aparece bajo la tabla de peajes.
+      </p>
+      <p class="lang lang--en">
+        Published rates describe a 40 t, 5-axle, EURO VI combination (factor <code>1.000</code>). Lighter
+        vehicles, fewer axles and cleaner engines pay less; older emission classes pay more. The factor
+        actually applied is shown under the toll table.
+      </p>
+
+      <div class="callout callout--warn">
+        <strong class="lang lang--es">Qué no se incluye.</strong><strong class="lang lang--en">What is not included.</strong>
+        <span class="lang lang--es">Viñetas de duración (aparecen a 0,00 EUR/km con una nota), túneles alpinos, puentes, ferris, tasas de congestión urbana y zonas de bajas emisiones, y cualquier descuento del operador. Añádalos aparte al presupuestar.</span>
+        <span class="lang lang--en">Time-based vignettes (shown at 0.00 EUR/km with a note), Alpine tunnels, bridges, ferries, urban congestion and low emission zone charges, and any operator discount. Add these separately when quoting.</span>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- map -->
+    <section id="map">
+      <h2>8. <span class="lang lang--es">El mapa</span><span class="lang lang--en">The map</span></h2>
+
+      <p class="lang lang--es">
+        Pulse <strong>Ver mapa completo del itinerario</strong> (escritorio) o la pestaña
+        <strong>Mapa</strong> (móvil). El botón permanece desactivado hasta que se calcula una ruta.
+      </p>
+      <p class="lang lang--en">
+        Press <strong>Show Full Itinerary Map</strong> (desktop) or the <strong>Map</strong> tab
+        (mobile). The button stays disabled until a route has been calculated successfully.
+      </p>
+
+      <h3><span class="lang lang--es">Qué se dibuja</span><span class="lang lang--en">What is drawn</span></h3>
+      <ul>
+        <li><span class="lang lang--es"><strong>La ruta</strong>: línea azul con reborde amarillo, siguiendo la geometría real de la carretera.</span>
+            <span class="lang lang--en"><strong>The route</strong> - a blue line with a yellow casing, following the real road geometry.</span></li>
+        <li><span class="lang lang--es"><strong>A</strong> (verde) y <strong>B</strong> (rojo): origen y destino.</span>
+            <span class="lang lang--en"><strong>A</strong> (green) and <strong>B</strong> (red) - origin and destination.</span></li>
+        <li><span class="lang lang--es"><strong>Marcadores amarillos numerados</strong>: paradas de descanso. Púlselos para ver los aparcamientos seguros cercanos.</span>
+            <span class="lang lang--en"><strong>Numbered yellow markers</strong> - suggested rest stops. Tap one to list the safe parkings near it.</span></li>
+        <li><span class="lang lang--es"><strong>Marcadores P</strong>: aparcamientos; azul oscuro si son seguros, gris si son estándar. Se agrupan al alejar el zoom.</span>
+            <span class="lang lang--en"><strong>P markers</strong> - parkings; dark blue means secured, grey means standard. They group into clusters when zoomed out.</span></li>
+      </ul>
+
+      <h3><span class="lang lang--es">Los paneles superpuestos</span><span class="lang lang--en">The overlay panels</span></h3>
+      <ul>
+        <li><span class="lang lang--es"><strong>Arriba a la izquierda, Resumen</strong>: distancia, tiempos, pausas y descansos, salida y llegada, peaje, combustible, total y una tabla compacta de peajes por país.</span>
+            <span class="lang lang--en"><strong>Top left, route summary</strong> - distance, times, break and rest counts, departure and arrival, toll, fuel, total, and a compact per-country toll table.</span></li>
+        <li><span class="lang lang--es"><strong>Arriba a la derecha, Normas</strong>: las paradas legales obligatorias y las normas clave por país. Pulse la cabecera para plegarlo o desplegarlo.</span>
+            <span class="lang lang--en"><strong>Top right, rules</strong> - the mandatory legal stops and the key rules per country. Click the header to collapse or expand it.</span></li>
+        <li><span class="lang lang--es">En el móvil los dos paneles empiezan plegados para no tapar el mapa. Pulse <em>Resumen</em> o <em>Normas</em> para abrir uno.</span>
+            <span class="lang lang--en">On phones both panels start collapsed so they never cover the map. Tap <em>Summary</em> or <em>Rules</em> to open one.</span></li>
+      </ul>
+
+      <h3><span class="lang lang--es">El mapa independiente</span><span class="lang lang--en">The standalone map</span></h3>
+      <p class="lang lang--es">
+        <strong>Abrir mapa independiente</strong> (o <strong>Mapa completo</strong> en el móvil) genera
+        un único fichero HTML autocontenido con todo el mapa interactivo, los dos paneles, las paradas
+        legales y todos los datos, y lo abre en una pestaña nueva. <strong>Descargar mapa</strong>
+        guarda ese mismo fichero: entrégueselo al conductor, adjúntelo a la orden de transporte o
+        archívelo con el servicio. No necesita instalar nada, solo un navegador. El fichero se genera
+        en el idioma activo.
+      </p>
+      <p class="lang lang--en">
+        <strong>Open standalone map</strong> (or <strong>Full map</strong> on mobile) builds a single
+        self-contained HTML file holding the entire interactive map, both panels, the legal stops and
+        all the data, and opens it in a new tab. <strong>Download map</strong> saves that same file -
+        hand it to a driver, attach it to a transport order, or archive it with the job. It needs no
+        installation, only a browser, and it is generated in the active language.
+      </p>
+      <div class="callout">
+        <span class="lang lang--es"><strong>¿Bloqueada la ventana emergente?</strong> Use el botón de descarga y abra el fichero guardado.</span>
+        <span class="lang lang--en"><strong>Pop-up blocked?</strong> Use the download button instead and open the saved file.</span>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------- parking -->
+    <section id="parking">
+      <h2>9. <span class="lang lang--es">Paradas y aparcamiento seguro</span><span class="lang lang--en">Stops and safe parking</span></h2>
+
+      <p class="lang lang--es">
+        Se sugiere una parada cada <strong>350 km</strong> sobre la línea real de la ruta. Una parada
+        que caería a menos de 5 km del destino se descarta, porque el conductor ya ha llegado.
+        En cada parada se buscan aparcamientos del conjunto de datos en un radio de
+        <strong>50 km</strong> y se listan del más cercano al más lejano; a igual distancia gana el más
+        seguro.
+      </p>
+      <p class="lang lang--en">
+        A stop is suggested every <strong>350 km</strong> along the real route line. A stop that would
+        land within 5 km of the destination is dropped, because the driver has effectively arrived. For
+        each stop the app searches the parking dataset within <strong>50 km</strong> and lists the
+        nearest sites first; when two are equally close, the more secure one wins.
+      </p>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Nivel</span><span class="lang lang--en">Level</span></th>
+          <th><span class="lang lang--es">Significado</span><span class="lang lang--en">Meaning</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="lang lang--es">Básico: iluminación y vigilancia general</span><span class="lang lang--en">Basic - lighting and general surveillance</span></td></tr>
+          <tr><td>2</td><td><span class="lang lang--es">Vigilado: vallado, CCTV, personal en horario comercial</span><span class="lang lang--en">Monitored - fencing, CCTV, staffed during business hours</span></td></tr>
+          <tr><td>3</td><td><span class="lang lang--es">Seguro: perímetro vallado completo, CCTV 24/7, acceso controlado</span><span class="lang lang--en">Secured - full perimeter fence, 24/7 CCTV, controlled access</span></td></tr>
+          <tr><td>4</td><td><span class="lang lang--es">Alta seguridad: acceso controlado, rondas, área certificada</span><span class="lang lang--en">High security - controlled access, patrols, certified secure parking area</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--warn">
+        <strong class="lang lang--es">La lista de aparcamientos es una muestra ilustrativa.</strong>
+        <strong class="lang lang--en">The parking list is an illustrative sample.</strong>
+        <span class="lang lang--es">Las coordenadas son aproximadas y la capacidad, el nivel de seguridad, los servicios y los horarios son orientativos. Sustituya <code>data/safe_parkings.json</code> por la red de su operador antes de confiar en ella, y confirme siempre la disponibilidad y la reserva por adelantado: los recintos seguros suelen exigirla.</span>
+        <span class="lang lang--en">Coordinates are approximate and capacity, security level, facilities and opening hours are indicative. Replace <code>data/safe_parkings.json</code> with your own operator's network before relying on it, and always confirm availability and booking requirements in advance - secured sites frequently require a reservation.</span>
+      </div>
+
+      <h3><span class="lang lang--es">Añadir sus propios aparcamientos</span><span class="lang lang--en">Adding your own parkings</span></h3>
+      <pre><code>{
+  "id": "MY-ES-001",
+  "name": "Base Zaragoza",
+  "country": "ES", "city": "Zaragoza",
+  "lat": 41.6488, "lon": -0.8891,
+  "secured": true, "security_level": 4,
+  "spaces": 40,
+  "facilities": ["fenced", "cctv", "showers"],
+  "access": "A-2 exit 320",
+  "booking": "required"
+}</code></pre>
+      <p class="lang lang--es">Después regenere la copia integrada para que también funcione desde el sistema de ficheros:</p>
+      <p class="lang lang--en">Then regenerate the offline copy so it also works from the file system:</p>
+      <pre><code>node tools/build-embedded-data.js</code></pre>
+    </section>
+
+    <!-- ------------------------------------------------------- exports -->
+    <section id="exports">
+      <h2>10. <span class="lang lang--es">Informes y exportación</span><span class="lang lang--en">Reports and exports</span></h2>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Exportación</span><span class="lang lang--en">Export</span></th>
+          <th><span class="lang lang--es">Contenido</span><span class="lang lang--en">Contains</span></th>
+          <th><span class="lang lang--es">Para qué</span><span class="lang lang--en">Good for</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="lang lang--es">Informe de texto</span><span class="lang lang--en">Text report</span></td>
+            <td><span class="lang lang--es">Todas las cifras, paradas legales, aparcamientos y normativa en texto plano</span><span class="lang lang--en">Every figure, legal stop, parking and regulation as plain text</span></td>
+            <td><span class="lang lang--es">Pegar en una orden de transporte o un correo</span><span class="lang lang--en">Pasting into a transport order or an e-mail</span></td>
+          </tr>
+          <tr>
+            <td><code>.html</code></td>
+            <td><span class="lang lang--es">El mapa interactivo completo, autocontenido</span><span class="lang lang--en">The full interactive map, self-contained</span></td>
+            <td><span class="lang lang--es">Enviárselo al conductor, archivarlo con el servicio</span><span class="lang lang--en">Sending to the driver, archiving with the job</span></td>
+          </tr>
+          <tr>
+            <td><code>.gpx</code></td>
+            <td><span class="lang lang--es">El track más waypoints de origen, destino, paradas y aparcamientos</span><span class="lang lang--en">The track plus waypoints for origin, destination, stops and parkings</span></td>
+            <td><span class="lang lang--es">Importar en un navegador o en el sistema de flota</span><span class="lang lang--en">Importing into a navigation device or fleet system</span></td>
+          </tr>
+          <tr>
+            <td><code>.json</code></td>
+            <td><span class="lang lang--es">El resultado completo legible por máquina</span><span class="lang lang--en">The complete machine-readable result</span></td>
+            <td><span class="lang lang--es">Alimentar un TMS o herramientas propias</span><span class="lang lang--en">Feeding a TMS or your own tooling</span></td>
+          </tr>
+          <tr>
+            <td><span class="lang lang--es">Imprimir</span><span class="lang lang--en">Print</span></td>
+            <td><span class="lang lang--es">La vista actual, sin los controles</span><span class="lang lang--en">The current view, without the controls</span></td>
+            <td><span class="lang lang--es">Una copia en papel para la cabina</span><span class="lang lang--en">A paper copy for the cab</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="lang lang--es">En el móvil, la pestaña Resultado ofrece <strong>Copiar informe</strong> y <strong>Guardar .gpx</strong>; la pestaña Mapa ofrece <strong>Guardar mapa</strong>.</p>
+      <p class="lang lang--en">On mobile the Result tab offers <strong>Copy report</strong> and <strong>Save .gpx</strong>; the Map tab offers <strong>Save map</strong>.</p>
+    </section>
+
+    <!-- ----------------------------------------------------- technical -->
+    <section id="technical">
+      <h2>11. <span class="lang lang--es">Detalles técnicos</span><span class="lang lang--en">Technical details</span></h2>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Servicio</span><span class="lang lang--en">Service</span></th>
+          <th><span class="lang lang--es">Uso</span><span class="lang lang--en">Purpose</span></th>
+          <th><span class="lang lang--es">Notas</span><span class="lang lang--en">Notes</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>OpenStreetMap Nominatim</td>
+              <td><span class="lang lang--es">Búsqueda de direcciones y país</span><span class="lang lang--en">Address search and country lookup</span></td>
+              <td><span class="lang lang--es">Máximo una petición por segundo; la aplicación lo respeta</span><span class="lang lang--en">Maximum one request per second; the app enforces this</span></td></tr>
+          <tr><td><span class="lang lang--es">Servidor de demostración OSRM</span><span class="lang lang--en">OSRM demo server</span></td>
+              <td><span class="lang lang--es">Geometría, distancia y duración de la ruta</span><span class="lang lang--en">Road route geometry, distance, duration</span></td>
+              <td><span class="lang lang--es">Perfil de turismo; servicio comunitario sin garantía</span><span class="lang lang--en">Car profile; free community server with no guarantee</span></td></tr>
+          <tr><td><span class="lang lang--es">Teselas de OpenStreetMap</span><span class="lang lang--en">OpenStreetMap tiles</span></td>
+              <td><span class="lang lang--es">Fondo del mapa</span><span class="lang lang--en">Map background</span></td>
+              <td><span class="lang lang--es">Las carga directamente el navegador</span><span class="lang lang--en">Loaded directly by the browser</span></td></tr>
+          <tr><td>Leaflet 1.9.4 (CDN)</td>
+              <td><span class="lang lang--es">Dibujo del mapa</span><span class="lang lang--en">Map rendering</span></td>
+              <td><span class="lang lang--es">Única dependencia externa de código</span><span class="lang lang--en">Only external code dependency</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--warn">
+        <strong class="lang lang--es">OSRM usa un perfil de turismo.</strong>
+        <strong class="lang lang--en">OSRM uses a car profile.</strong>
+        <span class="lang lang--es">No conoce gálibos de puentes, límites de peso, prohibiciones para vehículos pesados ni restricciones de mercancías peligrosas. La línea del mapa es una ruta de conducción, no una ruta certificada para camión. Compruebe puentes bajos, restricciones de túneles y accesos urbanos antes de despachar.</span>
+        <span class="lang lang--en">It does not know about bridge heights, weight limits, HGV bans or dangerous goods restrictions. The line on the map is a driving route, not a certified truck route. Check low bridges, tunnel restrictions and city access rules before dispatch.</span>
+      </div>
+
+      <h3><span class="lang lang--es">Privacidad</span><span class="lang lang--en">Privacy</span></h3>
+      <ul>
+        <li><span class="lang lang--es">Las direcciones que escribe se envían a Nominatim y OSRM. Nada más sale del dispositivo.</span>
+            <span class="lang lang--en">The addresses you type are sent to Nominatim and OSRM. Nothing else leaves the device.</span></li>
+        <li><span class="lang lang--es">Sin analítica, sin cookies, sin cuentas y sin servidor propio.</span>
+            <span class="lang lang--en">No analytics, no cookies, no accounts, no server of our own.</span></li>
+        <li><span class="lang lang--es">El formulario, el idioma, el tema y la caché de países viven en el almacenamiento local del navegador y pueden borrarse desde su configuración.</span>
+            <span class="lang lang--en">Form values, language, theme and the country cache live in your browser's local storage and can be cleared at any time through the browser settings.</span></li>
+      </ul>
+
+      <h3><span class="lang lang--es">Editar las constantes</span><span class="lang lang--en">Editing the constants</span></h3>
+      <p class="lang lang--es">
+        Los límites legales, los intervalos de muestreo, el radio de aparcamiento y las direcciones de
+        los servicios están todos en <code>js/core/config.js</code>. Los textos legales de referencia
+        están en <code>data/eu_driving_rules.json</code>. Cambie un valor y las dos versiones lo toman.
+      </p>
+      <p class="lang lang--en">
+        Legal limits, sampling intervals, the parking radius and the service endpoints all live in
+        <code>js/core/config.js</code>. The reference legal texts live in
+        <code>data/eu_driving_rules.json</code>. Change a value there and both builds pick it up.
+      </p>
+    </section>
+
+    <!-- ------------------------------------------------ troubleshooting -->
+    <section id="troubleshooting">
+      <h2>12. <span class="lang lang--es">Resolución de problemas</span><span class="lang lang--en">Troubleshooting</span></h2>
+
+      <table>
+        <thead><tr>
+          <th><span class="lang lang--es">Mensaje o síntoma</span><span class="lang lang--en">Message or symptom</span></th>
+          <th><span class="lang lang--es">Qué hacer</span><span class="lang lang--en">What to do</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td><em><span class="lang lang--es">No se ha encontrado ninguna ubicación...</span><span class="lang lang--en">No location found for...</span></em></td>
+              <td><span class="lang lang--es">La dirección es demasiado vaga. Añada número, ciudad y país, o elija una sugerencia.</span><span class="lang lang--en">The address is too vague. Add the street number, city and country, or pick an autocomplete suggestion.</span></td></tr>
+          <tr><td><em><span class="lang lang--es">No se ha encontrado una ruta por carretera</span><span class="lang lang--en">No drivable road route was found</span></em></td>
+              <td><span class="lang lang--es">No hay conexión viaria: suele ser una isla o un destino de ultramar que necesita ferri. Planifique cada tramo terrestre por separado.</span><span class="lang lang--en">There is no road connection - usually an island or overseas address needing a ferry. Plan each land leg separately.</span></td></tr>
+          <tr><td><em>HTTP 429</em></td>
+              <td><span class="lang lang--es">Los servidores gratuitos tienen límites de uso. Espere un minuto y use el detalle <strong>Rápido</strong>.</span><span class="lang lang--en">The free demo servers are rate limited. Wait a minute, and use the <strong>Fast</strong> toll detail.</span></td></tr>
+          <tr><td><span class="lang lang--es">El análisis de peajes tarda mucho</span><span class="lang lang--en">Toll analysis takes a long time</span></td>
+              <td><span class="lang lang--es">Cambie de Preciso a Equilibrado o Rápido. La segunda pasada por el mismo corredor va mucho más rápida gracias a la caché.</span><span class="lang lang--en">Switch from Precise to Balanced or Fast. The second run over the same corridor is much faster thanks to the cache.</span></td></tr>
+          <tr><td><span class="lang lang--es">La cabecera indica <em>datos integrados</em></span><span class="lang lang--en">Header shows <em>built-in data</em></span></td>
+              <td><span class="lang lang--es">Es normal al abrir desde el sistema de ficheros. Ejecute <code>node tools/serve.js</code> para usar los JSON editables.</span><span class="lang lang--en">Normal when opening from the file system. Run <code>node tools/serve.js</code> to use the editable JSON files.</span></td></tr>
+          <tr><td><span class="lang lang--es">He editado un dato y no cambia nada</span><span class="lang lang--en">A dataset edit has no effect</span></td>
+              <td><span class="lang lang--es">O está en <code>file://</code> (ejecute <code>node tools/build-embedded-data.js</code>) o la caché sin conexión sirve el fichero antiguo (recargue forzando).</span><span class="lang lang--en">Either you are on <code>file://</code> (run <code>node tools/build-embedded-data.js</code>) or the offline cache is serving the old file (hard refresh).</span></td></tr>
+          <tr><td><span class="lang lang--es">El mapa aparece en blanco</span><span class="lang lang--en">Blank map area</span></td>
+              <td><span class="lang lang--es">Leaflet y las teselas vienen de internet. Compruebe la conexión y los bloqueadores de contenido.</span><span class="lang lang--en">Leaflet and the tiles come from the internet. Check the connection and any content blocker.</span></td></tr>
+          <tr><td><span class="lang lang--es">Una parada no tiene aparcamiento</span><span class="lang lang--en">A stop shows no parking</span></td>
+              <td><span class="lang lang--es">No hay nada en 50 km en el conjunto de muestra. Añada sus propios recintos o planifique un área de servicio a mano.</span><span class="lang lang--en">Nothing in the sample dataset is within 50 km. Add your own sites, or plan a service area manually.</span></td></tr>
+          <tr><td><span class="lang lang--es">Se ha abierto la versión equivocada</span><span class="lang lang--en">Wrong version opened</span></td>
+              <td><span class="lang lang--es">Añada <code>?view=desktop</code> o <code>?view=mobile</code> a la dirección. La elección se recuerda.</span><span class="lang lang--en">Add <code>?view=desktop</code> or <code>?view=mobile</code> to the address. The choice is remembered.</span></td></tr>
+          <tr><td><span class="lang lang--es">Quiero volver al español</span><span class="lang lang--en">I want to go back to Spanish</span></td>
+              <td><span class="lang lang--es">Use el selector de idioma de la cabecera. Borrar los datos del sitio también restaura el español, que es el idioma por defecto.</span><span class="lang lang--en">Use the language selector in the header. Clearing site data also restores Spanish, which is the default.</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- --------------------------------------------------- legal notice -->
+    <section id="legal-notice">
+      <h2>13. <span class="lang lang--es">Aviso legal</span><span class="lang lang--en">Legal notice</span></h2>
+
+      <div class="callout callout--danger">
+        <strong class="lang lang--es">Solo estimaciones.</strong><strong class="lang lang--en">Estimates only.</strong>
+        <span class="lang lang--es">Todas las distancias, tiempos de conducción, paradas legales, cifras de peaje, registros de aparcamiento y normativas que produce esta aplicación son estimaciones con fines de planificación. Nada de ello es jurídicamente vinculante ni constituye asesoramiento jurídico.</span>
+        <span class="lang lang--en">Every distance, driving time, legal stop, toll figure, parking record and regulation produced by this application is an estimate for planning purposes. None of it is legally binding, and none of it constitutes legal advice.</span>
+      </div>
+
+      <p class="lang lang--es">
+        Las tarifas de peaje, las restricciones de circulación, los calendarios de festivos, los
+        periodos de equipamiento invernal, las zonas de bajas emisiones y los límites dimensionales
+        cambian con frecuencia y varían según la región, el vehículo y la carga. El resumen del
+        Reglamento (CE) 561/2006 que incluye esta guía es una síntesis y no sustituye al texto legal.
+        El cumplimiento de los tiempos de conducción y descanso sigue siendo responsabilidad del
+        conductor y de la empresa de transporte, en función de los registros reales del tacógrafo.
+      </p>
+      <p class="lang lang--en">
+        Toll tariffs, driving bans, holiday calendars, winter equipment periods, low emission zones and
+        dimension limits change frequently and differ by region, vehicle and cargo. The summary of
+        Regulation (EC) 561/2006 included here is a synthesis and does not replace the legal text.
+        Compliance with driving and rest time rules remains the responsibility of the driver and the
+        transport operator, based on actual tachograph records.
+      </p>
+      <p>
+        <strong class="lang lang--es">Verifique cada cifra con la autoridad nacional competente y con el operador oficial de peaje antes de la salida.</strong>
+        <strong class="lang lang--en">Verify every figure with the competent national authority and the official toll operator before departure.</strong>
+      </p>
+      <p class="lang lang--es">
+        Datos cartográficos &copy; colaboradores de OpenStreetMap, disponibles bajo la Open Database
+        License. Rutas por OSRM. Ambos son servicios comunitarios con políticas de uso y sin garantía
+        de disponibilidad.
+      </p>
+      <p class="lang lang--en">
+        Map data &copy; OpenStreetMap contributors, available under the Open Database License. Routing
+        by OSRM. Both are community services with usage policies and no availability guarantee.
+      </p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="guide-footer">
+  <div class="guide-footer__inner">
+    <span class="lang lang--es">
+      <strong>Truck Route Planner</strong> versión 2.1.0 &mdash; guía de usuario.
+      Todas las distancias, tiempos, peajes, paradas legales y normativas son estimaciones para la
+      planificación y no son jurídicamente vinculantes. Verifique las restricciones de circulación,
+      las tarifas de peaje y las limitaciones del vehículo con la autoridad nacional competente antes
+      de la salida.
+    </span>
+    <span class="lang lang--en">
+      <strong>Truck Route Planner</strong> version 2.1.0 &mdash; user guide.
+      All distances, times, tolls, legal stops and regulations are estimates for planning only and are
+      not legally binding. Verify driving bans, toll tariffs and vehicle restrictions with the
+      competent national authority before departure.
+    </span>
+    <div class="guide-footer__by">created by Gabor Gasko</div>
+  </div>
+</footer>
+
+<script>
+  /* Theme and language follow whatever the app is set to. Spanish is default. */
+  (function () {
+    'use strict';
+    function read(key) {
+      try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+    }
+    var savedTheme = read('trp.theme');
+    var dark = savedTheme === 'dark' ||
+      (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+
+    var savedLang = null;
+    try { savedLang = localStorage.getItem('trp.lang'); } catch (e) { /* ignore */ }
+    var lang = (savedLang === 'en') ? 'en' : 'es';
+
+    function apply(next) {
+      lang = next;
+      document.documentElement.setAttribute('lang', lang);
+      document.documentElement.setAttribute('data-guide-lang', lang);
+      document.querySelectorAll('#langSwitch button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+      });
+      try { localStorage.setItem('trp.lang', lang); } catch (e) { /* ignore */ }
+    }
+
+    document.getElementById('langSwitch').addEventListener('click', function (event) {
+      var button = event.target.closest('[data-lang]');
+      if (button) apply(button.getAttribute('data-lang'));
+    });
+
+    apply(lang);
+  })();
+</script>
+</body>
+</html>

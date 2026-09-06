@@ -10,6 +10,7 @@
   var CONFIG = TRP.CONFIG;
   var util = TRP.util;
   var app = TRP.appCommon;
+  var t = TRP.i18n.t;
 
   var el = {};
   var state = {
@@ -17,7 +18,8 @@
     running: null,
     picked: { origin: null, destination: null },
     mapView: null,
-    mapRendered: false
+    mapRendered: false,
+    activeTab: 'overview'
   };
 
   function $(id) { return document.getElementById(id); }
@@ -28,9 +30,10 @@
       'weightInput', 'axlesSelect', 'euroSelect', 'speedInput', 'fuelInput',
       'fuelPriceInput', 'adrCheck', 'departureInput', 'tollDetailSelect',
       'calcBtn', 'mapBtn', 'resetBtn', 'progress', 'progressFill', 'progressText',
-      'panelOverview', 'panelItinerary', 'panelTolls', 'panelStops',
+      'panelOverview', 'panelItinerary', 'panelTolls', 'panelStops', 'panelLegal',
       'panelRegulations', 'panelReport', 'mapCanvas', 'reportText',
-      'tabTollsCount', 'tabStopsCount', 'tabRegsCount', 'themeToggle',
+      'tabTollsCount', 'tabStopsCount', 'tabLegalCount', 'tabRegsCount',
+      'themeToggle', 'langSelect',
       'copyReportBtn', 'downloadReportBtn', 'downloadGpxBtn', 'downloadJsonBtn',
       'printBtn', 'openMapBtn', 'downloadMapBtn', 'appVersion', 'dataSource'
     ].forEach(function (id) { el[id] = $(id); });
@@ -39,6 +42,7 @@
   /* ----------------------------------------------------------------- tabs */
 
   function showTab(name) {
+    state.activeTab = name;
     document.querySelectorAll('.tab').forEach(function (tab) {
       tab.setAttribute('aria-selected', String(tab.dataset.tab === name));
     });
@@ -61,7 +65,7 @@
       try {
         state.mapView = TRP.mapView.create(el.mapCanvas);
       } catch (err) {
-        app.toast('Map could not be initialised: ' + err.message, 'error');
+        app.toast(t('map.initFailed', { msg: err.message }), 'error');
         return null;
       }
     }
@@ -110,11 +114,11 @@
   }
 
   function validate(values) {
-    if (!values.origin) return 'Please enter an origin address.';
-    if (!values.destination) return 'Please enter a destination address.';
-    if (!(values.speedKmh > 0 && values.speedKmh <= 130)) return 'Average speed must be between 1 and 130 km/h.';
-    if (!(values.weightT > 0 && values.weightT <= 100)) return 'Gross weight must be between 1 and 100 t.';
-    if (values.fuelL100 < 0 || values.fuelPrice < 0) return 'Fuel figures cannot be negative.';
+    if (!values.origin) return t('err.EMPTY_ORIGIN');
+    if (!values.destination) return t('err.EMPTY_DESTINATION');
+    if (!(values.speedKmh > 0 && values.speedKmh <= 130)) return t('err.speedRange');
+    if (!(values.weightT > 0 && values.weightT <= 100)) return t('err.weightRange');
+    if (values.fuelL100 < 0 || values.fuelPrice < 0) return t('err.fuelNegative');
     return null;
   }
 
@@ -132,78 +136,84 @@
 
   function setBusy(busy) {
     el.calcBtn.disabled = busy;
-    el.calcBtn.textContent = busy ? 'Calculating...' : 'Calculate Route';
+    el.calcBtn.textContent = t(busy ? 'form.calculating' : 'form.calculate');
     el.resetBtn.disabled = busy;
   }
 
   /* -------------------------------------------------------------- results */
 
+  function card(titleKey, body) {
+    return '<div class="card"><div class="card__title">' + util.escapeHtml(t(titleKey)) + '</div>' +
+      body + '</div>';
+  }
+
   function renderResult(r) {
     state.result = r;
     state.mapRendered = false;
 
+    var cur = CONFIG.CURRENCY;
     var warnings = TRP.render.warningsHtml(r);
+
     el.panelOverview.innerHTML =
       '<div class="card">' + TRP.render.summaryHtml(r) + '</div>' +
-      (warnings ? '<div class="card"><div class="card__title">Planning warnings</div>' + warnings + '</div>' : '') +
-      '<div class="card"><div class="card__title">Rest stops preview</div>' +
-      TRP.render.stopsHtml(r) + '</div>';
+      (warnings ? card('overview.warnings', warnings) : '') +
+      card('overview.stopsPreview', TRP.render.stopsHtml(r));
 
-    el.panelItinerary.innerHTML = '<div class="card"><div class="card__title">Legal driving schedule</div>' +
-      TRP.render.itineraryHtml(r) + '</div>';
+    el.panelItinerary.innerHTML = card('itinerary.title', TRP.render.itineraryHtml(r));
 
-    el.panelTolls.innerHTML = '<div class="card"><div class="card__title">Toll estimate by country</div>' +
-      TRP.render.tollsHtml(r) + '</div>' +
-      '<div class="card"><div class="card__title">Cost summary</div>' +
-      '<div class="stat-grid">' +
-      TRP.render.statTile('Tolls', util.formatNumber(r.costs.toll, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>', '', 'toll') +
-      TRP.render.statTile('Fuel', util.formatNumber(r.costs.fuel, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>',
-        r.fuel.applicable ? util.formatNumber(r.fuel.liters, 0) + ' litres' : '') +
-      TRP.render.statTile('Total', util.formatNumber(r.costs.total, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>',
-        util.formatNumber(r.costs.perKm, 3) + ' ' + CONFIG.CURRENCY + '/km', 'accent') +
-      '</div><p class="warn-box">Toll figures are indicative averages. Vignettes, tunnels, bridges, ferries and ' +
-      'city charges are not included.</p></div>';
+    el.panelTolls.innerHTML = card('toll.title', TRP.render.tollsHtml(r)) +
+      card('toll.costSummary',
+        '<div class="stat-grid">' +
+        TRP.render.statTile(t('toll.tolls'),
+          util.formatNumber(r.costs.toll, 2) + ' <span class="unit">' + cur + '</span>', '', 'toll') +
+        TRP.render.statTile(t('toll.fuel'),
+          util.formatNumber(r.costs.fuel, 2) + ' <span class="unit">' + cur + '</span>',
+          r.fuel.applicable ? util.escapeHtml(t('toll.litres', { liters: util.formatNumber(r.fuel.liters, 0) })) : '') +
+        TRP.render.statTile(t('toll.total'),
+          util.formatNumber(r.costs.total, 2) + ' <span class="unit">' + cur + '</span>',
+          util.formatNumber(r.costs.perKm, 3) + ' ' + cur + '/km', 'accent') +
+        '</div><p class="warn-box">' + util.escapeHtml(t('toll.excluded')) + '</p>');
 
-    el.panelStops.innerHTML = '<div class="card"><div class="card__title">Suggested stops and safe parking</div>' +
-      TRP.render.stopsHtml(r) + '</div>';
-
-    el.panelRegulations.innerHTML = '<div class="card"><div class="card__title">Country regulations along the route</div>' +
-      TRP.render.regulationsHtml(r) + '</div>';
-
+    el.panelStops.innerHTML = card('stops.title', TRP.render.stopsHtml(r));
+    el.panelLegal.innerHTML = TRP.render.legalHtml(r);
+    el.panelRegulations.innerHTML = card('reg.title', TRP.render.regulationsHtml(r));
     el.reportText.value = TRP.render.textReport(r);
 
     el.tabTollsCount.textContent = String(r.tolls.countries.length);
     el.tabStopsCount.textContent = String(r.stops.length);
+    el.tabLegalCount.textContent = String((r.legal && r.legal.plan.length) || 0);
     el.tabRegsCount.textContent = String(r.regulations.length);
 
-    el.mapBtn.disabled = false;
-    el.openMapBtn.disabled = false;
-    el.downloadMapBtn.disabled = false;
-    el.downloadGpxBtn.disabled = false;
-    el.downloadJsonBtn.disabled = false;
-    el.downloadReportBtn.disabled = false;
-    el.copyReportBtn.disabled = false;
+    [el.mapBtn, el.openMapBtn, el.downloadMapBtn, el.downloadGpxBtn, el.downloadJsonBtn,
+      el.downloadReportBtn, el.copyReportBtn].forEach(function (b) { if (b) b.disabled = false; });
 
-    if (el.dataSource) {
-      el.dataSource.textContent = r.data && r.data.source === 'embedded' ? 'built-in data' : 'data/*.json';
-    }
+    updateDataSource(r.data && r.data.source);
   }
 
   function clearResults() {
     state.result = null;
     state.mapRendered = false;
     var empty = '<div class="empty-state"><div class="empty-state__icon">&#128667;</div>' +
-      '<p>Enter an origin and a destination, then press <strong>Calculate Route</strong>.</p></div>';
-    ['panelOverview', 'panelItinerary', 'panelTolls', 'panelStops', 'panelRegulations'].forEach(function (id) {
-      el[id].innerHTML = empty;
+      '<p>' + t('overview.empty') + '</p></div>';
+    ['panelOverview', 'panelItinerary', 'panelTolls', 'panelStops', 'panelRegulations']
+      .forEach(function (id) { el[id].innerHTML = empty; });
+
+    /* The legal tab is useful even before a route: it holds the reference rules. */
+    TRP.dataStore.load().then(function (data) {
+      if (!state.result) el.panelLegal.innerHTML = TRP.render.legalHtml(null, data.euRules);
     });
+
     el.reportText.value = '';
-    el.tabTollsCount.textContent = '0';
-    el.tabStopsCount.textContent = '0';
-    el.tabRegsCount.textContent = '0';
+    ['tabTollsCount', 'tabStopsCount', 'tabLegalCount', 'tabRegsCount']
+      .forEach(function (id) { el[id].textContent = '0'; });
     [el.mapBtn, el.openMapBtn, el.downloadMapBtn, el.downloadGpxBtn, el.downloadJsonBtn,
       el.downloadReportBtn, el.copyReportBtn].forEach(function (b) { if (b) b.disabled = true; });
     if (state.mapView) state.mapView.clear();
+  }
+
+  function updateDataSource(source) {
+    if (!el.dataSource) return;
+    el.dataSource.textContent = source === 'embedded' ? t('app.builtInData') : 'data/*.json';
   }
 
   /* ----------------------------------------------------------- calculate */
@@ -215,7 +225,7 @@
 
     app.saveForm(values);
     setBusy(true);
-    setProgress(2, 'Starting...');
+    setProgress(2, t('prog.start'));
 
     var request = {
       origin: Object.assign({ text: values.origin }, state.picked.origin || {}),
@@ -238,16 +248,17 @@
     state.running.promise.then(function (result) {
       renderResult(result);
       showTab('overview');
-      app.toast('Route calculated: ' + util.formatNumber(result.route.distanceKm, 0) + ' km, ' +
-        util.formatDuration(result.time.totalHours) + ' total.', 'ok');
+      app.toast(t('overview.calculated', {
+        km: util.formatNumber(result.route.distanceKm, 0),
+        time: util.formatDuration(result.time.totalHours)
+      }), 'ok');
     }).catch(function (err) {
       if (err && err.code === 'CANCELLED') return;
       var message = app.friendlyError(err);
       app.toast(message, 'error');
-      el.panelOverview.innerHTML = '<div class="card"><div class="card__title">Calculation failed</div>' +
+      el.panelOverview.innerHTML = card('overview.failed',
         '<p>' + util.escapeHtml(message) + '</p>' +
-        '<p class="note">The app uses the free Nominatim and OSRM demo services. They are rate limited and ' +
-        'occasionally unavailable - retrying after a minute usually works.</p></div>';
+        '<p class="note">' + util.escapeHtml(t('overview.failedNote')) + '</p>');
       showTab('overview');
     }).then(function () {
       setBusy(false);
@@ -263,9 +274,7 @@
 
     [el.originInput, el.destInput].forEach(function (input) {
       input.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter' && !el.calcBtn.disabled) {
-          setTimeout(calculate, 200);
-        }
+        if (event.key === 'Enter' && !el.calcBtn.disabled) setTimeout(calculate, 200);
       });
     });
 
@@ -285,7 +294,7 @@
       state.picked.destination = null;
       applyForm(null);
       clearResults();
-      app.toast('Form reset.', 'info');
+      app.toast(t('form.formReset'), 'info');
     });
 
     el.mapBtn.addEventListener('click', function () { showTab('map'); });
@@ -293,7 +302,7 @@
     el.openMapBtn.addEventListener('click', function () {
       if (!state.result) return;
       if (!TRP.mapExport.openInNewTab(state.result)) {
-        app.toast('The browser blocked the new tab. Use "Download map" instead.', 'warn');
+        app.toast(t('map.popupBlocked'), 'warn');
       }
     });
 
@@ -306,12 +315,12 @@
       var text = el.reportText.value;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function () {
-          app.toast('Report copied to the clipboard.', 'ok');
-        }).catch(function () { app.toast('Could not access the clipboard.', 'warn'); });
+          app.toast(t('report.copied'), 'ok');
+        }).catch(function () { app.toast(t('report.clipboardFail'), 'warn'); });
       } else {
         el.reportText.select();
         document.execCommand('copy');
-        app.toast('Report copied.', 'ok');
+        app.toast(t('report.copied'), 'ok');
       }
     });
 
@@ -346,30 +355,44 @@
     });
   }
 
+  /** Re-render everything that was produced in the previous language. */
+  function onLanguageChange() {
+    setBusy(false);
+    if (state.result) {
+      renderResult(state.result);
+      if (state.mapView) {
+        state.mapView.render(state.result);
+        state.mapRendered = true;
+      }
+    } else {
+      clearResults();
+    }
+  }
+
   /* ----------------------------------------------------------------- init */
 
   function init() {
     cacheElements();
+    app.initLanguage(el.langSelect, onLanguageChange);
     app.initTheme(el.themeToggle);
     initTabs();
     applyForm(app.loadForm());
     clearResults();
     bindEvents();
+    setBusy(false);
 
     app.attachAutocomplete(el.originInput, el.originSuggest, function (place) {
-      state.picked.origin = place ? { lat: place.lat, lon: place.lon, label: place.label, countryCode: place.countryCode } : null;
+      state.picked.origin = place
+        ? { lat: place.lat, lon: place.lon, label: place.label, countryCode: place.countryCode } : null;
     });
     app.attachAutocomplete(el.destInput, el.destSuggest, function (place) {
-      state.picked.destination = place ? { lat: place.lat, lon: place.lon, label: place.label, countryCode: place.countryCode } : null;
+      state.picked.destination = place
+        ? { lat: place.lat, lon: place.lon, label: place.label, countryCode: place.countryCode } : null;
     });
 
     if (el.appVersion) el.appVersion.textContent = 'v' + CONFIG.APP_VERSION;
 
-    TRP.dataStore.load().then(function (data) {
-      if (el.dataSource) {
-        el.dataSource.textContent = data.source === 'embedded' ? 'built-in data' : 'data/*.json';
-      }
-    });
+    TRP.dataStore.load().then(function (data) { updateDataSource(data.source); });
 
     showTab('overview');
   }

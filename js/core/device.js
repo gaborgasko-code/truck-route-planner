@@ -109,6 +109,16 @@
     }
   }
 
+  /*
+   * Any page loaded with an explicit `?view=` records the choice, so the
+   * "Mobile view" / "Desktop version" links are sticky and the entry page
+   * stops re-detecting on the next visit.
+   */
+  (function rememberUrlChoice() {
+    var override = urlOverride();
+    if (override) remember(override);
+  })();
+
   TRP.device = {
     STORAGE_KEY: STORAGE_KEY,
     inspect: inspect,

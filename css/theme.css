@@ -465,8 +465,12 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
   background: var(--blue-700); color: #fff; border-radius: 6px; padding: 6px 8px;
   display: flex; justify-content: space-between; align-items: center;
 }
-.mapx__reg-body { max-height: 46vh; overflow: auto; margin-top: 8px; }
-.mapx--collapsed .mapx__reg-body { display: none; }
+.mapx__body { max-height: 44vh; overflow: auto; margin-top: 8px; }
+.mapx__title + .mapx__body { margin-top: 0; }
+.mapx--collapsed { padding: 6px 8px; }
+.mapx--compact { max-width: 46vw; font-size: 11.5px; padding: 7px 8px; }
+.mapx--compact .mapx__body { max-height: 38vh; }
+.mapx--compact .mapx__toggle { padding: 5px 7px; font-size: 11.5px; }
 .mapx__reg-title { font-weight: 700; color: var(--blue-700); margin-top: 8px; font-size: 12px; }
 .mapx__reg ul { margin: 3px 0 0; padding-left: 16px; }
 .mapx__reg li { margin-bottom: 3px; }
@@ -482,3 +486,58 @@ input[disabled], select[disabled] { opacity: .6; cursor: not-allowed; }
   .card { break-inside: avoid; box-shadow: none; }
   body { background: #fff; }
 }
+
+/* Floating map buttons sit on top of tiles, so they need a solid ground. */
+.map-floating-actions .btn--ghost {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.map-floating-actions .btn--ghost:hover:not(:disabled) { background: var(--surface-3); }
+
+/* ------------------------------------------------------- legal stop plan */
+
+.ls-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ls {
+  display: flex; gap: 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue-600);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  background: var(--surface-2);
+}
+.ls__icon {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--line);
+  display: grid; place-items: center; font-size: 15px;
+}
+.ls__body { min-width: 0; flex: 1; }
+.ls__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.ls__meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.ls__alt { font-size: 12px; color: var(--ink-soft); margin-top: 5px; line-height: 1.5; }
+.ls__alt em { color: var(--blue-700); font-style: normal; font-weight: 700; }
+[data-theme="dark"] .ls__alt em { color: var(--yellow-400); }
+
+.badge--warn { background: rgba(232, 163, 0, .18); color: var(--warn); }
+
+.reg__list--articles { list-style: none; padding-left: 0; }
+.reg__list--articles li { margin-bottom: 8px; }
+.reg__list--articles .chip--sm {
+  background: var(--blue-100); color: var(--blue-700);
+  font-weight: 700; margin-right: 4px;
+}
+[data-theme="dark"] .reg__list--articles .chip--sm { color: var(--yellow-400); }
+
+/* Language selector in the header */
+.lang-select {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 9px;
+  padding: 6px 8px;
+  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  cursor: pointer;
+  width: auto;
+}
+.lang-select option { color: var(--ink); background: var(--surface); }
+.lang-select:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }

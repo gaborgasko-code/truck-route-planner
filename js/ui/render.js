@@ -2,8 +2,8 @@
  * Truck Route Planner - shared result renderers.
  *
  * Pure functions that turn a route plan into HTML fragments or a plain-text
- * report. Both the desktop and the mobile front end use them, so the two
- * builds always show identical figures.
+ * report, in the active language. Both the desktop and the mobile front end
+ * use them, so the two builds always show identical figures.
  *
  * created by Gabor Gasko
  */
@@ -15,9 +15,23 @@
   var util = TRP.util;
   var esc = util.escapeHtml;
 
+  function t(key, params) {
+    return TRP.i18n ? TRP.i18n.t(key, params) : key;
+  }
+  function term(prefix, value) {
+    return TRP.i18n ? TRP.i18n.term(prefix, value) : value;
+  }
+
   function flag(code) {
     var f = util.countryFlag(code);
     return f ? '<span class="flag">' + f + '</span> ' : '';
+  }
+
+  /** Warnings travel as `{key, params}`; tolerate plain strings too. */
+  function warningText(warning) {
+    if (warning == null) return '';
+    if (typeof warning === 'string') return warning;
+    return t(warning.key, warning.params);
   }
 
   /* ------------------------------------------------------------- summary */
@@ -31,63 +45,74 @@
   }
 
   function summaryHtml(r) {
-    var t = r.time;
+    var m = r.time;
+    var cur = CONFIG.CURRENCY;
     var tiles = [
-      statTile('Road distance', util.formatNumber(r.route.distanceKm, 1) + ' <span class="unit">km</span>',
-        'OSRM road network'),
-      statTile('Total trip time', esc(util.formatDuration(t.totalHours)),
-        'incl. breaks and daily rest', 'accent'),
-      statTile('Pure driving', esc(util.formatDuration(t.drivingHours)),
-        'at ' + util.formatNumber(t.speedKmh, 0) + ' km/h average'),
-      statTile('Estimated arrival', esc(util.formatDateTime(r.arrival)),
-        'departure ' + esc(util.formatDateTime(r.departure))),
-      statTile('Toll estimate', util.formatNumber(r.costs.toll, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>',
-        r.tolls.countries.length + ' country segment(s)', 'toll'),
-      statTile('Fuel estimate', util.formatNumber(r.costs.fuel, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>',
-        r.fuel.applicable ? util.formatNumber(r.fuel.liters, 0) + ' l at ' + util.formatNumber(r.fuel.price, 2) + ' ' + CONFIG.CURRENCY + '/l' : 'not configured'),
-      statTile('Total run cost', util.formatNumber(r.costs.total, 2) + ' <span class="unit">' + CONFIG.CURRENCY + '</span>',
-        util.formatNumber(r.costs.perKm, 3) + ' ' + CONFIG.CURRENCY + '/km', 'accent'),
-      statTile('Legal breaks', String(t.breaksCount) + ' <span class="unit">x 45 min</span>',
-        t.fullDays + ' daily rest(s) of ' + CONFIG.DAILY_REST_H + ' h')
+      statTile(t('stat.roadDistance'), util.formatNumber(r.route.distanceKm, 1) + ' <span class="unit">km</span>',
+        esc(t('stat.roadNetwork'))),
+      statTile(t('stat.totalTime'), esc(util.formatDuration(m.totalHours)),
+        esc(t('stat.totalTimeSub')), 'accent'),
+      statTile(t('stat.pureDriving'), esc(util.formatDuration(m.drivingHours)),
+        esc(t('stat.atAverage', { speed: util.formatNumber(m.speedKmh, 0) }))),
+      statTile(t('stat.arrival'), esc(util.formatDateTime(r.arrival)),
+        esc(t('stat.departureAt', { time: util.formatDateTime(r.departure) }))),
+      statTile(t('stat.toll'), util.formatNumber(r.costs.toll, 2) + ' <span class="unit">' + cur + '</span>',
+        esc(t('stat.countrySegments', { n: r.tolls.countries.length })), 'toll'),
+      statTile(t('stat.fuel'), util.formatNumber(r.costs.fuel, 2) + ' <span class="unit">' + cur + '</span>',
+        esc(r.fuel.applicable
+          ? t('stat.fuelSub', {
+            liters: util.formatNumber(r.fuel.liters, 0),
+            price: util.formatNumber(r.fuel.price, 2),
+            cur: cur
+          })
+          : t('stat.notConfigured'))),
+      statTile(t('stat.totalCost'), util.formatNumber(r.costs.total, 2) + ' <span class="unit">' + cur + '</span>',
+        util.formatNumber(r.costs.perKm, 3) + ' ' + cur + '/km', 'accent'),
+      statTile(t('stat.legalBreaks'), String(m.breaksCount) + ' <span class="unit">' + esc(t('stat.times45')) + '</span>',
+        esc(t('stat.legalBreaksSub', { days: m.fullDays, h: CONFIG.DAILY_REST_H })))
     ];
 
     return '<div class="route-heading">' +
       '<div class="route-heading__row"><span class="pill pill--origin">A</span><span>' + esc(r.origin.label) + '</span></div>' +
       '<div class="route-heading__row"><span class="pill pill--dest">B</span><span>' + esc(r.destination.label) + '</span></div>' +
-      '<div class="route-heading__meta">' + esc(r.countries.map(function (c) { return c; }).join(' → ') || 'route countries unavailable') + '</div>' +
+      '<div class="route-heading__meta">' +
+      esc(r.countries.join(' → ') || t('overview.routeCountriesNA')) + '</div>' +
       '</div>' +
       '<div class="stat-grid">' + tiles.join('') + '</div>';
   }
 
   /* ----------------------------------------------------------- itinerary */
 
+  function eventTitle(ev) {
+    return ev.titleKey ? t(ev.titleKey, ev.titleParams) : (ev.title || '');
+  }
 
   function itineraryHtml(r) {
-    if (!r.itinerary || !r.itinerary.length) return '<p class="muted">No itinerary available.</p>';
+    if (!r.itinerary || !r.itinerary.length) return '<p class="muted">-</p>';
     var rows = r.itinerary.map(function (ev) {
       var icon = ev.type === 'break' ? '☕' : ev.type === 'rest' ? '☽' :
         ev.type === 'depart' ? '▶' : ev.type === 'arrive' ? '⚑' : '→';
       return '<li class="tl__item tl__item--' + esc(ev.type) + '">' +
         '<span class="tl__icon" aria-hidden="true">' + icon + '</span>' +
         '<span class="tl__body">' +
-        '<span class="tl__title">' + esc(ev.title) + '</span>' +
+        '<span class="tl__title">' + esc(eventTitle(ev)) + '</span>' +
         '<span class="tl__meta">' + esc(util.formatDateTime(ev.at)) +
         (ev.km ? ' &middot; km ' + util.formatNumber(ev.km, 0) : '') + '</span>' +
         '</span></li>';
     });
     return '<ol class="tl">' + rows.join('') + '</ol>' +
-      '<p class="note">Breaks and daily rests are applied cumulatively, so the arrival time is a ' +
-      'conservative worst case. Actual scheduling depends on tachograph history and loading windows.</p>';
+      '<p class="note">' + esc(t('itinerary.note')) + '</p>';
   }
 
   /* --------------------------------------------------------------- tolls */
 
   function tollsHtml(r) {
-    var t = r.tolls;
-    if (!t.countries.length) {
-      return '<p class="muted">No toll segments could be determined for this route.</p>';
+    var d = r.tolls;
+    var cur = CONFIG.CURRENCY;
+    if (!d.countries.length) {
+      return '<p class="muted">' + esc(t('toll.none')) + '</p>';
     }
-    var rows = t.countries.map(function (c) {
+    var rows = d.countries.map(function (c) {
       return '<tr' + (c.known ? '' : ' class="row--warn"') + '>' +
         '<td>' + flag(c.country) + '<strong>' + esc(c.country) + '</strong> <span class="muted">' + esc(c.name) + '</span></td>' +
         '<td class="num">' + util.formatNumber(c.km, 1) + '</td>' +
@@ -99,67 +124,77 @@
     });
 
     var extra = '';
-    if (t.unclassifiedKm > 0) {
-      extra = '<tr class="row--warn"><td>Unclassified</td><td class="num">' +
-        util.formatNumber(t.unclassifiedKm, 1) + '</td><td class="num">-</td><td class="num">-</td>' +
-        '<td class="num">0.00</td><td class="muted small">country not resolved</td></tr>';
+    if (d.unclassifiedKm > 0) {
+      extra = '<tr class="row--warn"><td>' + esc(t('toll.unclassified')) + '</td><td class="num">' +
+        util.formatNumber(d.unclassifiedKm, 1) + '</td><td class="num">-</td><td class="num">-</td>' +
+        '<td class="num">' + util.formatNumber(0, 2) + '</td><td class="muted small">' +
+        esc(t('toll.notResolved')) + '</td></tr>';
     }
 
     return '<div class="table-wrap"><table class="data-table">' +
-      '<thead><tr><th>Country</th><th class="num">km</th><th class="num">Base ' + CONFIG.CURRENCY + '/km</th>' +
-      '<th class="num">Applied ' + CONFIG.CURRENCY + '/km</th><th class="num">Cost</th><th>Toll system</th></tr></thead>' +
+      '<thead><tr><th>' + esc(t('toll.country')) + '</th><th class="num">' + esc(t('toll.km')) + '</th>' +
+      '<th class="num">' + esc(t('toll.baseRate', { cur: cur })) + '</th>' +
+      '<th class="num">' + esc(t('toll.appliedRate', { cur: cur })) + '</th>' +
+      '<th class="num">' + esc(t('toll.cost')) + '</th><th>' + esc(t('toll.system')) + '</th></tr></thead>' +
       '<tbody>' + rows.join('') + extra + '</tbody>' +
-      '<tfoot><tr><th>Total</th><th class="num">' + util.formatNumber(t.totalKm, 1) + '</th>' +
-      '<th></th><th></th><th class="num">' + util.formatNumber(t.totalCost, 2) + '</th><th></th></tr></tfoot>' +
+      '<tfoot><tr><th>' + esc(t('toll.total')) + '</th><th class="num">' + util.formatNumber(d.totalKm, 1) + '</th>' +
+      '<th></th><th></th><th class="num">' + util.formatNumber(d.totalCost, 2) + '</th><th></th></tr></tfoot>' +
       '</table></div>' +
-      '<p class="note">Vehicle factor <strong>' + util.formatNumber(t.vehicleFactor, 3) + '</strong> applied ' +
-      '(' + util.formatNumber(r.vehicle.weightT, 1) + ' t, ' + esc(String(r.vehicle.axles)) + ' axles, EURO ' +
-      esc(r.vehicle.euroClass) + '). Sampling interval ' + util.formatNumber(r.countryLookups.intervalKm, 0) + ' km, ' +
-      r.countryLookups.network + ' reverse-geocode call(s). ' +
-      'Vignette countries appear at 0.00 ' + CONFIG.CURRENCY + '/km - buy those separately.</p>';
+      '<p class="note">' + t('toll.note', {
+        factor: util.formatNumber(d.vehicleFactor, 3),
+        weight: util.formatNumber(r.vehicle.weightT, 1),
+        axles: esc(String(r.vehicle.axles)),
+        euro: esc(r.vehicle.euroClass),
+        interval: util.formatNumber(r.countryLookups.intervalKm, 0),
+        calls: r.countryLookups.network,
+        cur: cur
+      }) + '</p>';
   }
 
   /* ------------------------------------------------------ stops, parking */
 
   function parkingBadge(p) {
     return p.secured
-      ? '<span class="badge badge--secure">Secured L' + (p.security_level || 3) + '</span>'
-      : '<span class="badge badge--standard">Standard</span>';
+      ? '<span class="badge badge--secure">' + esc(t('stops.secured', { level: p.security_level || 3 })) + '</span>'
+      : '<span class="badge badge--standard">' + esc(t('stops.standard')) + '</span>';
   }
 
   function stopsHtml(r) {
     if (!r.stops || !r.stops.length) {
-      return '<p class="muted">The route is shorter than the ' + CONFIG.REST_STOP_INTERVAL_KM +
-        ' km stop interval, so no intermediate stop is suggested.</p>';
+      return '<p class="muted">' + esc(t('stops.tooShort', { interval: CONFIG.REST_STOP_INTERVAL_KM })) + '</p>';
     }
-    var blocks = r.stops.map(function (stop) {
+    return r.stops.map(function (stop) {
       var parkings = (stop.parkings || []).map(function (p) {
+        var chips = (p.facilities || []).map(function (f) {
+          return '<span class="chip chip--sm">' + esc(term('fac', f)) + '</span>';
+        }).join('');
+        if (p.booking) {
+          chips += '<span class="chip chip--sm">' + esc(term('booking', p.booking)) + '</span>';
+        }
         return '<li class="pk">' +
           '<div class="pk__head">' + parkingBadge(p) +
           '<strong>' + esc(p.name) + '</strong>' +
           '<span class="muted">' + flag(p.country) + esc(p.city || p.country) + '</span></div>' +
-          '<div class="pk__meta">' + util.formatNumber(p.distanceKm, 1) + ' km from the stop &middot; ' +
-          (p.spaces ? p.spaces + ' spaces &middot; ' : '') + esc(p.access || '') + '</div>' +
-          '<div class="pk__facilities">' + (p.facilities || []).map(function (f) {
-            return '<span class="chip chip--sm">' + esc(f) + '</span>';
-          }).join('') + '</div>' +
+          '<div class="pk__meta">' + esc(t('stops.fromStop', { km: util.formatNumber(p.distanceKm, 1) })) +
+          (p.spaces ? ' &middot; ' + esc(t('stops.spaces', { n: p.spaces })) : '') +
+          (p.access ? ' &middot; ' + esc(p.access) : '') + '</div>' +
+          '<div class="pk__facilities">' + chips + '</div>' +
           '</li>';
       }).join('');
 
       return '<section class="stop-card">' +
         '<header class="stop-card__head">' +
         '<span class="stop-card__no">' + stop.index + '</span>' +
-        '<div><h4>Rest stop at km ' + util.formatNumber(stop.km, 0) + '</h4>' +
+        '<div><h4>' + esc(t('stops.restStop', { km: util.formatNumber(stop.km, 0) })) + '</h4>' +
         '<span class="muted small">' + stop.lat.toFixed(4) + ', ' + stop.lon.toFixed(4) + '</span></div>' +
-        (stop.hasSecured ? '<span class="badge badge--secure">secured parking nearby</span>' : '') +
+        (stop.hasSecured ? '<span class="badge badge--secure">' + esc(t('stops.securedNearby')) + '</span>' : '') +
         '</header>' +
         (parkings
           ? '<ul class="pk-list">' + parkings + '</ul>'
-          : '<p class="muted small">No safe parking within ' + CONFIG.PARKING_SEARCH_RADIUS_KM +
-            ' km in the sample dataset - plan a service area manually.</p>') +
+          : '<p class="muted small">' +
+            esc(t('stops.noneNearby', { radius: CONFIG.PARKING_SEARCH_RADIUS_KM })) + '</p>') +
         '</section>';
-    });
-    return blocks.join('');
+    }).join('');
   }
 
   /* --------------------------------------------------------- regulations */
@@ -171,8 +206,8 @@
       }).join('');
       return '<details class="reg" open>' +
         '<summary>' + flag(entry.country) + '<strong>' + esc(entry.country) + '</strong> ' + esc(entry.name) +
-        (entry.fallback ? ' <span class="badge badge--standard">EU baseline</span>' : '') + '</summary>' +
-        '<ul class="reg__list">' + rules + '</ul></details>';
+        (entry.fallback ? ' <span class="badge badge--standard">' + esc(t('reg.euBaseline')) + '</span>' : '') +
+        '</summary><ul class="reg__list">' + rules + '</ul></details>';
     });
 
     var base = r.baselineRegulations;
@@ -182,10 +217,91 @@
         '</ul></details>');
     }
 
-    return blocks.join('') +
-      '<p class="warn-box"><strong>Verify before departure.</strong> Driving bans, holiday calendars, ' +
-      'winter equipment periods and dimension limits change frequently and differ by region. ' +
-      'These notes are a planning aid, not legal advice.</p>';
+    return blocks.join('') + '<p class="warn-box">' + t('reg.verify') + '</p>';
+  }
+
+  /* ------------------------------------------------------- legal stops */
+
+  var LEGAL_ICONS = { 'break': '☕', dailyRest: '☽', weeklyRest: '🛏' };
+
+  /** The stops the regulation requires, with the article behind each one. */
+  function legalPlanHtml(r) {
+    var legal = r.legal;
+    if (!legal || !legal.plan.length) {
+      return '<p class="muted">' + esc(t('legal.noStops')) + '</p>';
+    }
+    var rows = legal.plan.map(function (stop) {
+      return '<li class="ls">' +
+        '<span class="ls__icon" aria-hidden="true">' + (LEGAL_ICONS[stop.type] || '⏸') + '</span>' +
+        '<div class="ls__body">' +
+        '<div class="ls__head">' +
+        '<strong>' + esc(t('legal.type.' + stop.type)) + '</strong>' +
+        '<span class="badge badge--secure">' + esc(t('legal.minDuration')) + ': ' +
+        esc(util.formatShortDuration(stop.minMinutes / 60)) + '</span>' +
+        '<span class="chip chip--sm">' + esc(stop.article) + '</span>' +
+        '</div>' +
+        '<div class="ls__meta">' + esc(util.formatDateTime(stop.at)) +
+        ' &middot; ' + esc(t('legal.atKm', { km: util.formatNumber(stop.km, 0) })) +
+        ' &middot; ' + esc(t('legal.afterDriving', { h: util.formatShortDuration(stop.drivenH) })) + '</div>' +
+        (stop.altKey
+          ? '<div class="ls__alt"><em>' + esc(t('legal.alternative')) + ':</em> ' + esc(t(stop.altKey)) + '</div>'
+          : '') +
+        '</div></li>';
+    });
+    return '<ol class="ls-list">' + rows.join('') + '</ol>';
+  }
+
+  /** Trip measured against the driving-time ceilings. */
+  function legalChecksHtml(r) {
+    var legal = r.legal;
+    if (!legal || !legal.checks.length) return '';
+    var rows = legal.checks.map(function (check) {
+      var note = check.noteKey ? t(check.noteKey, check.noteParams) : '';
+      return '<tr class="' + (check.ok ? '' : 'row--warn') + '">' +
+        '<td>' + esc(t(check.labelKey)) + '</td>' +
+        '<td class="num strong">' + esc(String(check.value)) + '</td>' +
+        '<td class="num muted">' + esc(String(check.limit)) + '</td>' +
+        '<td><span class="badge ' + (check.ok ? 'badge--secure' : 'badge--warn') + '">' +
+        esc(check.ok ? t('legal.ok') : t('legal.attention')) + '</span></td>' +
+        '<td class="muted small">' + esc(note) + '</td></tr>';
+    });
+    return '<div class="table-wrap"><table class="data-table">' +
+      '<tbody>' + rows.join('') + '</tbody></table></div>';
+  }
+
+  /** The reference rules from the EU dataset, grouped by topic. */
+  function legalRulesHtml(r, doc) {
+    var source = doc || (r && r.data && r.data.euRules);
+    var groups = TRP.euRules.groups(source);
+    if (!groups.length) return '';
+    var blocks = groups.map(function (group) {
+      var items = group.rules.map(function (rule) {
+        return '<li><span class="chip chip--sm">' + esc(rule.article) + '</span> ' + esc(rule.text) + '</li>';
+      }).join('');
+      return '<details class="reg"><summary>' +
+        (group.icon ? '<span aria-hidden="true">' + group.icon + '</span> ' : '') +
+        '<strong>' + esc(group.title) + '</strong></summary>' +
+        '<ul class="reg__list reg__list--articles">' + items + '</ul></details>';
+    });
+    var scope = TRP.euRules.scopeText(source);
+    var disclaimer = TRP.euRules.disclaimerText(source);
+    return (scope ? '<p class="note">' + esc(scope) + '</p>' : '') +
+      blocks.join('') +
+      (disclaimer ? '<p class="warn-box">' + esc(disclaimer) + '</p>' : '');
+  }
+
+  /** Whole legal-stops view: plan, checks and reference rules. */
+  function legalHtml(r, doc) {
+    var hasPlan = r && r.legal;
+    return '<div class="card"><div class="card__title">' + esc(t('legal.planTitle')) + '</div>' +
+      (hasPlan ? legalPlanHtml(r) : '<p class="muted">' + esc(t('legal.empty')) + '</p>') +
+      '<p class="warn-box">' + t('legal.disclaimer') + '</p></div>' +
+      (hasPlan
+        ? '<div class="card"><div class="card__title">' + esc(t('legal.checksTitle')) + '</div>' +
+          legalChecksHtml(r) + '</div>'
+        : '') +
+      '<div class="card"><div class="card__title">' + esc(t('legal.rulesTitle')) + '</div>' +
+      legalRulesHtml(r, doc) + '</div>';
   }
 
   /* ------------------------------------------------------------ warnings */
@@ -193,7 +309,7 @@
   function warningsHtml(r) {
     if (!r.warnings || !r.warnings.length) return '';
     return '<ul class="warn-list">' + r.warnings.map(function (w) {
-      return '<li>' + esc(w) + '</li>';
+      return '<li>' + esc(warningText(w)) + '</li>';
     }).join('') + '</ul>';
   }
 
@@ -203,78 +319,112 @@
     return new Array((width || 64) + 1).join(char || '-');
   }
 
+  /**
+   * Pad to a column width, always leaving at least one space so translated
+   * labels that overrun the column never collide with the value after them.
+   */
+  function pad(text, width) {
+    var s = String(text);
+    return s.length >= width ? s + ' ' : s + new Array(width - s.length + 1).join(' ');
+  }
+
   function textReport(r) {
     var L = [];
-    var t = r.time;
-    L.push(CONFIG.APP_NAME + ' v' + CONFIG.APP_VERSION + ' - route report');
+    var m = r.time;
+    var cur = CONFIG.CURRENCY;
+    L.push(CONFIG.APP_NAME + ' v' + CONFIG.APP_VERSION + ' - ' + t('report.header'));
     L.push(CONFIG.AUTHOR);
     L.push(line('='));
-    L.push('Generated : ' + util.formatDateTime(r.createdAt));
-    L.push('Origin    : ' + r.origin.label);
-    L.push('Destination: ' + r.destination.label);
-    L.push('Countries : ' + (r.countries.join(' -> ') || 'n/a'));
+    L.push(pad(t('report.generated'), 22) + ': ' + util.formatDateTime(r.createdAt));
+    L.push(pad(t('report.origin'), 22) + ': ' + r.origin.label);
+    L.push(pad(t('report.destination'), 22) + ': ' + r.destination.label);
+    L.push(pad(t('report.countries'), 22) + ': ' + (r.countries.join(' -> ') || '-'));
     L.push('');
-    L.push('DISTANCE AND TIME');
+    L.push(t('report.sectionTime'));
     L.push(line());
-    L.push('Road distance        : ' + util.formatNumber(r.route.distanceKm, 1) + ' km');
-    L.push('Average truck speed  : ' + util.formatNumber(t.speedKmh, 0) + ' km/h');
-    L.push('Pure driving time    : ' + util.formatDuration(t.drivingHours));
-    L.push('Mandatory breaks     : ' + t.breaksCount + ' x ' + CONFIG.MANDATORY_BREAK_MIN +
-      ' min = ' + util.formatDuration(t.breakHours));
-    L.push('Daily rest periods   : ' + t.fullDays + ' x ' + CONFIG.DAILY_REST_H +
-      ' h = ' + util.formatDuration(t.overnightRestHours));
-    L.push('TOTAL TRIP TIME      : ' + util.formatDuration(t.totalHours));
-    L.push('Departure            : ' + util.formatDateTime(r.departure));
-    L.push('Estimated arrival    : ' + util.formatDateTime(r.arrival));
+    L.push(pad(t('report.roadDistance'), 22) + ': ' + util.formatNumber(r.route.distanceKm, 1) + ' km');
+    L.push(pad(t('report.avgSpeed'), 22) + ': ' + util.formatNumber(m.speedKmh, 0) + ' km/h');
+    L.push(pad(t('report.pureDriving'), 22) + ': ' + util.formatDuration(m.drivingHours));
+    L.push(pad(t('report.breaks'), 22) + ': ' + m.breaksCount + ' x ' + CONFIG.MANDATORY_BREAK_MIN +
+      ' min = ' + util.formatDuration(m.breakHours));
+    L.push(pad(t('report.dailyRests'), 22) + ': ' + m.fullDays + ' x ' + CONFIG.DAILY_REST_H +
+      ' h = ' + util.formatDuration(m.overnightRestHours));
+    L.push(pad(t('report.totalTime'), 22) + ': ' + util.formatDuration(m.totalHours));
+    L.push(pad(t('report.departure'), 22) + ': ' + util.formatDateTime(r.departure));
+    L.push(pad(t('report.arrival'), 22) + ': ' + util.formatDateTime(r.arrival));
     L.push('');
-    L.push('COST ESTIMATE (' + CONFIG.CURRENCY + ')');
+    L.push(t('report.sectionCost') + ' (' + cur + ')');
     L.push(line());
     r.tolls.countries.forEach(function (c) {
-      L.push('  ' + c.country + ' ' + (c.name + '                    ').slice(0, 20) +
-        util.formatNumber(c.km, 1).padStart(9) + ' km  x ' +
-        util.formatNumber(c.effectiveRate, 3) + '  = ' + util.formatNumber(c.cost, 2).padStart(9));
+      L.push('  ' + c.country + ' ' + pad(c.name, 20).slice(0, 20) +
+        pad(util.formatNumber(c.km, 1), 10) + ' km  x ' +
+        util.formatNumber(c.effectiveRate, 3) + '  = ' + pad(util.formatNumber(c.cost, 2), 10));
     });
     if (r.tolls.unclassifiedKm > 0) {
-      L.push('  -- unclassified      ' + util.formatNumber(r.tolls.unclassifiedKm, 1).padStart(9) + ' km  (excluded)');
+      L.push('  -- ' + pad(t('toll.unclassified'), 20).slice(0, 20) +
+        pad(util.formatNumber(r.tolls.unclassifiedKm, 1), 10) + ' km  (' + t('report.excludedNote') + ')');
     }
-    L.push('  Toll total           : ' + util.formatNumber(r.costs.toll, 2) + ' ' + CONFIG.CURRENCY);
-    L.push('  Fuel estimate        : ' + util.formatNumber(r.costs.fuel, 2) + ' ' + CONFIG.CURRENCY +
+    L.push('  ' + pad(t('report.tollTotal'), 22) + ': ' + util.formatNumber(r.costs.toll, 2) + ' ' + cur);
+    L.push('  ' + pad(t('report.fuelEstimate'), 22) + ': ' + util.formatNumber(r.costs.fuel, 2) + ' ' + cur +
       (r.fuel.applicable ? ' (' + util.formatNumber(r.fuel.liters, 0) + ' l)' : ''));
-    L.push('  TOTAL RUN COST       : ' + util.formatNumber(r.costs.total, 2) + ' ' + CONFIG.CURRENCY);
+    L.push('  ' + pad(t('report.totalCost'), 22) + ': ' + util.formatNumber(r.costs.total, 2) + ' ' + cur);
     L.push('');
-    L.push('SUGGESTED REST STOPS (every ' + CONFIG.REST_STOP_INTERVAL_KM + ' km)');
+
+    /* ---- mandatory legal stops ---- */
+    L.push(t('report.sectionLegal'));
+    L.push(line());
+    if (r.legal && r.legal.plan.length) {
+      r.legal.plan.forEach(function (stop) {
+        L.push('  ' + pad(t('legal.type.' + stop.type), 20) +
+          util.formatDateTime(stop.at) + '  km ' + util.formatNumber(stop.km, 0) +
+          '  min. ' + util.formatShortDuration(stop.minMinutes / 60) + '  [' + stop.article + ']');
+      });
+    } else {
+      L.push('  ' + t('legal.noStops'));
+    }
+    if (r.legal && r.legal.checks.length) {
+      L.push('');
+      L.push('  ' + t('report.sectionChecks'));
+      r.legal.checks.forEach(function (check) {
+        L.push('   ' + (check.ok ? '[OK] ' : '[!!] ') + pad(t(check.labelKey), 34) +
+          check.value + '  /  ' + check.limit);
+      });
+    }
+    L.push('');
+
+    L.push(t('report.sectionStops', { interval: CONFIG.REST_STOP_INTERVAL_KM }));
     L.push(line());
     if (!r.stops.length) {
-      L.push('  none - route shorter than the stop interval');
+      L.push('  ' + t('report.noStops'));
     } else {
       r.stops.forEach(function (s) {
         L.push('  #' + s.index + '  km ' + util.formatNumber(s.km, 0) +
           '  (' + s.lat.toFixed(4) + ', ' + s.lon.toFixed(4) + ')');
         if (!s.parkings.length) {
-          L.push('        no safe parking within ' + CONFIG.PARKING_SEARCH_RADIUS_KM + ' km');
+          L.push('        ' + t('report.noParking', { radius: CONFIG.PARKING_SEARCH_RADIUS_KM }));
         }
         s.parkings.forEach(function (p) {
-          L.push('        ' + (p.secured ? '[SECURED]' : '[standard]') + ' ' + p.name +
+          L.push('        ' + (p.secured ? '[***]' : '[ - ]') + ' ' + p.name +
             ' (' + p.country + ') - ' + util.formatNumber(p.distanceKm, 1) + ' km');
         });
       });
     }
     L.push('');
-    L.push('NATIONAL REGULATIONS (top ' + CONFIG.REGULATIONS_PER_COUNTRY + ' per country)');
+    L.push(t('report.sectionRegs', { n: CONFIG.REGULATIONS_PER_COUNTRY }));
     L.push(line());
     (r.regulations || []).forEach(function (entry) {
-      L.push('  ' + entry.country + ' - ' + entry.name + (entry.fallback ? ' (EU baseline)' : ''));
+      L.push('  ' + entry.country + ' - ' + entry.name + (entry.fallback ? ' (' + t('reg.euBaseline') + ')' : ''));
       entry.rules.forEach(function (rule) { L.push('     * ' + rule); });
     });
     if (r.warnings && r.warnings.length) {
       L.push('');
-      L.push('WARNINGS');
+      L.push(t('report.sectionWarnings'));
       L.push(line());
-      r.warnings.forEach(function (w) { L.push('  ! ' + w); });
+      r.warnings.forEach(function (w) { L.push('  ! ' + warningText(w)); });
     }
     L.push('');
     L.push(line('='));
-    L.push(CONFIG.DISCLAIMER);
+    L.push(t('app.footerDisclaimer').replace(/<[^>]+>/g, ''));
     L.push(CONFIG.AUTHOR);
     return L.join('\n');
   }
@@ -285,7 +435,13 @@
     tollsHtml: tollsHtml,
     stopsHtml: stopsHtml,
     regulationsHtml: regulationsHtml,
+    legalHtml: legalHtml,
+    legalPlanHtml: legalPlanHtml,
+    legalChecksHtml: legalChecksHtml,
+    legalRulesHtml: legalRulesHtml,
     warningsHtml: warningsHtml,
+    warningText: warningText,
+    eventTitle: eventTitle,
     textReport: textReport,
     statTile: statTile
   };

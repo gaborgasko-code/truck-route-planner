@@ -1,53 +1,362 @@
 {
   "schema": "trp.toll_rates/1",
+  "author": "created by Gabor Gasko",
   "currency": "EUR",
   "updated": "2026-01-01",
   "basis": "Indicative blended toll for a 40 t / 5-axle / EURO VI articulated combination, expressed in EUR per kilometre across the motorway and tolled trunk network.",
   "disclaimer": "ESTIMATE ONLY. Rates are averages and do not represent an official tariff. Vignette / time-based countries are listed at 0.00 EUR/km with a note. Always verify with the national toll operator before departure.",
   "rates": {
-    "AL": { "name": "Albania", "rate_eur_per_km": 0.10, "system": "Section tolls (A1 Rreshen-Kalimash)", "distance_based": true, "bboxes": [[19.1, 39.5, 21.2, 42.8]], "notes": "Only a few tolled sections; most of the network is free." },
-    "AD": { "name": "Andorra", "rate_eur_per_km": 0.00, "system": "No road toll", "distance_based": false, "bboxes": [[1.3, 42.3, 1.9, 42.7]], "notes": "No HGV road charge; customs formalities apply." },
-    "AT": { "name": "Austria", "rate_eur_per_km": 0.42, "system": "GO-Maut (GO-Box)", "distance_based": true, "bboxes": [[9.4, 46.3, 17.2, 49.1]], "notes": "GO-Box on-board unit mandatory. Special tariffs on A13 Brenner, A9, A10, A11 and S16." },
-    "BY": { "name": "Belarus", "rate_eur_per_km": 0.09, "system": "BelToll", "distance_based": true, "bboxes": [[23.1, 51.2, 32.9, 56.3]], "notes": "On-board unit required. Non-EU customs and permit rules apply." },
-    "BE": { "name": "Belgium", "rate_eur_per_km": 0.20, "system": "Viapass (Satellic OBU)", "distance_based": true, "bboxes": [[2.4, 49.4, 6.5, 51.6]], "notes": "Applies to vehicles over 3.5 t on all roads; rate varies by region and EURO class." },
-    "BA": { "name": "Bosnia and Herzegovina", "rate_eur_per_km": 0.14, "system": "Motorway barrier tolls", "distance_based": true, "bboxes": [[15.6, 42.5, 19.7, 45.4]], "notes": "Cash or card at barriers; green card insurance required." },
-    "BG": { "name": "Bulgaria", "rate_eur_per_km": 0.20, "system": "TOLL BG", "distance_based": true, "bboxes": [[22.3, 41.2, 28.7, 44.3]], "notes": "Route pass or OBU. Vehicles over 3.5 t are distance charged." },
-    "HR": { "name": "Croatia", "rate_eur_per_km": 0.27, "system": "HAC / ARZ motorway tolls", "distance_based": true, "bboxes": [[13.3, 42.3, 19.5, 46.6]], "notes": "Barrier system; ENC transponder gives a discount." },
-    "CY": { "name": "Cyprus", "rate_eur_per_km": 0.00, "system": "No road toll", "distance_based": false, "bboxes": [[32.2, 34.5, 34.7, 35.8]], "notes": "No motorway toll network." },
-    "CZ": { "name": "Czechia", "rate_eur_per_km": 0.24, "system": "MYTO CZ (satellite)", "distance_based": true, "bboxes": [[12.0, 48.5, 18.9, 51.1]], "notes": "OBU mandatory over 3.5 t on motorways and selected 1st class roads." },
-    "DK": { "name": "Denmark", "rate_eur_per_km": 0.17, "system": "Distance-based HGV charge", "distance_based": true, "bboxes": [[7.9, 54.4, 15.3, 57.9]], "notes": "Replaced the Eurovignette for heavy goods vehicles. Great Belt and Oresund bridges are charged separately." },
-    "EE": { "name": "Estonia", "rate_eur_per_km": 0.00, "system": "Time-based road user charge", "distance_based": false, "bboxes": [[21.6, 57.4, 28.3, 59.8]], "notes": "Daily, weekly or monthly charge, not per kilometre. Budget separately." },
-    "FI": { "name": "Finland", "rate_eur_per_km": 0.00, "system": "No HGV road toll", "distance_based": false, "bboxes": [[19.0, 59.6, 31.7, 70.2]], "notes": "No road user charge; ferry costs may dominate." },
-    "FR": { "name": "France", "rate_eur_per_km": 0.22, "system": "Concession motorway tolls (classe 4)", "distance_based": true, "bboxes": [[-5.3, 41.2, 9.7, 51.2]], "notes": "Barrier and free-flow tolls. Telepeage badge recommended. Alpine tunnels charged separately." },
-    "DE": { "name": "Germany", "rate_eur_per_km": 0.35, "system": "Toll Collect (LKW-Maut)", "distance_based": true, "bboxes": [[5.7, 47.2, 15.2, 55.2]], "notes": "Applies from 3.5 t on all federal roads. Includes the CO2 emission-class surcharge." },
-    "GR": { "name": "Greece", "rate_eur_per_km": 0.19, "system": "Motorway concession tolls", "distance_based": true, "bboxes": [[19.2, 34.6, 28.4, 41.9]], "notes": "Barrier system; e-pass transponders differ per concession." },
-    "HU": { "name": "Hungary", "rate_eur_per_km": 0.29, "system": "HU-GO", "distance_based": true, "bboxes": [[16.0, 45.6, 22.9, 48.7]], "notes": "Route ticket or OBU mandatory over 3.5 t." },
-    "IS": { "name": "Iceland", "rate_eur_per_km": 0.00, "system": "No general toll", "distance_based": false, "bboxes": [[-24.7, 63.1, -13.3, 66.7]], "notes": "Only a few tunnels are charged." },
-    "IE": { "name": "Ireland", "rate_eur_per_km": 0.12, "system": "eFlow and barrier tolls", "distance_based": true, "bboxes": [[-10.7, 51.3, -5.8, 55.5]], "notes": "M50 is barrier-free with mandatory online payment by 20:00 the next day." },
-    "IT": { "name": "Italy", "rate_eur_per_km": 0.25, "system": "Autostrade (classe 5)", "distance_based": true, "bboxes": [[6.5, 35.3, 18.7, 47.2]], "notes": "Telepass recommended. Frejus and Mont Blanc tunnels charged separately." },
-    "XK": { "name": "Kosovo", "rate_eur_per_km": 0.08, "system": "Limited motorway tolls", "distance_based": true, "bboxes": [[19.9, 41.7, 21.9, 43.4]], "notes": "Small tolled network; check documentation requirements." },
-    "LV": { "name": "Latvia", "rate_eur_per_km": 0.00, "system": "Time-based vignette", "distance_based": false, "bboxes": [[20.8, 55.5, 28.3, 58.2]], "notes": "Daily to yearly vignette for vehicles over 3 t. Not per kilometre." },
-    "LI": { "name": "Liechtenstein", "rate_eur_per_km": 0.90, "system": "LSVA (aligned with Switzerland)", "distance_based": true, "bboxes": [[9.4, 47.0, 9.7, 47.3]], "notes": "Performance-related heavy vehicle fee, same scheme as Switzerland." },
-    "LT": { "name": "Lithuania", "rate_eur_per_km": 0.13, "system": "Distance-based e-toll", "distance_based": true, "bboxes": [[20.8, 53.8, 26.9, 56.5]], "notes": "Charging by kilometre on the main network for vehicles over 3.5 t." },
-    "LU": { "name": "Luxembourg", "rate_eur_per_km": 0.00, "system": "Eurovignette", "distance_based": false, "bboxes": [[5.7, 49.4, 6.6, 50.3]], "notes": "Time-based Eurovignette shared with NL and SE. Not per kilometre." },
-    "MT": { "name": "Malta", "rate_eur_per_km": 0.00, "system": "No road toll", "distance_based": false, "bboxes": [[14.1, 35.7, 14.6, 36.2]], "notes": "No motorway network charge." },
-    "MD": { "name": "Moldova", "rate_eur_per_km": 0.05, "system": "Vinieta road user charge", "distance_based": false, "bboxes": [[26.5, 45.4, 30.2, 48.6]], "notes": "Time-based vignette; the per-km figure is an indicative equivalent." },
-    "ME": { "name": "Montenegro", "rate_eur_per_km": 0.12, "system": "Sozina tunnel and A1 tolls", "distance_based": true, "bboxes": [[18.4, 41.8, 20.4, 43.6]], "notes": "Very limited tolled network." },
-    "NL": { "name": "Netherlands", "rate_eur_per_km": 0.00, "system": "Eurovignette (truck charge announced)", "distance_based": false, "bboxes": [[3.2, 50.7, 7.3, 53.7]], "notes": "Time-based today. Westerschelde and Kil tunnels are charged separately." },
-    "MK": { "name": "North Macedonia", "rate_eur_per_km": 0.10, "system": "Motorway barrier tolls", "distance_based": true, "bboxes": [[20.4, 40.8, 23.1, 42.5]], "notes": "Cash or card at barriers." },
-    "NO": { "name": "Norway", "rate_eur_per_km": 0.12, "system": "AutoPASS", "distance_based": true, "bboxes": [[4.4, 57.8, 31.3, 71.3]], "notes": "Dense ring of toll stations around cities; AutoPASS tag required for HGV." },
-    "PL": { "name": "Poland", "rate_eur_per_km": 0.24, "system": "e-TOLL", "distance_based": true, "bboxes": [[14.0, 48.9, 24.2, 55.1]], "notes": "Mandatory geolocation app or OBU over 3.5 t." },
-    "PT": { "name": "Portugal", "rate_eur_per_km": 0.23, "system": "Via Verde electronic tolls", "distance_based": true, "bboxes": [[-9.6, 36.8, -6.1, 42.2]], "notes": "Several free-flow motorways require a transponder or pre-registration." },
-    "RO": { "name": "Romania", "rate_eur_per_km": 0.09, "system": "Rovinieta plus bridge tolls", "distance_based": false, "bboxes": [[20.2, 43.5, 29.8, 48.4]], "notes": "Time-based vignette. Fetesti-Cernavoda bridge tolled separately." },
-    "RU": { "name": "Russia", "rate_eur_per_km": 0.05, "system": "Platon", "distance_based": true, "bboxes": [[19.5, 54.2, 22.9, 55.4], [27.2, 41.0, 190.0, 82.0]], "notes": "OBU required over 12 t. Non-EU customs, permit and sanction rules apply." },
-    "RS": { "name": "Serbia", "rate_eur_per_km": 0.19, "system": "Putevi Srbije barrier tolls", "distance_based": true, "bboxes": [[18.8, 42.2, 23.1, 46.3]], "notes": "Category 3 or 4 for heavy combinations; green card required." },
-    "SK": { "name": "Slovakia", "rate_eur_per_km": 0.26, "system": "SkyToll (eMyto)", "distance_based": true, "bboxes": [[16.8, 47.6, 22.6, 49.7]], "notes": "OBU mandatory over 3.5 t on motorways and 1st class roads." },
-    "SI": { "name": "Slovenia", "rate_eur_per_km": 0.44, "system": "DarsGo", "distance_based": true, "bboxes": [[13.3, 45.3, 16.7, 47.0]], "notes": "DarsGo unit mandatory over 3.5 t. Karawanks tunnel charged separately." },
-    "ES": { "name": "Spain", "rate_eur_per_km": 0.19, "system": "AP concession tolls", "distance_based": true, "bboxes": [[-9.4, 35.9, 4.4, 43.9]], "notes": "Many AP motorways have reverted to free use; the rate is a network average." },
-    "SE": { "name": "Sweden", "rate_eur_per_km": 0.00, "system": "Eurovignette and urban congestion charges", "distance_based": false, "bboxes": [[10.8, 55.1, 24.3, 69.2]], "notes": "Time-based Eurovignette. Stockholm and Gothenburg congestion charges apply separately." },
-    "CH": { "name": "Switzerland", "rate_eur_per_km": 0.95, "system": "LSVA / RPLP", "distance_based": true, "bboxes": [[5.8, 45.7, 10.6, 47.9]], "notes": "Performance-related heavy vehicle fee on ALL roads. Highest per-km charge in Europe." },
-    "TR": { "name": "Turkey", "rate_eur_per_km": 0.09, "system": "HGS / OGS", "distance_based": true, "bboxes": [[25.5, 35.7, 45.0, 42.3]], "notes": "Electronic sticker mandatory; bridges charged separately." },
-    "UA": { "name": "Ukraine", "rate_eur_per_km": 0.03, "system": "No general HGV toll", "distance_based": false, "bboxes": [[22.0, 44.2, 40.4, 52.5]], "notes": "Weight and dimension permits apply. Check current security and border guidance." },
-    "GB": { "name": "United Kingdom", "rate_eur_per_km": 0.03, "system": "HGV Levy plus crossings", "distance_based": false, "bboxes": [[-8.8, 49.7, 2.0, 61.0]], "notes": "Time-based levy. Dartford Crossing, M6 Toll and Mersey crossings charged separately." }
+    "AL": {
+      "name": "Albania",
+      "rate_eur_per_km": 0.1,
+      "system": "Section tolls (A1 Rreshen-Kalimash)",
+      "distance_based": true,
+      "bboxes": [[19.1, 39.5, 21.2, 42.8]],
+      "notes": "Only a few tolled sections; most of the network is free."
+    },
+    "AD": {
+      "name": "Andorra",
+      "rate_eur_per_km": 0,
+      "system": "No road toll",
+      "distance_based": false,
+      "bboxes": [[1.3, 42.3, 1.9, 42.7]],
+      "notes": "No HGV road charge; customs formalities apply."
+    },
+    "AT": {
+      "name": "Austria",
+      "rate_eur_per_km": 0.42,
+      "system": "GO-Maut (GO-Box)",
+      "distance_based": true,
+      "bboxes": [[9.4, 46.3, 17.2, 49.1]],
+      "notes": "GO-Box on-board unit mandatory. Special tariffs on A13 Brenner, A9, A10, A11 and S16."
+    },
+    "BY": {
+      "name": "Belarus",
+      "rate_eur_per_km": 0.09,
+      "system": "BelToll",
+      "distance_based": true,
+      "bboxes": [[23.1, 51.2, 32.9, 56.3]],
+      "notes": "On-board unit required. Non-EU customs and permit rules apply."
+    },
+    "BE": {
+      "name": "Belgium",
+      "rate_eur_per_km": 0.2,
+      "system": "Viapass (Satellic OBU)",
+      "distance_based": true,
+      "bboxes": [[2.4, 49.4, 6.5, 51.6]],
+      "notes": "Applies to vehicles over 3.5 t on all roads; rate varies by region and EURO class."
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "rate_eur_per_km": 0.14,
+      "system": "Motorway barrier tolls",
+      "distance_based": true,
+      "bboxes": [[15.6, 42.5, 19.7, 45.4]],
+      "notes": "Cash or card at barriers; green card insurance required."
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "rate_eur_per_km": 0.2,
+      "system": "TOLL BG",
+      "distance_based": true,
+      "bboxes": [[22.3, 41.2, 28.7, 44.3]],
+      "notes": "Route pass or OBU. Vehicles over 3.5 t are distance charged."
+    },
+    "HR": {
+      "name": "Croatia",
+      "rate_eur_per_km": 0.27,
+      "system": "HAC / ARZ motorway tolls",
+      "distance_based": true,
+      "bboxes": [[13.3, 42.3, 19.5, 46.6]],
+      "notes": "Barrier system; ENC transponder gives a discount."
+    },
+    "CY": {
+      "name": "Cyprus",
+      "rate_eur_per_km": 0,
+      "system": "No road toll",
+      "distance_based": false,
+      "bboxes": [[32.2, 34.5, 34.7, 35.8]],
+      "notes": "No motorway toll network."
+    },
+    "CZ": {
+      "name": "Czechia",
+      "rate_eur_per_km": 0.24,
+      "system": "MYTO CZ (satellite)",
+      "distance_based": true,
+      "bboxes": [[12, 48.5, 18.9, 51.1]],
+      "notes": "OBU mandatory over 3.5 t on motorways and selected 1st class roads."
+    },
+    "DK": {
+      "name": "Denmark",
+      "rate_eur_per_km": 0.17,
+      "system": "Distance-based HGV charge",
+      "distance_based": true,
+      "bboxes": [[7.9, 54.4, 15.3, 57.9]],
+      "notes": "Replaced the Eurovignette for heavy goods vehicles. Great Belt and Oresund bridges are charged separately."
+    },
+    "EE": {
+      "name": "Estonia",
+      "rate_eur_per_km": 0,
+      "system": "Time-based road user charge",
+      "distance_based": false,
+      "bboxes": [[21.6, 57.4, 28.3, 59.8]],
+      "notes": "Daily, weekly or monthly charge, not per kilometre. Budget separately."
+    },
+    "FI": {
+      "name": "Finland",
+      "rate_eur_per_km": 0,
+      "system": "No HGV road toll",
+      "distance_based": false,
+      "bboxes": [[19, 59.6, 31.7, 70.2]],
+      "notes": "No road user charge; ferry costs may dominate."
+    },
+    "FR": {
+      "name": "France",
+      "rate_eur_per_km": 0.22,
+      "system": "Concession motorway tolls (classe 4)",
+      "distance_based": true,
+      "bboxes": [[-5.3, 41.2, 9.7, 51.2]],
+      "notes": "Barrier and free-flow tolls. Telepeage badge recommended. Alpine tunnels charged separately."
+    },
+    "DE": {
+      "name": "Germany",
+      "rate_eur_per_km": 0.35,
+      "system": "Toll Collect (LKW-Maut)",
+      "distance_based": true,
+      "bboxes": [[5.7, 47.2, 15.2, 55.2]],
+      "notes": "Applies from 3.5 t on all federal roads. Includes the CO2 emission-class surcharge."
+    },
+    "GR": {
+      "name": "Greece",
+      "rate_eur_per_km": 0.19,
+      "system": "Motorway concession tolls",
+      "distance_based": true,
+      "bboxes": [[19.2, 34.6, 28.4, 41.9]],
+      "notes": "Barrier system; e-pass transponders differ per concession."
+    },
+    "HU": {
+      "name": "Hungary",
+      "rate_eur_per_km": 0.29,
+      "system": "HU-GO",
+      "distance_based": true,
+      "bboxes": [[16, 45.6, 22.9, 48.7]],
+      "notes": "Route ticket or OBU mandatory over 3.5 t."
+    },
+    "IS": {
+      "name": "Iceland",
+      "rate_eur_per_km": 0,
+      "system": "No general toll",
+      "distance_based": false,
+      "bboxes": [[-24.7, 63.1, -13.3, 66.7]],
+      "notes": "Only a few tunnels are charged."
+    },
+    "IE": {
+      "name": "Ireland",
+      "rate_eur_per_km": 0.12,
+      "system": "eFlow and barrier tolls",
+      "distance_based": true,
+      "bboxes": [[-10.7, 51.3, -5.8, 55.5]],
+      "notes": "M50 is barrier-free with mandatory online payment by 20:00 the next day."
+    },
+    "IT": {
+      "name": "Italy",
+      "rate_eur_per_km": 0.25,
+      "system": "Autostrade (classe 5)",
+      "distance_based": true,
+      "bboxes": [[6.5, 35.3, 18.7, 47.2]],
+      "notes": "Telepass recommended. Frejus and Mont Blanc tunnels charged separately."
+    },
+    "XK": {
+      "name": "Kosovo",
+      "rate_eur_per_km": 0.08,
+      "system": "Limited motorway tolls",
+      "distance_based": true,
+      "bboxes": [[19.9, 41.7, 21.9, 43.4]],
+      "notes": "Small tolled network; check documentation requirements."
+    },
+    "LV": {
+      "name": "Latvia",
+      "rate_eur_per_km": 0,
+      "system": "Time-based vignette",
+      "distance_based": false,
+      "bboxes": [[20.8, 55.5, 28.3, 58.2]],
+      "notes": "Daily to yearly vignette for vehicles over 3 t. Not per kilometre."
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "rate_eur_per_km": 0.9,
+      "system": "LSVA (aligned with Switzerland)",
+      "distance_based": true,
+      "bboxes": [[9.4, 47, 9.7, 47.3]],
+      "notes": "Performance-related heavy vehicle fee, same scheme as Switzerland."
+    },
+    "LT": {
+      "name": "Lithuania",
+      "rate_eur_per_km": 0.13,
+      "system": "Distance-based e-toll",
+      "distance_based": true,
+      "bboxes": [[20.8, 53.8, 26.9, 56.5]],
+      "notes": "Charging by kilometre on the main network for vehicles over 3.5 t."
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "rate_eur_per_km": 0,
+      "system": "Eurovignette",
+      "distance_based": false,
+      "bboxes": [[5.7, 49.4, 6.6, 50.3]],
+      "notes": "Time-based Eurovignette shared with NL and SE. Not per kilometre."
+    },
+    "MT": {
+      "name": "Malta",
+      "rate_eur_per_km": 0,
+      "system": "No road toll",
+      "distance_based": false,
+      "bboxes": [[14.1, 35.7, 14.6, 36.2]],
+      "notes": "No motorway network charge."
+    },
+    "MD": {
+      "name": "Moldova",
+      "rate_eur_per_km": 0.05,
+      "system": "Vinieta road user charge",
+      "distance_based": false,
+      "bboxes": [[26.5, 45.4, 30.2, 48.6]],
+      "notes": "Time-based vignette; the per-km figure is an indicative equivalent."
+    },
+    "ME": {
+      "name": "Montenegro",
+      "rate_eur_per_km": 0.12,
+      "system": "Sozina tunnel and A1 tolls",
+      "distance_based": true,
+      "bboxes": [[18.4, 41.8, 20.4, 43.6]],
+      "notes": "Very limited tolled network."
+    },
+    "NL": {
+      "name": "Netherlands",
+      "rate_eur_per_km": 0,
+      "system": "Eurovignette (truck charge announced)",
+      "distance_based": false,
+      "bboxes": [[3.2, 50.7, 7.3, 53.7]],
+      "notes": "Time-based today. Westerschelde and Kil tunnels are charged separately."
+    },
+    "MK": {
+      "name": "North Macedonia",
+      "rate_eur_per_km": 0.1,
+      "system": "Motorway barrier tolls",
+      "distance_based": true,
+      "bboxes": [[20.4, 40.8, 23.1, 42.5]],
+      "notes": "Cash or card at barriers."
+    },
+    "NO": {
+      "name": "Norway",
+      "rate_eur_per_km": 0.12,
+      "system": "AutoPASS",
+      "distance_based": true,
+      "bboxes": [[4.4, 57.8, 31.3, 71.3]],
+      "notes": "Dense ring of toll stations around cities; AutoPASS tag required for HGV."
+    },
+    "PL": {
+      "name": "Poland",
+      "rate_eur_per_km": 0.24,
+      "system": "e-TOLL",
+      "distance_based": true,
+      "bboxes": [[14, 48.9, 24.2, 55.1]],
+      "notes": "Mandatory geolocation app or OBU over 3.5 t."
+    },
+    "PT": {
+      "name": "Portugal",
+      "rate_eur_per_km": 0.23,
+      "system": "Via Verde electronic tolls",
+      "distance_based": true,
+      "bboxes": [[-9.6, 36.8, -6.1, 42.2]],
+      "notes": "Several free-flow motorways require a transponder or pre-registration."
+    },
+    "RO": {
+      "name": "Romania",
+      "rate_eur_per_km": 0.09,
+      "system": "Rovinieta plus bridge tolls",
+      "distance_based": false,
+      "bboxes": [[20.2, 43.5, 29.8, 48.4]],
+      "notes": "Time-based vignette. Fetesti-Cernavoda bridge tolled separately."
+    },
+    "RU": {
+      "name": "Russia",
+      "rate_eur_per_km": 0.05,
+      "system": "Platon",
+      "distance_based": true,
+      "bboxes": [[19.5, 54.2, 22.9, 55.4], [27.2, 41, 190, 82]],
+      "notes": "OBU required over 12 t. Non-EU customs, permit and sanction rules apply."
+    },
+    "RS": {
+      "name": "Serbia",
+      "rate_eur_per_km": 0.19,
+      "system": "Putevi Srbije barrier tolls",
+      "distance_based": true,
+      "bboxes": [[18.8, 42.2, 23.1, 46.3]],
+      "notes": "Category 3 or 4 for heavy combinations; green card required."
+    },
+    "SK": {
+      "name": "Slovakia",
+      "rate_eur_per_km": 0.26,
+      "system": "SkyToll (eMyto)",
+      "distance_based": true,
+      "bboxes": [[16.8, 47.6, 22.6, 49.7]],
+      "notes": "OBU mandatory over 3.5 t on motorways and 1st class roads."
+    },
+    "SI": {
+      "name": "Slovenia",
+      "rate_eur_per_km": 0.44,
+      "system": "DarsGo",
+      "distance_based": true,
+      "bboxes": [[13.3, 45.3, 16.7, 47]],
+      "notes": "DarsGo unit mandatory over 3.5 t. Karawanks tunnel charged separately."
+    },
+    "ES": {
+      "name": "Spain",
+      "rate_eur_per_km": 0.19,
+      "system": "AP concession tolls",
+      "distance_based": true,
+      "bboxes": [[-9.4, 35.9, 4.4, 43.9]],
+      "notes": "Many AP motorways have reverted to free use; the rate is a network average."
+    },
+    "SE": {
+      "name": "Sweden",
+      "rate_eur_per_km": 0,
+      "system": "Eurovignette and urban congestion charges",
+      "distance_based": false,
+      "bboxes": [[10.8, 55.1, 24.3, 69.2]],
+      "notes": "Time-based Eurovignette. Stockholm and Gothenburg congestion charges apply separately."
+    },
+    "CH": {
+      "name": "Switzerland",
+      "rate_eur_per_km": 0.95,
+      "system": "LSVA / RPLP",
+      "distance_based": true,
+      "bboxes": [[5.8, 45.7, 10.6, 47.9]],
+      "notes": "Performance-related heavy vehicle fee on ALL roads. Highest per-km charge in Europe."
+    },
+    "TR": {
+      "name": "Turkey",
+      "rate_eur_per_km": 0.09,
+      "system": "HGS / OGS",
+      "distance_based": true,
+      "bboxes": [[25.5, 35.7, 45, 42.3]],
+      "notes": "Electronic sticker mandatory; bridges charged separately."
+    },
+    "UA": {
+      "name": "Ukraine",
+      "rate_eur_per_km": 0.03,
+      "system": "No general HGV toll",
+      "distance_based": false,
+      "bboxes": [[22, 44.2, 40.4, 52.5]],
+      "notes": "Weight and dimension permits apply. Check current security and border guidance."
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "rate_eur_per_km": 0.03,
+      "system": "HGV Levy plus crossings",
+      "distance_based": false,
+      "bboxes": [[-8.8, 49.7, 2, 61]],
+      "notes": "Time-based levy. Dartford Crossing, M6 Toll and Mersey crossings charged separately."
+    }
   }
 }

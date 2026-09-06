@@ -13,7 +13,7 @@
 
   var CONFIG = {
     APP_NAME: 'Truck Route Planner',
-    APP_VERSION: '2.0.0',
+    APP_VERSION: '2.1.0',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',
 
@@ -81,9 +81,8 @@
     AXLE_FACTORS: { 2: 0.85, 3: 0.92, 4: 1.0, 5: 1.05, 6: 1.1 },
 
     STORAGE_PREFIX: 'trp.',
-    DISCLAIMER: 'All distances, times, tolls and regulations are ESTIMATES for planning only. ' +
-      'They are not legally binding. Verify driving bans, tolls and vehicle restrictions with the ' +
-      'competent national authority before departure.'
+    /* Language-neutral fallback; the UI uses i18n key app.footerDisclaimer. */
+    DISCLAIMER: 'Solo estimaciones / Estimates only - verifique la normativa con la autoridad nacional competente antes de la salida.'
   };
 
   TRP.CONFIG = CONFIG;
