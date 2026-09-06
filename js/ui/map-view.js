@@ -67,6 +67,15 @@
       '<p class="mapx__warn">' + esc(t('reg.mapWarn')) + '</p>';
   }
 
+  /** Chevron for the collapsible map panels. */
+  function chev(open) {
+    return TRP.icons ? TRP.icons.svg(open ? 'chevronUp' : 'chevronDown', { size: 14 }) : (open ? '&#9650;' : '&#9660;');
+  }
+
+  function lockIcon() {
+    return TRP.icons ? TRP.icons.svg('lock', { size: 12 }) : '&#128274;';
+  }
+
   /** A panel that is either a static block or a collapsible one. */
   function panelHtml(title, body, collapsible, startOpen) {
     if (!collapsible) {
@@ -74,7 +83,7 @@
         '<div class="mapx__body" data-role="body">' + body + '</div>';
     }
     return '<button type="button" class="mapx__toggle" data-role="toggle" aria-expanded="' + String(!!startOpen) + '">' +
-      '<span>' + esc(title) + '</span><span class="mapx__chev">' + (startOpen ? '&#9650;' : '&#9660;') + '</span></button>' +
+      '<span>' + esc(title) + '</span><span class="mapx__chev">' + chev(startOpen) + '</span></button>' +
       '<div class="mapx__body" data-role="body"' + (startOpen ? '' : ' style="display:none"') + '>' + body + '</div>';
   }
 
@@ -87,7 +96,7 @@
       body.style.display = open ? 'none' : 'block';
       toggle.setAttribute('aria-expanded', String(!open));
       div.classList.toggle('mapx--collapsed', open);
-      toggle.querySelector('.mapx__chev').innerHTML = open ? '&#9660;' : '&#9650;';
+      toggle.querySelector('.mapx__chev').innerHTML = chev(!open);
     });
     if (body.style.display === 'none') div.classList.add('mapx--collapsed');
   }
@@ -173,10 +182,10 @@
       var compact = (global.innerWidth || 1024) < COMPACT_BREAKPOINT;
       var latlngs = r.route.coords.map(function (c) { return [c.lat, c.lon]; });
 
-      /* Route: yellow casing under a blue line, matching the app palette. */
+      /* Route: a white casing under the accent blue, so it reads on any tile. */
       layers.route = L.layerGroup([
-        L.polyline(latlngs, { color: '#f2b73d', weight: 11, opacity: 0.85, lineCap: 'round' }),
-        L.polyline(latlngs, { color: '#114a86', weight: 5, opacity: 0.95, lineCap: 'round' })
+        L.polyline(latlngs, { color: '#ffffff', weight: 10, opacity: 0.9, lineCap: 'round' }),
+        L.polyline(latlngs, { color: '#2563eb', weight: 5, opacity: 0.95, lineCap: 'round' })
       ]).addTo(map);
 
       layers.endpoints = L.layerGroup([
@@ -188,7 +197,7 @@
 
       layers.stops = L.layerGroup((r.stops || []).map(function (stop) {
         var list = (stop.parkings || []).map(function (p) {
-          return '<li>' + (p.secured ? '&#128274; ' : '') + esc(p.name) + ' - ' +
+          return '<li>' + (p.secured ? lockIcon() + ' ' : '') + esc(p.name) + ' - ' +
             util.formatNumber(p.distanceKm, 1) + ' km</li>';
         }).join('');
         return L.marker([stop.lat, stop.lon], { icon: divIcon('trp-marker--stop', String(stop.index)) })

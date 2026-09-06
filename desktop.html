@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#114a86">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="Truck Route Planner - rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
 <title>Truck Route Planner - Desktop</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/desktop.css">
 </head>
@@ -19,7 +22,7 @@
 
   <header class="app-header">
     <div class="brand">
-      <div class="brand__mark" aria-hidden="true">&#128667;</div>
+      <div class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
       <div>
         <h1 class="brand__title">Truck Route Planner</h1>
         <div class="brand__tagline" data-i18n="app.tagline"></div>
@@ -34,7 +37,7 @@
         <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
       </a>
       <select class="lang-select" id="langSelect" aria-label="Idioma / Language"></select>
-      <button type="button" class="icon-btn" id="themeToggle">&#9790;</button>
+      <button type="button" class="icon-btn" id="themeToggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <a class="link-btn" href="mobile.html?view=mobile" data-i18n="app.mobileView"></a>
       <a class="link-btn" href="USER_GUIDE.html" target="_blank" rel="noopener" data-i18n="app.userGuide"></a>
     </div>
@@ -57,7 +60,7 @@
 
         <div class="swap-row">
           <button type="button" class="swap-btn" id="swapBtn"
-                  data-i18n-attr="title:form.swap">&#8645;</button>
+                  data-i18n-attr="title:form.swap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg></button>
         </div>
 
         <div class="field">
@@ -222,6 +225,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 
 <script src="js/core/config.js"></script>
+<script src="js/core/icons.js"></script>
 <script src="js/core/i18n.js"></script>
 <script src="js/core/util.js"></script>
 <script src="js/core/geo.js"></script>

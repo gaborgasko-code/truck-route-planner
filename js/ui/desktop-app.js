@@ -193,7 +193,7 @@
   function clearResults() {
     state.result = null;
     state.mapRendered = false;
-    var empty = '<div class="empty-state"><div class="empty-state__icon">&#128667;</div>' +
+    var empty = '<div class="empty-state"><div class="empty-state__icon">' + (TRP.icons ? TRP.icons.svg('truck') : '') + '</div>' +
       '<p>' + t('overview.empty') + '</p></div>';
     ['panelOverview', 'panelItinerary', 'panelTolls', 'panelStops', 'panelRegulations']
       .forEach(function (id) { el[id].innerHTML = empty; });

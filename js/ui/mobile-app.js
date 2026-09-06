@@ -165,7 +165,7 @@
     state.mapRendered = false;
     el.m_resultEmpty.hidden = false;
     el.m_resultBody.hidden = true;
-    el.m_rules.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9878;</div>' +
+    el.m_rules.innerHTML = '<div class="empty-state"><div class="empty-state__icon">' + (TRP.icons ? TRP.icons.svg('scale') : '') + '</div>' +
       '<p>' + util.escapeHtml(t('reg.empty')) + '</p></div>';
     el.m_report.value = '';
 

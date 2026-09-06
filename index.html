@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#114a86">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="Truck Route Planner - rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
 <title>Truck Route Planner</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <script>
   /* Match the theme chosen in the app before anything paints. */
@@ -25,67 +28,61 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    /* A warm glow off the top-right lifts the flat navy into something
-       with depth, without pulling in an image. */
     background:
-      radial-gradient(1100px 620px at 78% -12%, rgba(242, 183, 61, .20), transparent 62%),
-      radial-gradient(900px 560px at 12% 108%, rgba(43, 132, 230, .28), transparent 60%),
-      linear-gradient(140deg, #06182f 0%, #0b2b54 48%, #114a86 100%);
+      radial-gradient(900px 520px at 50% -10%, var(--accent-soft), transparent 70%),
+      var(--bg);
   }
   .splash__card {
-    width: min(460px, 100%);
+    width: min(440px, 100%);
     background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, .10);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .22), 0 28px 70px rgba(0, 0, 0, .42);
-    padding: 30px 26px 24px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 32px 28px 24px;
     text-align: center;
   }
   .splash__mark {
-    width: 66px; height: 66px; margin: 0 auto 16px;
-    border-radius: 20px;
-    background: var(--grad-gold);
-    color: var(--blue-900);
+    width: 56px; height: 56px; margin: 0 auto 16px;
+    border-radius: 16px;
+    background: var(--accent);
+    color: #fff;
     display: grid; place-items: center;
-    font-size: 34px;
-    box-shadow: 0 10px 26px rgba(217, 155, 31, .50);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, .28);
   }
-  .splash h1 { font-size: 22px; margin-bottom: 4px; }
-  .splash__sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+  .splash__mark svg { width: 30px; height: 30px; }
+  .splash h1 { font-size: 22px; margin-bottom: 6px; letter-spacing: -.02em; }
+  .splash__sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; line-height: 1.55; }
   .splash__status {
-    font-size: 12.5px; color: var(--blue-700); font-weight: 600;
+    font-size: 12.5px; color: var(--ink-soft); font-weight: 500;
     margin-bottom: 18px; min-height: 18px;
   }
   .splash__choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .splash__choice .btn { text-decoration: none; }
-  .splash__note { margin-top: 16px; font-size: 11.5px; color: var(--muted); line-height: 1.55; }
-  .splash__lang { margin-top: 14px; display: flex; justify-content: center; gap: 8px; }
+  .splash__note { margin-top: 16px; font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .splash__lang { margin-top: 14px; display: flex; justify-content: center; gap: 6px; }
   .splash__lang button {
     border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
-    border-radius: 999px; padding: 5px 15px; font: inherit; font-size: 12px; cursor: pointer;
+    border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
   }
-  .splash__lang button[aria-pressed="true"] {
-    background: var(--blue-700); color: #fff; border-color: var(--blue-700); font-weight: 700;
-  }
+  .splash__lang button:hover { background: var(--surface-2); }
+  .splash__lang button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
   .splash__by {
-    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+    margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line);
     display: flex; justify-content: center;
   }
   .spinner {
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid var(--blue-100); border-top-color: var(--blue-600);
-    display: inline-block; vertical-align: -3px; margin-right: 7px;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--line-strong); border-top-color: var(--accent);
+    display: inline-block; vertical-align: -2px; margin-right: 7px;
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  [data-theme="dark"] .splash__status { color: var(--yellow-400); }
 </style>
 </head>
 <body>
 
 <main class="splash">
   <div class="splash__card">
-    <div class="splash__mark" aria-hidden="true">&#128667;</div>
+    <div class="splash__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
     <h1>Truck Route Planner</h1>
     <p class="splash__sub" data-i18n="app.subtitle"></p>
 
@@ -164,7 +161,7 @@
 })();
 </script>
 <noscript>
-  <p style="text-align:center;padding:16px;color:#fff">
+  <p style="text-align:center;padding:16px;color:var(--ink)">
     Se necesita JavaScript. Elija arriba la version de escritorio o la version movil.
     &mdash; JavaScript is required. Choose the desktop or mobile version above.
   </p>

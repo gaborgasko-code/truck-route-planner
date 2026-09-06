@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-<meta name="theme-color" content="#114a86">
+<meta name="theme-color" content="#ffffff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,6 +14,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/mobile.css">
 </head>
@@ -23,7 +26,7 @@
 
   <header class="app-header">
     <div class="brand">
-      <div class="brand__mark" aria-hidden="true">&#128667;</div>
+      <div class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
       <div>
         <h1 class="brand__title">Truck Route Planner</h1>
       </div>
@@ -35,7 +38,7 @@
         <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
       </a>
       <select class="lang-select" id="m_langSelect" aria-label="Idioma / Language"></select>
-      <button type="button" class="icon-btn" id="m_themeToggle">&#9790;</button>
+      <button type="button" class="icon-btn" id="m_themeToggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
     </div>
   </header>
 
@@ -53,9 +56,8 @@
           <div class="suggest" id="m_originSuggest" role="listbox" hidden></div>
         </div>
 
-        <div class="swap-row" style="display:flex;justify-content:center;margin:-2px 0 8px">
-          <button type="button" class="swap-btn" id="m_swap" data-i18n-attr="title:form.swap"
-                  style="border:1px solid var(--line);background:var(--surface);color:var(--blue-600);border-radius:999px;width:36px;height:36px">&#8645;</button>
+        <div class="swap-row">
+          <button type="button" class="swap-btn" id="m_swap" data-i18n-attr="title:form.swap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg></button>
         </div>
 
         <div class="field">
@@ -158,7 +160,7 @@
     <!-- -------------------------------------------------------- result -->
     <section class="view" id="viewResult" hidden>
       <div class="empty-state" id="m_resultEmpty">
-        <div class="empty-state__icon">&#128667;</div>
+        <div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
         <p data-i18n-html="overview.empty"></p>
       </div>
 
@@ -259,19 +261,19 @@
 
   <nav class="bottom-nav" role="tablist">
     <button type="button" class="nav-btn" role="tab" data-view="plan" aria-selected="true">
-      <span class="nav-btn__icon" aria-hidden="true">&#9998;</span><span data-i18n="nav.plan"></span>
+      <span class="nav-btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span data-i18n="nav.plan"></span>
     </button>
     <button type="button" class="nav-btn" role="tab" data-view="result" aria-selected="false">
-      <span class="nav-btn__icon" aria-hidden="true">&#9776;</span><span data-i18n="nav.result"></span>
+      <span class="nav-btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><span data-i18n="nav.result"></span>
     </button>
     <button type="button" class="nav-btn" role="tab" data-view="map" aria-selected="false">
-      <span class="nav-btn__icon" aria-hidden="true">&#128506;</span><span data-i18n="nav.map"></span>
+      <span class="nav-btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg></span><span data-i18n="nav.map"></span>
     </button>
     <button type="button" class="nav-btn" role="tab" data-view="rules" aria-selected="false">
-      <span class="nav-btn__icon" aria-hidden="true">&#9878;</span><span data-i18n="nav.rules"></span>
+      <span class="nav-btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><span data-i18n="nav.rules"></span>
     </button>
     <button type="button" class="nav-btn" role="tab" data-view="info" aria-selected="false">
-      <span class="nav-btn__icon" aria-hidden="true">&#8505;</span><span data-i18n="nav.info"></span>
+      <span class="nav-btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span data-i18n="nav.info"></span>
     </button>
   </nav>
 </div>
@@ -282,6 +284,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 
 <script src="js/core/config.js"></script>
+<script src="js/core/icons.js"></script>
 <script src="js/core/i18n.js"></script>
 <script src="js/core/util.js"></script>
 <script src="js/core/geo.js"></script>

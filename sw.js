@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.1.0';
+var CACHE_VERSION = 'trp-shell-v2.2.0';
 
 var SHELL = [
   './',
@@ -30,6 +30,7 @@ var SHELL = [
   'data/trailer_regulations.json',
   'data/eu_driving_rules.json',
   'js/core/config.js',
+  'js/core/icons.js',
   'js/core/i18n.js',
   'js/core/util.js',
   'js/core/geo.js',

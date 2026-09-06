@@ -49,7 +49,7 @@
     document.documentElement.setAttribute('data-theme', theme);
     util.storageSet(THEME_KEY, theme);
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#06182f' : '#114a86');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#12161f' : '#ffffff');
   }
 
   function currentTheme() {
@@ -63,7 +63,8 @@
     if (!button) return;
     function sync() {
       var active = document.documentElement.getAttribute('data-theme');
-      button.textContent = active === 'dark' ? '☀' : '☾';
+      var glyph = active === 'dark' ? 'sun' : 'moon';
+      button.innerHTML = TRP.icons ? TRP.icons.svg(glyph) : (active === 'dark' ? '\u2600' : '\u263E');
       button.setAttribute('title', t(active === 'dark' ? 'app.themeToLight' : 'app.themeToDark'));
       button.setAttribute('aria-label', button.getAttribute('title'));
     }

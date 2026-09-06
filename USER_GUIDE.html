@@ -3,40 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#114a86">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="Guia de usuario de Truck Route Planner: instalacion, uso, paradas legales UE, peajes, mapa y aparcamiento seguro. created by Gabor Gasko">
 <title>Truck Route Planner - Guía de usuario / User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <style>
   html, body { height: auto; overflow: visible; }
-  body { background: var(--surface-2); }
+  body { background: var(--bg); }
 
   /* Only the active language is shown. */
   [data-guide-lang="es"] .lang--en { display: none; }
   [data-guide-lang="en"] .lang--es { display: none; }
 
-  .guide-hero {
-    background: linear-gradient(135deg, var(--blue-800), var(--blue-700) 55%, var(--blue-600));
-    color: #fff;
-    padding: 30px 24px 26px;
-  }
-  .guide-hero__inner { max-width: 1080px; margin: 0 auto; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .guide-hero { background: var(--surface); border-bottom: 1px solid var(--line); padding: 28px 24px; }
+  .guide-hero__inner { max-width: 1080px; margin: 0 auto; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .guide-hero__mark {
-    width: 60px; height: 60px; border-radius: 16px;
-    background: var(--yellow-400); color: var(--blue-800);
-    display: grid; place-items: center; font-size: 30px; flex: none;
-    box-shadow: 0 8px 22px rgba(0,0,0,.3);
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--accent); color: #fff;
+    display: grid; place-items: center; flex: none;
   }
-  .guide-hero h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.3px; }
-  .guide-hero p { margin: 0; color: #cfe1f8; font-size: 14px; }
+  .guide-hero__mark svg { width: 28px; height: 28px; }
+  .guide-hero h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -.02em; }
+  .guide-hero p { margin: 0; color: var(--muted); font-size: 14px; }
   .guide-hero__side { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-  /* The hero credit is the shared .author-link pill (see css/theme.css). */
   .lang-switch { display: flex; gap: 6px; }
   .lang-switch button {
-    border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.12); color: #fff;
-    border-radius: 999px; padding: 5px 15px; font: inherit; font-size: 12.5px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
   }
-  .lang-switch button[aria-pressed="true"] { background: #fff; color: var(--blue-800); font-weight: 700; }
+  .lang-switch button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 
   .guide-wrap {
     max-width: 1080px; margin: 0 auto; padding: 26px 20px 40px;
@@ -46,44 +44,40 @@
   .toc {
     position: sticky; top: 18px;
     background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
+    border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-xs);
   }
-  .toc h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); margin-bottom: 8px; }
+  .toc h2 { font-size: 11.5px; font-weight: 600; color: var(--muted); margin: 4px 8px 8px; }
   .toc a {
     display: block; padding: 6px 9px; border-radius: 7px;
     font-size: 13px; color: var(--ink-soft); text-decoration: none;
-    border-left: 3px solid transparent;
   }
-  .toc a:hover { background: var(--blue-050); color: var(--blue-700); border-left-color: var(--yellow-400); }
+  .toc a:hover { background: var(--surface-3); color: var(--ink); }
 
   .guide-main > section {
     background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 22px 24px; margin-bottom: 18px;
+    border-radius: var(--radius); box-shadow: var(--shadow-xs);
+    padding: 22px 24px; margin-bottom: 16px;
     scroll-margin-top: 16px;
   }
   .guide-main h2 {
-    font-size: 19px; color: var(--blue-700);
-    padding-bottom: 9px; margin-bottom: 14px;
-    border-bottom: 3px solid var(--yellow-400);
-    display: inline-block;
+    font-size: 18px; color: var(--ink);
+    padding-bottom: 10px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--line);
   }
-  [data-theme="dark"] .guide-main h2 { color: var(--yellow-400); }
   .guide-main h3 { font-size: 14.5px; color: var(--ink); margin: 18px 0 7px; }
   .guide-main p, .guide-main li { font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
   .guide-main ul, .guide-main ol { padding-left: 22px; margin: 0 0 12px; }
   .guide-main li { margin-bottom: 5px; }
   .guide-main code {
     font-family: var(--mono); font-size: 12.5px;
-    background: var(--surface-3); padding: 1.5px 5px; border-radius: 4px; color: var(--blue-700);
+    background: var(--surface-3); padding: 1.5px 5px; border-radius: 4px; color: var(--ink);
   }
-  [data-theme="dark"] .guide-main code { color: var(--yellow-400); }
   .guide-main pre {
-    background: var(--blue-900); color: #dbe7f7;
+    background: #101828; color: #e4e7ec;
     padding: 13px 15px; border-radius: var(--radius-sm);
     overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55;
-    border-left: 4px solid var(--yellow-400);
   }
+  [data-theme="dark"] .guide-main pre { background: var(--surface-3); }
   .guide-main pre code { background: none; color: inherit; padding: 0; }
 
   .steps { counter-reset: step; list-style: none; padding: 0; }
@@ -92,50 +86,44 @@
     content: counter(step);
     position: absolute; left: 0; top: -1px;
     width: 28px; height: 28px; border-radius: 50%;
-    background: var(--blue-700); color: #fff;
-    display: grid; place-items: center; font-weight: 800; font-size: 13px;
+    background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-weight: 600; font-size: 13px;
   }
   .steps > li strong { color: var(--ink); }
 
   .kbd {
     display: inline-block; font-family: var(--mono); font-size: 11.5px;
-    border: 1px solid var(--line); border-bottom-width: 2px;
+    border: 1px solid var(--line-strong); border-bottom-width: 2px;
     border-radius: 5px; padding: 1px 6px; background: var(--surface-2);
   }
 
   .callout {
-    border-left: 4px solid var(--blue-600); background: var(--blue-050);
+    border: 1px solid var(--accent-line); background: var(--accent-soft);
     padding: 12px 15px; border-radius: var(--radius-sm); margin: 14px 0; font-size: 13.5px;
   }
-  .callout--warn { border-left-color: var(--yellow-400); background: var(--yellow-100); }
-  .callout--danger { border-left-color: var(--danger); background: rgba(200,50,46,.08); }
-  [data-theme="dark"] .callout { background: rgba(26,111,212,.10); }
-  [data-theme="dark"] .callout--warn { background: rgba(255,204,0,.10); }
+  .callout--warn { border-color: var(--warn-line); background: var(--warn-bg); }
+  .callout--danger { border-color: var(--danger-line); background: var(--danger-bg); }
   .callout strong:first-child { color: var(--ink); }
 
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .tile { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--surface-2); }
-  .tile h4 { margin: 0 0 5px; font-size: 13.5px; color: var(--blue-700); }
-  [data-theme="dark"] .tile h4 { color: var(--yellow-400); }
+  .tile h4 { margin: 0 0 5px; font-size: 13.5px; color: var(--ink); }
   .tile p { margin: 0; font-size: 12.5px; }
 
   .guide-main table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 14px; }
   .guide-main th, .guide-main td {
-    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top;
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top;
   }
-  .guide-main thead th {
-    font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
-    color: var(--muted); border-bottom: 2px solid var(--line);
-  }
-  .art { font-family: var(--mono); font-size: 12px; color: var(--blue-700); white-space: nowrap; }
-  [data-theme="dark"] .art { color: var(--yellow-400); }
+  .guide-main thead th { font-size: 12px; font-weight: 500; color: var(--muted); background: var(--surface-2); }
+  .art { font-family: var(--mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
 
-  .guide-footer { background: var(--blue-900); color: #a9bfdb; padding: 22px 24px; font-size: 12.5px; line-height: 1.6; }
-  .guide-footer__inner { max-width: 1080px; margin: 0 auto; }
-  .guide-footer strong { color: var(--yellow-400); }
-  .guide-footer__by {
-    margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.15);
+  .guide-footer {
+    background: var(--surface); border-top: 1px solid var(--line);
+    color: var(--muted); padding: 22px 24px; font-size: 12.5px; line-height: 1.6;
   }
+  .guide-footer__inner { max-width: 1080px; margin: 0 auto; }
+  .guide-footer strong { color: var(--ink-soft); }
+  .guide-footer__by { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 
   @media (max-width: 860px) {
     .guide-wrap { grid-template-columns: 1fr; padding: 18px 14px 30px; }
@@ -154,7 +142,7 @@
 
 <header class="guide-hero">
   <div class="guide-hero__inner">
-    <div class="guide-hero__mark" aria-hidden="true">&#128667;</div>
+    <div class="guide-hero__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
     <div>
       <h1>Truck Route Planner</h1>
       <p><span class="lang lang--es">Guía de usuario</span><span class="lang lang--en">User guide</span>

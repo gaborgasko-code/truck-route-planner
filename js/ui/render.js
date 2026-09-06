@@ -81,6 +81,11 @@
       '<div class="stat-grid">' + tiles.join('') + '</div>';
   }
 
+  /** Inline SVG for an icon name; empty when the icon module is absent (tests). */
+  function iconFor(name) {
+    return TRP.icons ? TRP.icons.svg(name) : '';
+  }
+
   /* ----------------------------------------------------------- itinerary */
 
   function eventTitle(ev) {
@@ -90,8 +95,7 @@
   function itineraryHtml(r) {
     if (!r.itinerary || !r.itinerary.length) return '<p class="muted">-</p>';
     var rows = r.itinerary.map(function (ev) {
-      var icon = ev.type === 'break' ? '☕' : ev.type === 'rest' ? '☽' :
-        ev.type === 'depart' ? '▶' : ev.type === 'arrive' ? '⚑' : '→';
+      var icon = iconFor({ 'break': 'coffee', rest: 'moon', depart: 'play', arrive: 'flag' }[ev.type] || 'navigation');
       return '<li class="tl__item tl__item--' + esc(ev.type) + '">' +
         '<span class="tl__icon" aria-hidden="true">' + icon + '</span>' +
         '<span class="tl__body">' +
@@ -222,7 +226,7 @@
 
   /* ------------------------------------------------------- legal stops */
 
-  var LEGAL_ICONS = { 'break': '☕', dailyRest: '☽', weeklyRest: '🛏' };
+  var LEGAL_ICONS = { 'break': 'coffee', dailyRest: 'moon', weeklyRest: 'bed' };
 
   /** The stops the regulation requires, with the article behind each one. */
   function legalPlanHtml(r) {
@@ -232,7 +236,7 @@
     }
     var rows = legal.plan.map(function (stop) {
       return '<li class="ls">' +
-        '<span class="ls__icon" aria-hidden="true">' + (LEGAL_ICONS[stop.type] || '⏸') + '</span>' +
+        '<span class="ls__icon" aria-hidden="true">' + iconFor(LEGAL_ICONS[stop.type] || 'pause') + '</span>' +
         '<div class="ls__body">' +
         '<div class="ls__head">' +
         '<strong>' + esc(t('legal.type.' + stop.type)) + '</strong>' +
@@ -279,7 +283,6 @@
         return '<li><span class="chip chip--sm">' + esc(rule.article) + '</span> ' + esc(rule.text) + '</li>';
       }).join('');
       return '<details class="reg"><summary>' +
-        (group.icon ? '<span aria-hidden="true">' + group.icon + '</span> ' : '') +
         '<strong>' + esc(group.title) + '</strong></summary>' +
         '<ul class="reg__list reg__list--articles">' + items + '</ul></details>';
     });
