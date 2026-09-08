@@ -273,19 +273,20 @@ sends a request.
 - **Raw events are deleted after `ANALYTICS_RETENTION_DAYS` (90).** Only the
   aggregated daily rollup is kept.
 
-### Two backends, one set of rules
+### Three backends, one set of rules
 
 GitHub Pages serves static files only, so the collector has to live somewhere
-that runs code. There are two implementations:
+that runs code. There are three implementations - pick one, since running two
+would split the counts between them:
 
-| | `backend/server.js` | `backend/firebase/` |
-|---|---|---|
-| Runs on | anything with Node and a disk | Firebase Cloud Functions |
-| Stores in | NDJSON files + `rollup.json` | Firestore |
-| Retention | hourly `prune()` | native TTL policy |
-| Good for | a VPS, a container, local development | no server to run or patch |
+| | `backend/server.js` | `backend/firebase/` | `backend/cloudflare/` |
+|---|---|---|---|
+| Runs on | Node and a disk | Cloud Functions | Workers |
+| Stores in | NDJSON + `rollup.json` | Firestore | D1 (SQLite) |
+| Retention | hourly `prune()` | native TTL policy | cron-triggered prune |
+| Card needed | depends on the host | yes (Blaze) | no |
 
-Both call the same `backend/lib/events.js`, which holds the field allowlist,
+All three call the same `backend/lib/events.js`, which holds the field allowlist,
 the visitor hashing and the aggregation. That file is the privacy design; the
 rest is plumbing. The Firestore version is not a straight port, because a Cloud
 Function scales to zero and runs several instances at once: the daily salt and
@@ -414,9 +415,13 @@ truck_route_planner_web/
 │  ├─ server.js               Node service: /api/collect, /api/stats, dashboard
 │  ├─ store.js                file storage for the Node service
 │  ├─ dashboard.html          token-protected traffic dashboard
-│  └─ firebase/               the same collector as a Cloud Function
-│     ├─ firestore.rules      deny all client access
-│     └─ functions/           index.js, firestore-store.js, generated copies
+│  ├─ firebase/               the same collector as a Cloud Function
+│  │  ├─ firestore.rules      deny all client access
+│  │  └─ functions/           index.js, firestore-store.js, generated copies
+│  └─ cloudflare/             the same collector as a Worker + D1
+│     ├─ schema.sql           tables; no column can hold an IP
+│     ├─ wrangler.toml        bindings, vars, cron trigger for retention
+│     └─ src/                 worker.js, d1-store.js, generated copies
 │
 ├─ data/
 │  ├─ toll_rates.json         44 countries: rate, toll system, bounding boxes
@@ -424,7 +429,7 @@ truck_route_planner_web/
 │  ├─ trailer_regulations.json 30 countries + EU baseline, ES/EN
 │  └─ eu_driving_rules.json   Regulation 561/2006 et al., ES/EN, by article
 │
-├─ tests/                     192 assertions, no network, no dependencies
+├─ tests/                     220 assertions, no network, no dependencies
 │  ├─ harness.js
 │  ├─ test_time_estimation.js
 │  ├─ test_toll_estimation.js
@@ -435,6 +440,7 @@ truck_route_planner_web/
 │  ├─ test_consent.js
 │  ├─ test_analytics.js       client payload + backend allowlist and rollups
 │  ├─ test_firestore_store.js live counters vs a rebuild, against a fake db
+│  ├─ test_d1_store.js        the same for D1, plus the scheduled prune
 │  ├─ run_node.js             headless runner
 │  └─ test_runner.html        browser runner
 │
@@ -635,9 +641,9 @@ index.html?view=mobile      desktop.html?view=desktop      mobile.html?view=mobi
 
 ## Tests
 
-192 assertions across ten suites — the time model, toll aggregation, stop
+220 assertions across twelve suites — the time model, toll aggregation, stop
 intervals and parking proximity, the EU legal stop plan and compliance checks,
-multi-manning, localisation, consent, analytics and the Firestore backend. No network access and no
+multi-manning, localisation, consent, analytics and the Firestore and D1 backends. No network access and no
 dependencies, so the whole suite runs offline in about a second.
 
 Three of these are worth knowing about:

@@ -21,7 +21,10 @@
  */
 'use strict';
 
-const crypto = require('crypto');
+/* The explicit node: specifier, not a bare 'crypto'. Node resolves both, but
+   Cloudflare Workers only provide this module under that name with the
+   nodejs_compat flag, and this file has to run there unchanged. */
+const crypto = require('node:crypto');
 
 /* Everything an event may contain. Unknown keys are discarded. */
 const FIELDS = {

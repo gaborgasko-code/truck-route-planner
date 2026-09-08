@@ -1,0 +1,13 @@
+{
+  "name": "trp-analytics-worker",
+  "description": "Truck Route Planner - analytics collector (Cloudflare Workers + D1). created by Gabor Gasko",
+  "private": true,
+  "scripts": {
+    "sync": "node ../../tools/build-backends.js",
+    "dev": "npm run sync && wrangler dev",
+    "deploy": "npm run sync && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

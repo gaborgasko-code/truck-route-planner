@@ -7,7 +7,7 @@
     "node": "22"
   },
   "scripts": {
-    "sync": "node ../../../tools/build-firebase.js",
+    "sync": "node ../../../tools/build-backends.js",
     "serve": "npm run sync && firebase emulators:start --only functions,firestore",
     "deploy": "npm run sync && firebase deploy --only functions:analytics"
   },

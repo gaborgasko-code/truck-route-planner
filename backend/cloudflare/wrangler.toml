@@ -1,0 +1,60 @@
+# Truck Route Planner - analytics collector on Cloudflare Workers + D1.
+#
+# Deploy with:
+#   wrangler d1 create trp-analytics          # paste the id below
+#   wrangler d1 execute trp-analytics --remote --file=schema.sql
+#   wrangler secret put ANALYTICS_TOKEN
+#   wrangler deploy
+#
+# See backend/README.md for the full walkthrough.
+#
+# created by Gabor Gasko
+
+name = "trp-analytics"
+main = "src/worker.js"
+compatibility_date = "2026-01-01"
+
+# events.js is shared verbatim with Node and Cloud Functions, and it hashes the
+# visitor token with node:crypto. This flag is what makes that module exist in
+# the Workers runtime; without it the shared file would have to be forked.
+compatibility_flags = ["nodejs_compat"]
+
+# The dashboard is a single HTML file imported as a string, so it can be served
+# straight from the worker rather than needing separate hosting.
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "trp-analytics"
+# Filled in by `wrangler d1 create trp-analytics`.
+database_id = "REPLACE-WITH-YOUR-D1-DATABASE-ID"
+
+# D1 has no TTL feature, so retention is a scheduled job. Declared here rather
+# than left as a manual step: if this were forgotten the collector would keep
+# data forever while the privacy policy still promised ninety days.
+[triggers]
+crons = ["17 3 * * *"]
+
+[vars]
+# Only these origins may POST events. A wildcard would let any site write into
+# the counters.
+ANALYTICS_ORIGINS = "https://planificador.ggabor.online"
+ANALYTICS_SITE = "planificador"
+
+# Days a raw event is kept before the scheduled prune deletes it.
+ANALYTICS_RETENTION_DAYS = "90"
+
+# Store individual events as well as the daily counters. Setting this to
+# "false" roughly halves the writes but makes the counts impossible to rebuild.
+ANALYTICS_STORE_RAW = "true"
+
+# The hard spending stop: past this many events in a UTC day the collector
+# answers normally and stops writing. Set to 0 to remove the stop.
+ANALYTICS_DAILY_CAP = "8000"
+
+# ANALYTICS_TOKEN is deliberately absent. It is a secret and belongs in
+#   wrangler secret put ANALYTICS_TOKEN
+# not in a file that gets committed.

@@ -26,7 +26,7 @@
   const events = require('../backend/lib/events.js');
   const { FirestoreStore, rollupDelta } =
     require('../backend/firebase/functions/firestore-store.js');
-  const buildFirebase = require('../tools/build-firebase.js');
+  const buildFirebase = require('../tools/build-backends.js');
 
   /* ------------------------------------------------------- fake Firestore */
 
@@ -436,7 +436,7 @@
   describe('firestore - the deployed copy is current', function () {
     test('functions/events.js matches backend/lib/events.js', function () {
       assert.ok(buildFirebase.isCurrent(),
-        'run `node tools/build-firebase.js` - the function would deploy stale rules');
+        'run `node tools/build-backends.js` - the function would deploy stale rules');
     });
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

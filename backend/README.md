@@ -7,19 +7,24 @@ without tracking anybody. It is **off by default**: leave `ANALYTICS_ENDPOINT`
 empty in `js/core/config.js` and the app collects nothing, the analytics
 category never appears in the consent dialog, and no code path sends a request.
 
-There are two backends. They store data differently and share everything that
+There are three backends. They store data differently and share everything that
 matters:
 
-| | `server.js` | `firebase/` |
-|---|---|---|
-| Runs on | anything with Node and a disk | Firebase Cloud Functions |
-| Stores in | NDJSON files + `rollup.json` | Firestore |
-| Retention | hourly `prune()` | native TTL policy |
-| Good for | a VPS, a container, local development | no server to run or patch |
+| | `server.js` | `firebase/` | `cloudflare/` |
+|---|---|---|---|
+| Runs on | anything with Node and a disk | Cloud Functions | Workers |
+| Stores in | NDJSON + `rollup.json` | Firestore | D1 (SQLite) |
+| Retention | hourly `prune()` | native TTL policy | cron-triggered prune |
+| Card needed | depends on the host | **yes** (Blaze) | **no** |
+| Good for | a VPS, a container, local dev | no server to patch | free with no card |
 
-Both call the same `lib/events.js`, which holds the field allowlist, the
+All three call the same `lib/events.js`, which holds the field allowlist, the
 visitor hashing and the aggregation. That file is the privacy design; the rest
-is plumbing.
+is plumbing. Each backend supplies only persistence, and each is checked
+against `aggregate()` by the tests, because three separate ways of counting
+the same events is three chances for them to drift into disagreeing.
+
+Pick one. Running two at once would split the counts between them.
 
 ---
 
@@ -46,7 +51,7 @@ field posted straight at the collector never reaches storage.
 
 ---
 
-## Option A — Firebase Cloud Functions
+## Option A — Firebase Cloud Functions (currently deployed)
 
 Nothing to run or patch, and at this traffic the bill is zero. Cloud Functions
 require the **Blaze** plan, so a card has to be on the billing account even
@@ -167,7 +172,79 @@ Open the function URL in a browser and paste the token. It is held in
 
 ---
 
-## Option B — your own server
+## Option B — Cloudflare Workers + D1
+
+Genuinely free with no card: the Workers free plan allows 100,000 requests a
+day, and D1's free tier is far beyond what this app will use. No cold-start
+penalty worth worrying about, and nothing to patch.
+
+The trade against Firebase is that D1 has **no TTL feature**, so retention is a
+scheduled job rather than something the platform does. That job is declared in
+`wrangler.toml` as a cron trigger, so it ships with the code — if it were a
+manual step, forgetting it would mean keeping data forever while the privacy
+policy still promised ninety days.
+
+### Setup
+
+```bash
+npm install -g wrangler        # or use npx, as the package.json scripts do
+wrangler login                 # opens a browser; no card is asked for
+```
+
+```bash
+cd backend/cloudflare
+npm install
+
+wrangler d1 create trp-analytics
+# paste the printed database_id into wrangler.toml
+
+wrangler d1 execute trp-analytics --remote --file=schema.sql
+wrangler secret put ANALYTICS_TOKEN      # generate one, see below
+wrangler deploy
+```
+
+Generate the token with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+The deploy prints the worker URL, of the form
+`https://trp-analytics.<your-subdomain>.workers.dev`. Point the app at it by
+setting `ANALYTICS_ENDPOINT` in `js/core/config.js` to that URL plus
+`/api/collect`, then redeploy the site.
+
+### Settings
+
+They live in `[vars]` in `wrangler.toml`: `ANALYTICS_ORIGINS`,
+`ANALYTICS_SITE`, `ANALYTICS_RETENTION_DAYS`, `ANALYTICS_STORE_RAW` and
+`ANALYTICS_DAILY_CAP`. Only `ANALYTICS_TOKEN` is a secret, and it is set with
+`wrangler secret put` rather than committed.
+
+The same defences apply as on Firebase: an 8,000-event daily cap that stops
+writing rather than spending, and a 120-per-5-minute per-visitor rate limit
+held in isolate memory.
+
+### Working on it locally
+
+```bash
+cd backend/cloudflare
+echo "ANALYTICS_TOKEN=local-dev-token" > .dev.vars    # gitignored
+npx wrangler dev --local
+npx wrangler d1 execute trp-analytics --local --file=schema.sql
+```
+
+That runs the real Workers runtime and a real SQLite database with **no
+Cloudflare account at all**, which is the quickest way to check a change. Fire
+the retention job by hand with:
+
+```bash
+curl "http://127.0.0.1:8787/cdn-cgi/local/scheduled"
+```
+
+---
+
+## Option C — your own server
 
 ```bash
 ANALYTICS_TOKEN=choose-a-long-secret \
@@ -220,7 +297,7 @@ oracle for probing the allowlist.
 
 ```bash
 node tests/run_node.js          # includes both backends, no network, no emulator
-node tools/build-firebase.js    # refresh the copies under firebase/functions/
+node tools/build-backends.js    # refresh the copies under each backend
 ```
 
 `firebase/functions/events.js` and `dashboard.html` are **generated copies** of
@@ -230,6 +307,6 @@ Editing a copy is pointless — the next build overwrites it — and a test fail
 if a copy is stale, because deploying stale rules is how the allowlist would
 quietly fall out of step with the app.
 
-The Firestore tests run against a fake, so there is no emulator and no
-credentials involved. That is possible because `FirestoreStore` takes `db` and
+The Firestore and D1 tests run against fakes, so there is no emulator, no
+wrangler and no credentials involved. That is possible because `FirestoreStore` takes `db` and
 `FieldValue` as constructor arguments instead of importing the Admin SDK.
