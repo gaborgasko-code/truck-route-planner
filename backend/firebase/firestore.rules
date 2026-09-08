@@ -1,0 +1,27 @@
+rules_version = '2';
+
+/*
+ * Truck Route Planner - analytics Firestore rules.
+ *
+ * Deny everything. No exceptions, no conditions to get wrong later.
+ *
+ * Only the Cloud Function touches this data, and it uses the Admin SDK, which
+ * bypasses rules entirely. So there is no client that ever needs access, and
+ * anything reaching these rules is by definition something that should not be
+ * here: a stolen web API key, a misconfigured SDK, or somebody probing.
+ *
+ * This matters more than usual because of what is in here. The visitors
+ * collection holds one salted hash per person per day, and salts/{day} holds
+ * the salt itself while the day is live. Read access to both at once is the
+ * only way the day's hashes could be matched back to an IP address, so the
+ * rule that stops it is the last line of the privacy design, not boilerplate.
+ *
+ * created by Gabor Gasko
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

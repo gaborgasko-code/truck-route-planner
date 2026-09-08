@@ -40,7 +40,8 @@ const root = path.resolve(__dirname, '..');
   'tests/test_multi_manning.js',
   'tests/test_i18n.js',
   'tests/test_consent.js',
-  'tests/test_analytics.js'
+  'tests/test_analytics.js',
+  'tests/test_firestore_store.js'
 ].forEach((file) => require(path.join(root, file)));
 
 const E = String.fromCharCode(27);
@@ -54,7 +55,7 @@ console.log(BOLD + 'Truck Route Planner - test suite' + OFF);
 console.log(DIM + 'created by Gabor Gasko' + OFF + '\n');
 
 let lastSuite = null;
-const summary = globalThis.TRPTest.run((entry) => {
+globalThis.TRPTest.run((entry) => {
   if (entry.suite !== lastSuite) {
     lastSuite = entry.suite;
     console.log(BOLD + entry.suite + OFF);
@@ -65,11 +66,14 @@ const summary = globalThis.TRPTest.run((entry) => {
     console.log('  ' + RED + 'FAIL' + OFF + ' ' + entry.name);
     console.log('       ' + RED + entry.error + OFF);
   }
+}).then((summary) => {
+  const total = summary.passed + summary.failed;
+  console.log('');
+  console.log(BOLD + summary.passed + ' / ' + total + ' tests passed' + OFF +
+    (summary.failed ? RED + ' (' + summary.failed + ' failed)' + OFF : GREEN + ' - all green' + OFF));
+
+  process.exit(summary.failed ? 1 : 0);
+}).catch((err) => {
+  console.error(RED + 'the runner itself failed: ' + (err && err.stack || err) + OFF);
+  process.exit(1);
 });
-
-const total = summary.passed + summary.failed;
-console.log('');
-console.log(BOLD + summary.passed + ' / ' + total + ' tests passed' + OFF +
-  (summary.failed ? RED + ' (' + summary.failed + ' failed)' + OFF : GREEN + ' - all green' + OFF));
-
-process.exit(summary.failed ? 1 : 0);

@@ -65,28 +65,50 @@
    * Run every registered suite.
    * @returns {{passed:number, failed:number, results:Array}}
    */
+  /**
+   * Run every registered test and resolve with a summary.
+   *
+   * Returns a promise, because a test function is allowed to be async: the
+   * Firestore backend can only be exercised through promises. A synchronous
+   * loop would call such a test, get a promise back, and count it as passed
+   * without ever seeing its assertions - a test suite that reports green
+   * regardless of the code is worse than none.
+   *
+   * Tests run one at a time and in registration order. Several suites set
+   * shared state (the active language, for one), so overlapping them would
+   * make results depend on timing.
+   */
   function run(onResult) {
     var passed = 0;
     var failed = 0;
     var results = [];
+    var queue = [];
 
     suites.forEach(function (suite) {
-      suite.tests.forEach(function (t) {
-        var entry = { suite: suite.name, name: t.name, ok: true, error: null };
-        try {
-          t.fn();
-          passed++;
-        } catch (err) {
-          entry.ok = false;
-          entry.error = (err && err.message) || String(err);
-          failed++;
-        }
-        results.push(entry);
-        if (onResult) onResult(entry);
-      });
+      suite.tests.forEach(function (t) { queue.push({ suite: suite, test: t }); });
     });
 
-    return { passed: passed, failed: failed, results: results, suites: suites };
+    return queue.reduce(function (chain, item) {
+      return chain.then(function () {
+        var entry = { suite: item.suite.name, name: item.test.name, ok: true, error: null };
+        return Promise.resolve()
+          .then(function () { return item.test.fn(); })
+          .then(
+            function () { passed++; },
+            function (err) {
+              entry.ok = false;
+              entry.error = (err && err.message) || String(err);
+              failed++;
+            }
+          )
+          .then(function () {
+            results.push(entry);
+            if (onResult) onResult(entry);
+          });
+      });
+    }, Promise.resolve()).then(function () {
+      return { passed: passed, failed: failed, results: results, suites: suites };
+    });
   }
 
   global.TRPTest = { describe: describe, test: test, assert: assert, run: run, suites: suites };

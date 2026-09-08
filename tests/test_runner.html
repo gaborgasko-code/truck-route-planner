@@ -81,11 +81,14 @@
   var groups = {};
   var order = [];
 
-  var summary = TRPTest.run(function (entry) {
+  /* run() resolves rather than returning, so an async test is actually
+     awaited instead of being counted as passed the moment it starts. */
+  TRPTest.run(function (entry) {
     if (!groups[entry.suite]) { groups[entry.suite] = []; order.push(entry.suite); }
     groups[entry.suite].push(entry);
-  });
+  }).then(render);
 
+  function render(summary) {
   document.getElementById('results').innerHTML = order.map(function (name) {
     var rows = groups[name].map(function (t) {
       return '<div class="t ' + (t.ok ? 't--ok' : 't--bad') + '">' +
@@ -102,6 +105,7 @@
     (summary.passed + summary.failed) + '</span><span>' +
     (summary.failed ? summary.failed + ' test(s) failed' : 'all tests passed') + '</span>';
   document.title = (summary.failed ? 'FAIL' : 'PASS') + ' - Truck Route Planner tests';
+  }
 })();
 </script>
 </body>

@@ -1,0 +1,8 @@
+# Never commit the real project id or any emulator state.
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+ui-debug.log
+.runtimeconfig.json
+functions/node_modules/

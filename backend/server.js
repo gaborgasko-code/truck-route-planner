@@ -15,8 +15,9 @@
  *   ANALYTICS_ORIGINS=https://planificador.ggabor.online \
  *   node backend/server.js
  *
- * See backend/README.md for deployment behind Caddy, nginx, Render or Fly,
- * and backend/worker.js for the Cloudflare Workers variant.
+ * This is the variant for a host that runs a long-lived process and owns a
+ * disk. For Firebase Cloud Functions, which own neither, see backend/firebase/.
+ * Deployment for both is in backend/README.md.
  *
  * created by Gabor Gasko
  */
@@ -270,6 +271,30 @@ if (require.main === module) {
     log('listening on http://' + CONFIG.host + ':' + CONFIG.port);
     log('data dir ' + CONFIG.dir + ', retention ' + CONFIG.retentionDays + ' days');
     log('allowed origins: ' + CONFIG.origins.join(', '));
+  });
+
+  /*
+   * Stop cleanly when a supervisor asks. Events are already safe - every write
+   * is synchronous - but without this the process is killed mid-request and
+   * the caller sees a connection reset rather than its 204. Ten seconds is
+   * well under the usual grace period.
+   */
+  let closing = false;
+  ['SIGTERM', 'SIGINT'].forEach((signal) => {
+    process.on(signal, () => {
+      if (closing) return;
+      closing = true;
+      log('received ' + signal + ', finishing in-flight requests');
+      const forced = setTimeout(() => {
+        log('shutdown timed out, exiting anyway');
+        process.exit(0);
+      }, 10000);
+      forced.unref();
+      server.close(() => {
+        log('stopped');
+        process.exit(0);
+      });
+    });
   });
 }
 

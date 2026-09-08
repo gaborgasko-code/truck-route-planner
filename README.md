@@ -273,31 +273,37 @@ sends a request.
 - **Raw events are deleted after `ANALYTICS_RETENTION_DAYS` (90).** Only the
   aggregated daily rollup is kept.
 
-### Running it
+### Two backends, one set of rules
 
-```bash
-ANALYTICS_TOKEN=choose-a-long-secret \
-ANALYTICS_ORIGINS=https://your.site \
-ANALYTICS_DIR=./analytics-data \
-node backend/server.js
-```
+GitHub Pages serves static files only, so the collector has to live somewhere
+that runs code. There are two implementations:
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `PORT` | `8787` | listening port |
-| `ANALYTICS_TOKEN` | — | required to read `/api/stats` and the dashboard |
-| `ANALYTICS_ORIGINS` | — | comma-separated CORS allowlist for `/api/collect` |
-| `ANALYTICS_DIR` | `./analytics-data` | where the daily files and rollup live |
-| `ANALYTICS_RETENTION_DAYS` | `90` | age at which raw events are deleted |
-| `TRUST_PROXY` | `0` | set to `1` to read the client IP from `X-Forwarded-For` |
+| | `backend/server.js` | `backend/firebase/` |
+|---|---|---|
+| Runs on | anything with Node and a disk | Firebase Cloud Functions |
+| Stores in | NDJSON files + `rollup.json` | Firestore |
+| Retention | hourly `prune()` | native TTL policy |
+| Good for | a VPS, a container, local development | no server to run or patch |
 
-Then point the app at it by setting `ANALYTICS_ENDPOINT` in
-`js/core/config.js` to `https://your-collector/api/collect`.
+Both call the same `backend/lib/events.js`, which holds the field allowlist,
+the visitor hashing and the aggregation. That file is the privacy design; the
+rest is plumbing. The Firestore version is not a straight port, because a Cloud
+Function scales to zero and runs several instances at once: the daily salt and
+the set of visitors seen today cannot live in memory there, or one person would
+be counted once per instance and per cold start. Both move into Firestore, and
+a test runs the same events through the live counters and through a rebuild
+from raw events to prove the two still agree.
+
+**Deployment for both, including the one-time Firestore TTL policy, is in
+[backend/README.md](backend/README.md).**
+
+Then point the app at whichever you chose by setting `ANALYTICS_ENDPOINT` in
+`js/core/config.js` to its `/api/collect` URL.
 
 | Route | Method | Purpose |
 |-------|--------|---------|
 | `/api/collect` | POST | receives an event, answers `204`, never echoes anything |
-| `/api/stats` | GET | aggregated JSON; requires `?token=` |
+| `/api/stats` | GET | aggregated JSON; `?token=` or a Bearer header, optional `from`/`to` |
 | `/api/health` | GET | liveness |
 | `/` | GET | the dashboard below |
 
@@ -403,9 +409,14 @@ truck_route_planner_web/
 │                             (es and en are built into js/core/i18n.js)
 │
 ├─ backend/                   optional traffic collector - no dependencies
-│  ├─ server.js               /api/collect, /api/stats, /api/health, dashboard
-│  ├─ store.js                field allowlist, daily salt, aggregation, retention
-│  └─ dashboard.html          token-protected traffic dashboard
+│  ├─ README.md               deployment, both backends
+│  ├─ lib/events.js           allowlist, visitor hashing, aggregation (shared)
+│  ├─ server.js               Node service: /api/collect, /api/stats, dashboard
+│  ├─ store.js                file storage for the Node service
+│  ├─ dashboard.html          token-protected traffic dashboard
+│  └─ firebase/               the same collector as a Cloud Function
+│     ├─ firestore.rules      deny all client access
+│     └─ functions/           index.js, firestore-store.js, generated copies
 │
 ├─ data/
 │  ├─ toll_rates.json         44 countries: rate, toll system, bounding boxes
@@ -413,7 +424,7 @@ truck_route_planner_web/
 │  ├─ trailer_regulations.json 30 countries + EU baseline, ES/EN
 │  └─ eu_driving_rules.json   Regulation 561/2006 et al., ES/EN, by article
 │
-├─ tests/                     175 assertions, no network, no dependencies
+├─ tests/                     192 assertions, no network, no dependencies
 │  ├─ harness.js
 │  ├─ test_time_estimation.js
 │  ├─ test_toll_estimation.js
@@ -423,6 +434,7 @@ truck_route_planner_web/
 │  ├─ test_i18n.js            includes all 22 packs against the baseline
 │  ├─ test_consent.js
 │  ├─ test_analytics.js       client payload + backend allowlist and rollups
+│  ├─ test_firestore_store.js live counters vs a rebuild, against a fake db
 │  ├─ run_node.js             headless runner
 │  └─ test_runner.html        browser runner
 │
@@ -623,9 +635,9 @@ index.html?view=mobile      desktop.html?view=desktop      mobile.html?view=mobi
 
 ## Tests
 
-175 assertions across nine suites — the time model, toll aggregation, stop
+192 assertions across ten suites — the time model, toll aggregation, stop
 intervals and parking proximity, the EU legal stop plan and compliance checks,
-multi-manning, localisation, consent and analytics. No network access and no
+multi-manning, localisation, consent, analytics and the Firestore backend. No network access and no
 dependencies, so the whole suite runs offline in about a second.
 
 Three of these are worth knowing about:

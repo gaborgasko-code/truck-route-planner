@@ -1,0 +1,18 @@
+{
+  "name": "trp-analytics-functions",
+  "description": "Truck Route Planner - analytics collector (Cloud Functions). created by Gabor Gasko",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "sync": "node ../../../tools/build-firebase.js",
+    "serve": "npm run sync && firebase emulators:start --only functions,firestore",
+    "deploy": "npm run sync && firebase deploy --only functions:analytics"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0"
+  }
+}
