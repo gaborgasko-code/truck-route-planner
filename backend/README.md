@@ -91,9 +91,9 @@ Create the project at <https://console.firebase.google.com>, then:
 1. **Enable Firestore** in *Native* mode. Choose the location carefully — it is
    permanent. `eur3` (Europe multi-region) or `europe-southwest1` (Madrid) both
    keep the data in the EU.
-2. **Upgrade to Blaze** (Settings → Usage and billing). Set a budget alert of
-   a euro or two while you are there; the free allowance should mean you never
-   see a bill, and the alert tells you if that stops being true.
+2. **Upgrade to Blaze** (Settings → Usage and billing). A budget alert is worth
+   setting, but note it only notifies - it does not stop billing. The actual
+   guarantee is `ANALYTICS_DAILY_CAP` above.
 
 Then point the local config at the project and install:
 
@@ -126,23 +126,28 @@ The deploy prints the function URL, of the form:
 https://europe-southwest1-<project-id>.cloudfunctions.net/analytics
 ```
 
-### Finish the retention policy
+### Retention
 
 The function stamps `expiresAt` on every raw event, salt and visitor marker,
-but **Firestore only deletes them once a TTL policy exists**. This is a
-one-time step per collection, in the console under *Firestore → TTL*, or:
+and Firestore only deletes them where a **TTL policy** exists. Those policies
+are declared in `firestore.indexes.json` and applied by the deploy above, so
+there is nothing manual to remember:
 
-```bash
-gcloud firestore fields ttls update expiresAt \
-  --collection-group=events --enable-ttl --project=<project-id>
-gcloud firestore fields ttls update expiresAt \
-  --collection-group=salts --enable-ttl --project=<project-id>
-gcloud firestore fields ttls update expiresAt \
-  --collection-group=visitors --enable-ttl --project=<project-id>
+```json
+{ "collectionGroup": "events", "fieldPath": "expiresAt", "ttl": true }
 ```
 
-Without this the data still works but nothing is ever deleted, and the privacy
-policy's retention promise would be untrue.
+That matters beyond convenience. If retention depended on someone running a
+`gcloud` command after every fresh deploy, then a redeploy to a new project
+would quietly leave data forever while the privacy policy still promised 90
+days. Declaring it means the promise is enforced by the same command that ships
+the code.
+
+Check what is actually live with:
+
+```bash
+firebase firestore:indexes
+```
 
 ### Point the app at it
 
