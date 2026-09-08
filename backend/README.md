@@ -57,6 +57,28 @@ Two writes per page view, so roughly **10,000 views a day before anything is
 billable**. Setting `ANALYTICS_STORE_RAW` to `false` halves that, at the cost
 of being unable to rebuild the rollup later.
 
+### What stops it costing money
+
+Blaze bills past the free quota instead of blocking, and a budget alert in the
+console is an alert, **not a cap** — Google does not stop billing when you hit
+one. So the guarantee has to come from the code:
+
+| Defence | What it does |
+|---|---|
+| `ANALYTICS_DAILY_CAP` (8,000) | Past this many events in a UTC day the collector answers normally and **stops writing**. This is the hard stop; nothing else guarantees a zero bill. |
+| Per-visitor rate limit (120 / 5 min) | Stops one client flooding. Held in instance memory, so the real ceiling is this times the instance count. |
+| `maxInstances: 5` | Caps total throughput, which is what makes the in-memory limit meaningful rather than unbounded. |
+
+The cap is deliberately blunt: past it you lose counts for the rest of the day.
+That is the intended trade — an undercount is recoverable, a surprise invoice
+is not. Raise it with `ANALYTICS_DAILY_CAP`, or set it to `0` to remove the
+stop entirely, which is only sensible once you are content to be billed.
+
+The running total is read from the rollup at most once a minute per instance
+rather than on every request, so the check itself costs almost nothing. It
+therefore lags slightly, and the cap can be overshot by about a minute of
+traffic. It is a circuit breaker, not an accountant.
+
 ### One-time setup
 
 ```bash
@@ -158,6 +180,11 @@ node backend/server.js
 | `ANALYTICS_DIR` | `backend/data` | where the daily files and rollup live |
 | `ANALYTICS_RETENTION_DAYS` | `90` | age at which raw events are deleted |
 | `TRUST_PROXY` | `0` | set to `1` only behind a proxy you control |
+
+The Cloud Function takes the same settings as deploy-time parameters, plus
+`ANALYTICS_DAILY_CAP` (default `8000`) and `ANALYTICS_STORE_RAW` (default
+`true`). It has no `TRUST_PROXY`: it is always behind Google's load balancer,
+so the first entry of `X-Forwarded-For` is always the caller.
 
 Put it behind a reverse proxy that terminates TLS — the browser will refuse a
 plain-HTTP request from an HTTPS page. Set `TRUST_PROXY=1` **only** when that

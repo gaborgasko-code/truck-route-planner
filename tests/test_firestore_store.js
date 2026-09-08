@@ -357,6 +357,80 @@
     });
   });
 
+  /* ------------------------------------------------------- spending cap */
+
+  /*
+   * On the Blaze plan Firestore bills past the free quota rather than blocking,
+   * and a console budget alert is an alert, not a cap. The daily cap is the
+   * only thing that can actually guarantee a zero bill, so it is worth pinning
+   * down properly.
+   */
+  describe('firestore - the daily cap is a real stop', function () {
+    test('events are refused once the cap is reached', async function () {
+      const db = new FakeDb();
+      const store = makeStore(db, { dailyEventCap: 3, budgetRecheckMs: 0 });
+      const results = [];
+      for (let i = 0; i < 6; i += 1) {
+        results.push(await store.record(pageview(), { ip: IP, userAgent: UA }));
+      }
+      const stored = results.filter((r) => r.stored).length;
+      assert.equal(stored, 3, 'exactly the cap is stored, got ' + stored);
+      assert.equal(results[5].reason, 'budget', 'and the refusal says why');
+      assert.equal(db.data.rollups[events.dayKey()].views, 3,
+        'nothing is counted past the cap either');
+    });
+
+    test('a rejected payload does not consume budget', async function () {
+      const db = new FakeDb();
+      const store = makeStore(db, { dailyEventCap: 2, budgetRecheckMs: 0 });
+      for (let i = 0; i < 10; i += 1) {
+        await store.record({ event: 'exfiltrate' }, { ip: IP, userAgent: UA });
+      }
+      const after = await store.record(pageview(), { ip: IP, userAgent: UA });
+      assert.equal(after.stored, true,
+        'a flood of junk must not use up the budget for real events');
+    });
+
+    test('a cap of 0 disables the stop', async function () {
+      const db = new FakeDb();
+      const store = makeStore(db, { dailyEventCap: 0 });
+      for (let i = 0; i < 5; i += 1) await store.record(pageview(), { ip: IP, userAgent: UA });
+      assert.equal(db.data.rollups[events.dayKey()].views, 5, 'everything is stored');
+    });
+
+    test('the running total is counted across instances, not per instance', async function () {
+      /* Each instance reads the shared rollup, so a second cold start cannot
+         start the count again from zero. */
+      const db = new FakeDb();
+      const first = makeStore(db, { dailyEventCap: 4, budgetRecheckMs: 0 });
+      for (let i = 0; i < 4; i += 1) await first.record(pageview(), { ip: IP, userAgent: UA });
+      const second = makeStore(db, { dailyEventCap: 4, budgetRecheckMs: 0 });
+      const result = await second.record(pageview(), { ip: IP, userAgent: UA });
+      assert.equal(result.stored, false, 'a fresh instance still sees the cap as reached');
+      assert.equal(result.reason, 'budget');
+    });
+
+    test('the cap does not re-read the rollup on every request', async function () {
+      /* The check has to be nearly free, or it costs more of the free quota
+         than the abuse it is there to prevent. */
+      const db = new FakeDb();
+      const store = makeStore(db, { dailyEventCap: 1000, budgetRecheckMs: 60000 });
+
+      let reads = 0;
+      const realRollupRef = store.rollupRef.bind(store);
+      store.rollupRef = function (day) {
+        const ref = realRollupRef(day);
+        const innerGet = ref.get.bind(ref);
+        ref.get = function () { reads += 1; return innerGet(); };
+        return ref;
+      };
+
+      for (let i = 0; i < 20; i += 1) await store.record(pageview(), { ip: IP, userAgent: UA });
+      assert.ok(reads <= 2,
+        'the running total is cached; got ' + reads + ' reads for 20 events');
+    });
+  });
+
   /* -------------------------------------------------------- generated copy */
 
   describe('firestore - the deployed copy is current', function () {

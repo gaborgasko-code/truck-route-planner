@@ -121,9 +121,54 @@ class FirestoreStore {
     this.storeRawEvents = opts.storeRawEvents !== false;
     this.collections = Object.assign({}, DEFAULT_COLLECTIONS, opts.collections);
 
-    /* Per-instance cache. Only ever holds the current day, so a warm instance
-       does not re-read the salt on every request. */
+    /*
+     * The hard spending stop. Blaze bills past the free quota instead of
+     * blocking, and a budget alert in the console is an alert, not a cap, so
+     * the only thing that can actually guarantee a zero bill is refusing to
+     * write. Past this many events in a UTC day the collector keeps answering
+     * normally and simply stops persisting.
+     *
+     * Firestore's no-cost quota is 20,000 writes a day and an event costs two
+     * (the record and the rollup) plus one per new visitor, so 8,000 leaves
+     * real headroom. Losing counts past the cap is the intended trade: an
+     * undercount is recoverable, a surprise invoice is not.
+     */
+    this.dailyEventCap = opts.dailyEventCap == null ? 8000 : opts.dailyEventCap;
+    this.budgetRecheckMs = opts.budgetRecheckMs == null ? 60000 : opts.budgetRecheckMs;
+
+    /* Per-instance caches. Only ever hold the current day, so a warm instance
+       does not re-read the salt or the running total on every request. */
     this.saltCache = null;
+    this.budgetCache = null;
+  }
+
+  /**
+   * Is there still budget for another event today?
+   *
+   * The running total is read from the rollup at most once a
+   * `budgetRecheckMs` window per instance, so the check itself costs close to
+   * nothing. That means it lags: with several instances running, the cap can
+   * be overshot by roughly one window's traffic. It is a circuit breaker, not
+   * an accountant - stopping a runaway, not enforcing an exact number.
+   */
+  async withinBudget(day) {
+    if (!this.dailyEventCap) return true;   /* 0 disables the cap */
+
+    const now = Date.now();
+    const cached = this.budgetCache;
+    if (cached && cached.day === day) {
+      cached.seen += 1;
+      if (cached.total + cached.seen < this.dailyEventCap) return true;
+      if (now - cached.checkedAt < this.budgetRecheckMs) {
+        return cached.total + cached.seen < this.dailyEventCap;
+      }
+    }
+
+    const snap = await this.rollupRef(day).get();
+    const data = snap.exists ? snap.data() : {};
+    const total = (data.views || 0) + (data.routes || 0) + (data.failures || 0);
+    this.budgetCache = { day, total, seen: 0, checkedAt: now };
+    return total < this.dailyEventCap;
   }
 
   /**
@@ -183,16 +228,25 @@ class FirestoreStore {
    * Normalise, store and count one incoming event.
    *
    * @param {Object} raw   whatever the client posted
-   * @param {{ip?:string, userAgent?:string, site?:string}} meta
-   * @returns {Promise<{stored:boolean, newVisitor:boolean}>}
+   * @param {{ip?:string, userAgent?:string, site?:string, visitor?:string}} meta
+   *   `visitor` may be supplied when the caller has already derived it - the
+   *   rate limiter needs it before this point, and deriving it twice would
+   *   mean a second salt lookup.
+   * @returns {Promise<{stored:boolean, newVisitor:boolean, reason?:string}>}
    */
   async record(raw, meta) {
     const info = meta || {};
     const day = dayKey();
-    const visitor = await this.visitorFor(info.ip, info.userAgent, day);
+    const visitor = info.visitor || await this.visitorFor(info.ip, info.userAgent, day);
 
     const record = normaliseEvent(raw, { visitor, site: info.site });
-    if (!record) return { stored: false, newVisitor: false };
+    if (!record) return { stored: false, newVisitor: false, reason: 'rejected' };
+
+    /* Checked after normalising, so a malformed flood cannot burn the budget
+       on events that would have been thrown away anyway. */
+    if (!(await this.withinBudget(day))) {
+      return { stored: false, newVisitor: false, reason: 'budget' };
+    }
 
     const newVisitor = await this.claimVisitor(day, visitor);
 

@@ -44,8 +44,18 @@ const ANALYTICS_STORE_RAW = defineBoolean('ANALYTICS_STORE_RAW', {
     'this off halves the write cost and leaves only aggregate counts.'
 });
 
+const ANALYTICS_DAILY_CAP = defineString('ANALYTICS_DAILY_CAP', {
+  default: '8000',
+  description: 'Events stored per day before the collector stops writing. ' +
+    'The hard stop on spending; 0 disables it.'
+});
+
 const REGION = 'europe-southwest1';
 const MAX_BODY_BYTES = 4096;
+
+/* Per visitor, matching backend/server.js. */
+const RATE_WINDOW_MS = 5 * 60 * 1000;
+const RATE_MAX = 120;
 
 initializeApp();
 const db = getFirestore();
@@ -59,10 +69,42 @@ function getStore() {
       db,
       FieldValue,
       retentionDays: Number(ANALYTICS_RETENTION_DAYS.value()) || 90,
-      storeRawEvents: ANALYTICS_STORE_RAW.value()
+      storeRawEvents: ANALYTICS_STORE_RAW.value(),
+      dailyEventCap: Number(ANALYTICS_DAILY_CAP.value())
     });
   }
   return store;
+}
+
+/*
+ * Per-visitor rate limit, held in instance memory.
+ *
+ * The Node service keeps this in memory too, but there it is the whole story
+ * because one process sees every request. Here each instance has its own map,
+ * so the real ceiling is this limit times the instance count - which is why
+ * maxInstances is set low. That is deliberately the cheap defence: a shared
+ * counter in Firestore would cost a read and a write per request, spending
+ * more of the free quota than the abuse it prevents. The hard guarantee comes
+ * from the daily cap in FirestoreStore, not from here.
+ */
+const buckets = new Map();
+
+function rateLimited(key) {
+  if (!key) return false;
+  const now = Date.now();
+  const entry = buckets.get(key);
+  if (!entry || now - entry.start > RATE_WINDOW_MS) {
+    buckets.set(key, { start: now, count: 1 });
+    /* Instances are recycled often, but a long-lived one should not grow this
+       map without bound. */
+    if (buckets.size > 5000) {
+      const cutoff = now - RATE_WINDOW_MS;
+      buckets.forEach((v, k) => { if (v.start < cutoff) buckets.delete(k); });
+    }
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_MAX;
 }
 
 /* ------------------------------------------------------------------ CORS */
@@ -173,21 +215,22 @@ async function handler(req, res) {
     if (req.method !== 'POST') { res.status(405).end(); return; }
     if (!corsOk) { res.status(403).end(); return; }
 
-    /* Always 204, whatever happens. The collector must never become an oracle
-       that tells a caller which payloads were accepted. */
+    res.set('Cache-Control', 'no-store');
+
+    /* Otherwise 204 whatever happens: a rejected payload and an accepted one
+       must look identical, or the collector becomes an oracle for probing the
+       allowlist. 429 is the one exception, and matches backend/server.js. */
     try {
       const payload = parseBody(req);
       if (payload) {
-        await getStore().record(payload, {
-          ip: clientIp(req),
-          userAgent: req.headers['user-agent'],
-          site: payload.site
-        });
+        const s = getStore();
+        const visitor = await s.visitorFor(clientIp(req), req.headers['user-agent']);
+        if (rateLimited(visitor)) { res.status(429).end(); return; }
+        await s.record(payload, { visitor, site: payload.site });
       }
     } catch (err) {
       console.error('collect failed: ' + (err && err.message));
     }
-    res.set('Cache-Control', 'no-store');
     res.status(204).end();
     return;
   }
