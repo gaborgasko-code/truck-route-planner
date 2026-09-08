@@ -290,4 +290,45 @@
       assert.equal(ranked[0].count, 7);
     });
   });
+
+  describe('dashboard - the page itself is valid', function () {
+    const fsMod = require('fs');
+    const pathMod = require('path');
+    const html = fsMod.readFileSync(
+      pathMod.join(__dirname, '..', 'backend', 'dashboard.html'), 'utf8');
+
+    test('the inline script parses', function () {
+      /* There is no build step and no module loader here, so nothing else
+         would notice a broken script until the page was opened in a browser
+         and silently did nothing. */
+      const blocks = html.match(/<script>[\s\S]*?<\/script>/g) || [];
+      assert.ok(blocks.length > 0, 'the dashboard has an inline script');
+      blocks.forEach(function (block, i) {
+        const body = block.replace(/^<script>/, '').replace(/<\/script>$/, '');
+        try {
+          new Function(body);
+        } catch (err) {
+          assert.ok(false, 'script block ' + i + ' does not parse: ' + err.message);
+        }
+      });
+    });
+
+    test('the API URL is built relative to the page', function () {
+      /* An absolute '/api/stats' works on the Node service but misses the
+         mount point of a Cloud Function, where the platform strips the
+         function name and the server cannot tell where it lives. */
+      assert.ok(html.indexOf("'/api/stats") === -1,
+        'an absolute /api/stats would break under a function mount point');
+      assert.ok(html.indexOf('location.href') !== -1,
+        'the base is derived from the address the browser actually used');
+    });
+
+    test('the token is never put in the page address', function () {
+      assert.ok(html.indexOf('sessionStorage') !== -1,
+        'the token lives in sessionStorage');
+      assert.ok(!/location\.(search|hash)\s*=/.test(html),
+        'nothing writes the token into the URL');
+    });
+  });
+
 })(typeof globalThis !== 'undefined' ? globalThis : this);

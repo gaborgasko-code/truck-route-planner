@@ -216,13 +216,14 @@ async function handler(req, res) {
   }
 
   if (route === '/' && req.method === 'GET') {
-    /* The dashboard asks for "api/stats" relative to itself, so it works at
-       any mount point - but only if the URL ends in a slash. Without this
-       redirect, /analytics would resolve it against the domain root. */
-    if (!/\/$/.test(req.path || '/')) {
-      res.redirect(301, (req.originalUrl || req.url || '/') + '/');
-      return;
-    }
+    /*
+     * No redirect to a trailing slash here, though it would be the usual fix.
+     * The platform strips the function name before the request arrives, so
+     * req.path is '/' whether the browser asked for /analytics or
+     * /analytics/, and this code cannot tell the two apart or reconstruct the
+     * public URL. The dashboard therefore derives its own base from
+     * location.href, which is the only place the real address is known.
+     */
     res.set('Content-Type', 'text/html; charset=utf-8');
     res.set('Cache-Control', 'no-store');
     res.status(200).send(dashboard());

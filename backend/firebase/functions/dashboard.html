@@ -205,10 +205,21 @@
     if (!token) { setMessage('Enter the access token to load the numbers.', 'info'); return; }
     try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* ignore */ }
 
-    /* Relative, not '/api/stats': the same page is served both by
-       backend/server.js at the root and by a Cloud Function mounted under a
-       path like /analytics/. An absolute path would miss the mount point. */
-    var url = 'api/stats?token=' + encodeURIComponent(token);
+    /*
+     * Build the API URL from the page's own address rather than from '/'.
+     * This page is served both by backend/server.js at the root and by a
+     * Cloud Function mounted under a path like /analytics, and the function
+     * cannot see its own mount point - the platform strips the function name
+     * before the request arrives, so req.path is always '/' and the server
+     * has no way to redirect or rewrite. Only the browser knows the real URL.
+     * Forcing a trailing slash makes the relative join correct in every case:
+     *   /            -> /api/stats
+     *   /analytics   -> /analytics/api/stats
+     *   /analytics/  -> /analytics/api/stats
+     */
+    var base = location.href.split('?')[0].split('#')[0];
+    if (base.charAt(base.length - 1) !== '/') base += '/';
+    var url = base + 'api/stats?token=' + encodeURIComponent(token);
     var from = fromDate(state.range);
     if (from) url += '&from=' + from;
 
