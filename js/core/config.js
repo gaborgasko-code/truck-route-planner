@@ -100,7 +100,7 @@
     /* ---- Audience measurement ---- */
     /* Absolute or relative URL of the collector. Empty disables analytics
        completely: nothing is sent and the category is hidden. */
-    ANALYTICS_ENDPOINT: '',
+    ANALYTICS_ENDPOINT: 'https://europe-southwest1-planificador--analytics.cloudfunctions.net/analytics/api/collect',
     ANALYTICS_SITE: 'planificador',
     /* Raw events are pruned on the server after this many days. */
     ANALYTICS_RETENTION_DAYS: 90,
