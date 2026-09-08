@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="Politica de privacidad y cookies del Planificador de ruta - Gabor.">
+<title>Privacidad — Planificador de ruta - Gabor</title>
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  html, body { height: auto; overflow: visible; }
+  body { background: var(--bg); }
+
+  .p-hero {
+    background: var(--grad-header);
+    color: #fff;
+    padding: 26px 22px;
+  }
+  .p-hero__inner {
+    max-width: 880px; margin: 0 auto;
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .p-hero h1 { font-size: 22px; margin: 0 0 2px; }
+  .p-hero p { margin: 0; font-size: 13px; color: #cfe1f8; }
+  .p-hero__side { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  .p-wrap { max-width: 880px; margin: 0 auto; padding: 22px 18px 44px; }
+  .p-section {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius, 12px); padding: 18px 20px; margin-bottom: 14px;
+  }
+  .p-section h2 {
+    font-size: 15px; color: var(--accent); margin: 0 0 10px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--line);
+  }
+  .p-section p, .p-section li { font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+  .p-section ul { padding-left: 20px; }
+  .p-section table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .p-section th, .p-section td {
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top;
+  }
+  .p-section thead th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted);
+  }
+  .p-section code { font-family: var(--mono, monospace); font-size: 12.5px; background: var(--surface-3); padding: 1px 5px; border-radius: 4px; }
+  .p-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .p-actions .btn { width: auto; padding: 10px 16px; }
+  .p-updated { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .p-foot {
+    background: var(--brand-900); color: #b9cbe4;
+    padding: 18px 22px; font-size: 12.5px; line-height: 1.6;
+  }
+  .p-foot__inner { max-width: 880px; margin: 0 auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .p-foot .spacer { flex: 1 1 auto; }
+</style>
+</head>
+<body>
+
+<header class="p-hero">
+  <div class="p-hero__inner">
+    <div>
+      <h1 data-i18n="privacy.title"></h1>
+      <p data-i18n="app.name"></p>
+    </div>
+    <div class="p-hero__side">
+      <select class="lang-select" id="langSelect" aria-label="Idioma / Language"></select>
+      <a class="link-btn" href="index.html" data-i18n="privacy.backToApp"></a>
+    </div>
+  </div>
+</header>
+
+<div class="p-wrap">
+  <p class="p-updated"><span data-i18n="privacy.updated"></span>: <span id="updated">2026-09-08</span></p>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s1"></h2>
+    <p data-i18n="privacy.intro"></p>
+    <p data-i18n="privacy.s1body"></p>
+    <div class="p-actions">
+      <button type="button" class="btn btn--primary" data-action="privacy-settings" data-i18n="privacy.manageBtn"></button>
+    </div>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s2"></h2>
+    <p data-i18n="privacy.s2body"></p>
+    <table>
+      <thead><tr>
+        <th data-i18n="privacy.colItem"></th>
+        <th data-i18n="privacy.colPurpose"></th>
+        <th data-i18n="privacy.colCategory"></th>
+        <th data-i18n="privacy.colRetention"></th>
+      </tr></thead>
+      <tbody id="storageTable"></tbody>
+    </table>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s3"></h2>
+    <p data-i18n="privacy.s3body"></p>
+    <table>
+      <thead><tr>
+        <th data-i18n="privacy.colService"></th>
+        <th data-i18n="privacy.colData"></th>
+      </tr></thead>
+      <tbody id="thirdTable"></tbody>
+    </table>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s4"></h2>
+    <p data-i18n="privacy.s4body"></p>
+    <p data-i18n-html="privacy.s4list"></p>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s5"></h2>
+    <p data-i18n="privacy.s5body"></p>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s6"></h2>
+    <p data-i18n="privacy.s6body"></p>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s7"></h2>
+    <p id="retention"></p>
+  </section>
+
+  <section class="p-section">
+    <h2 data-i18n="privacy.s8"></h2>
+    <p data-i18n="privacy.s8body"></p>
+  </section>
+</div>
+
+<footer class="p-foot">
+  <div class="p-foot__inner">
+    <span data-i18n-html="app.footerDisclaimer"></span>
+    <span class="spacer"></span>
+    <a class="author-link author-link--onDark" href="https://www.linkedin.com/in/gaborgasko/"
+       target="_blank" rel="noopener noreferrer"
+       aria-label="created by Gabor Gasko - open his LinkedIn profile">
+      <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
+    </a>
+  </div>
+</footer>
+
+<div class="toast-host" id="toastHost" role="status" aria-live="polite"></div>
+
+<script src="js/core/config.js"></script>
+<script src="js/core/i18n.js"></script>
+<script src="js/core/consent.js"></script>
+<script src="js/core/analytics.js"></script>
+<script src="js/core/util.js"></script>
+<script src="js/ui/consent-ui.js"></script>
+<script>
+(function () {
+  'use strict';
+  var TRP = window.TRP;
+  var t = TRP.i18n.t;
+  var esc = TRP.util.escapeHtml;
+
+  /* Third parties the browser contacts. Kept here, next to the policy that
+     describes them, so the two cannot drift apart. */
+  var THIRD_PARTIES = [
+    { name: 'OpenStreetMap Nominatim', host: 'nominatim.openstreetmap.org', key: 'privacy.thirdNominatim' },
+    { name: 'OSRM', host: 'router.project-osrm.org', key: 'privacy.thirdOsrm' },
+    { name: 'OpenStreetMap tiles', host: 'tile.openstreetmap.org', key: 'privacy.thirdTiles' },
+    { name: 'Cloudflare cdnjs', host: 'cdnjs.cloudflare.com', key: 'privacy.thirdCdn' }
+  ];
+
+  function renderStorage() {
+    document.getElementById('storageTable').innerHTML = TRP.consent.INVENTORY.map(function (item) {
+      var retention = item.retentionMonths
+        ? t('privacy.retentionMonths', { n: item.retentionMonths })
+        : t('privacy.retentionUntilCleared');
+      return '<tr><td><strong>' + esc(t('store.' + item.id + '.name')) + '</strong><br>' +
+        '<code>' + esc(item.key) + '</code></td>' +
+        '<td>' + esc(t('store.' + item.id + '.purpose')) + '</td>' +
+        '<td>' + esc(t('cookie.cat.' + item.category)) + '</td>' +
+        '<td>' + esc(retention) + '</td></tr>';
+    }).join('');
+  }
+
+  function renderThird() {
+    document.getElementById('thirdTable').innerHTML = THIRD_PARTIES.map(function (p) {
+      return '<tr><td><strong>' + esc(p.name) + '</strong><br><code>' + esc(p.host) + '</code></td>' +
+        '<td>' + esc(t(p.key)) + '</td></tr>';
+    }).join('');
+  }
+
+  function renderRetention() {
+    document.getElementById('retention').textContent = t('privacy.s7body', {
+      months: TRP.CONFIG.CONSENT_MONTHS,
+      days: TRP.CONFIG.ANALYTICS_RETENTION_DAYS
+    });
+  }
+
+  function renderAll() {
+    TRP.i18n.applyDom(document);
+    renderStorage();
+    renderThird();
+    renderRetention();
+    document.title = t('privacy.title') + ' — ' + t('app.name');
+  }
+
+  /* Theme follows the app so the page does not flash a different look. */
+  (function () {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('trp.theme')); } catch (e) { /* ignore */ }
+    var dark = saved === 'dark' ||
+      (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+
+  var select = document.getElementById('langSelect');
+  TRP.i18n.init().then(function () {
+    select.innerHTML = TRP.i18n.available().map(function (code) {
+      return '<option value="' + code + '">' + TRP.i18n.languageName(code) + '</option>';
+    }).join('');
+    select.value = TRP.i18n.lang();
+    renderAll();
+  });
+
+  select.addEventListener('change', function () {
+    TRP.i18n.setAsync(select.value).then(renderAll);
+  });
+
+  TRP.consentUI.init();
+})();
+</script>
+</body>
+</html>

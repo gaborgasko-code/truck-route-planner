@@ -28,18 +28,30 @@
    * app can re-render any result already on screen.
    */
   function initLanguage(select, onChange, short) {
-    TRP.i18n.init();
+    function refresh() {
+      TRP.i18n.applyDom(document);
+      if (select) select.value = TRP.i18n.lang();
+      if (typeof onChange === 'function') onChange(TRP.i18n.lang());
+    }
+
+    /* Paint the default immediately; a lazily loaded pack repaints on arrival. */
     TRP.i18n.applyDom(document);
+    TRP.i18n.init().then(refresh);
+
     if (!select) return;
     select.innerHTML = TRP.i18n.available().map(function (code) {
       var label = short ? TRP.i18n.languageShort(code) : TRP.i18n.languageName(code);
       return '<option value="' + code + '">' + label + '</option>';
     }).join('');
     select.value = TRP.i18n.lang();
+
     select.addEventListener('change', function () {
-      TRP.i18n.set(select.value);
-      TRP.i18n.applyDom(document);
-      if (typeof onChange === 'function') onChange(TRP.i18n.lang());
+      var wanted = select.value;
+      select.disabled = true;
+      TRP.i18n.setAsync(wanted).then(function () {
+        select.disabled = false;
+        refresh();
+      });
     });
   }
 
@@ -208,8 +220,17 @@
 
   /* ----------------------------------------------------- form persistence */
 
-  function saveForm(values) { util.storageSet(FORM_KEY, values); }
-  function loadForm() { return util.storageGet(FORM_KEY, null); }
+  /**
+   * Remembering the form between visits is a convenience, not part of the
+   * service the visitor asked for, so it only happens with consent.
+   */
+  function saveForm(values) {
+    return TRP.consent.storeIfAllowed(TRP.consent.PREFERENCES, FORM_KEY, values);
+  }
+  function loadForm() {
+    if (!TRP.consent.has(TRP.consent.PREFERENCES)) return null;
+    return util.storageGet(FORM_KEY, null);
+  }
 
   /** Local `datetime-local` value for "now", rounded to the next 15 minutes. */
   function defaultDepartureValue() {
@@ -293,8 +314,18 @@
     };
   }
 
+  /**
+   * Consent banner, then audience measurement. Analytics starts only if
+   * the visitor has already agreed; consent-ui re-triggers it otherwise.
+   */
+  function initPrivacy(view) {
+    TRP.consentUI.init();
+    TRP.analytics.init(view);
+  }
+
   TRP.appCommon = {
     FORM_KEY: FORM_KEY,
+    initPrivacy: initPrivacy,
     initLanguage: initLanguage,
     t: t,
     applyTheme: applyTheme,

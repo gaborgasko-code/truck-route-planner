@@ -7,9 +7,6 @@
 <meta name="description" content="Planificador de ruta - Gabor: rutas por carretera, tiempos de conduccion UE, peajes, paradas legales y aparcamiento seguro para vehiculos pesados.">
 <title>Planificador de ruta - Gabor</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <script>
   /* Match the theme chosen in the app before anything paints. */
@@ -97,7 +94,7 @@
 
     <p class="splash__note" id="detail"></p>
 
-    <div class="splash__lang" id="langButtons"></div>
+    <div class="splash__lang"><select class="lang-select lang-select--light" id="langSelect" aria-label="Idioma / Language"></select></div>
 
     <div class="splash__by">
       <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
@@ -117,19 +114,21 @@
   var t = TRP.i18n.t;
   var redirect = null;
 
-  TRP.i18n.init();
+  TRP.i18n.init().then(render);
 
   var status = document.getElementById('status');
   var detail = document.getElementById('detail');
-  var langButtons = document.getElementById('langButtons');
+  var langSelect = document.getElementById('langSelect');
   var choice = TRP.device.resolveView();
   var info = TRP.device.inspect();
 
   function renderLanguages() {
-    langButtons.innerHTML = TRP.i18n.available().map(function (code) {
-      return '<button type="button" data-lang="' + code + '" aria-pressed="' +
-        (code === TRP.i18n.lang()) + '">' + TRP.i18n.languageName(code) + '</button>';
-    }).join('');
+    if (!langSelect.options.length) {
+      langSelect.innerHTML = TRP.i18n.available().map(function (code) {
+        return '<option value="' + code + '">' + TRP.i18n.languageName(code) + '</option>';
+      }).join('');
+    }
+    langSelect.value = TRP.i18n.lang();
   }
 
   function render() {
@@ -145,13 +144,14 @@
     renderLanguages();
   }
 
-  langButtons.addEventListener('click', function (event) {
-    var button = event.target.closest('[data-lang]');
-    if (!button) return;
+  langSelect.addEventListener('change', function () {
     /* Choosing a language means the visitor wants to read this page first. */
     if (redirect) { clearTimeout(redirect); redirect = null; }
-    TRP.i18n.set(button.getAttribute('data-lang'));
-    render();
+    langSelect.disabled = true;
+    TRP.i18n.setAsync(langSelect.value).then(function () {
+      langSelect.disabled = false;
+      render();
+    });
   });
 
   /* Only a choice made here is remembered; the in-app view links are not sticky. */

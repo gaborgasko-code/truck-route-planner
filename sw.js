@@ -11,14 +11,22 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.3.0';
+var CACHE_VERSION = 'trp-shell-v2.3.1';
 
+/*
+ * The 22 translation packs in js/i18n/ are deliberately NOT listed here.
+ * Precaching 22 files a visitor will never open would slow every install down
+ * for nothing; the same-origin handler below caches each pack the first time
+ * it is actually loaded, so the language in use stays available offline. The
+ * two base languages (Spanish and English) ship inside js/core/i18n.js.
+ */
 var SHELL = [
   './',
   'index.html',
   'desktop.html',
   'mobile.html',
   'USER_GUIDE.html',
+  'PRIVACY.html',
   'manifest.webmanifest',
   'css/theme.css',
   'css/desktop.css',
@@ -32,6 +40,8 @@ var SHELL = [
   'js/core/config.js',
   'js/core/icons.js',
   'js/core/i18n.js',
+  'js/core/consent.js',
+  'js/core/analytics.js',
   'js/core/util.js',
   'js/core/geo.js',
   'js/core/embedded-data.js',
@@ -47,6 +57,7 @@ var SHELL = [
   'js/core/device.js',
   'js/ui/render.js',
   'js/ui/map-view.js',
+  'js/ui/consent-ui.js',
   'js/ui/app-common.js',
   'js/ui/desktop-app.js',
   'js/ui/mobile-app.js'

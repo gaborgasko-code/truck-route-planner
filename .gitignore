@@ -9,3 +9,8 @@ desktop.ini
 # Node
 node_modules/
 npm-debug.log*
+
+# Analytics collector output. Never commit this: even though the records carry
+# no IP and no user agent, they are visitor data and belong on the server only.
+analytics-data/
+backend/analytics-data/

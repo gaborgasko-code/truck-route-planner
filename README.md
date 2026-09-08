@@ -5,7 +5,7 @@
 A professional, dependency-free web application for planning heavy goods vehicle
 runs across Europe: real road routing, **EU legal stop planning**, per-country
 toll estimation, safe truck parking and national HGV regulations — on an
-interactive map, in **Spanish (default) or English**.
+interactive map, in **all 24 official EU languages** (Spanish by default).
 
 Two purpose-built front ends share one business-logic core:
 
@@ -17,7 +17,7 @@ Two purpose-built front ends share one business-logic core:
 
 No API keys, no accounts, no build step, no npm install. Open the file and it runs.
 
-Current version: **2.1.0**.
+Current version: **2.3.0**.
 
 ---
 
@@ -25,28 +25,41 @@ Current version: **2.1.0**.
 
 1. [Features](#features)
 2. [Quick start](#quick-start)
-3. [Language](#language)
-4. [Legal stops (EU)](#legal-stops-eu)
-5. [Architecture](#architecture)
-6. [How the numbers are calculated](#how-the-numbers-are-calculated)
-7. [Data files](#data-files)
-8. [Device detection](#device-detection)
-9. [Tests](#tests)
-10. [Deployment](#deployment)
-11. [Native iOS and Android](#native-ios-and-android)
-12. [Troubleshooting](#troubleshooting)
-13. [Legal disclaimer](#legal-disclaimer)
+3. [Languages](#languages)
+4. [Privacy, cookies and consent](#privacy-cookies-and-consent)
+5. [Traffic measurement (optional backend)](#traffic-measurement-optional-backend)
+6. [Legal stops (EU)](#legal-stops-eu)
+7. [Architecture](#architecture)
+8. [How the numbers are calculated](#how-the-numbers-are-calculated)
+9. [Data files](#data-files)
+10. [Device detection](#device-detection)
+11. [Tests](#tests)
+12. [Deployment](#deployment)
+13. [Native iOS and Android](#native-ios-and-android)
+14. [Troubleshooting](#troubleshooting)
+15. [Legal disclaimer](#legal-disclaimer)
 
 ---
 
 ## Features
 
-**Bilingual, Spanish first**
-- Spanish is the default language everywhere; English is one click away
+**All 24 EU languages, Spanish first**
+- Spanish is the default everywhere; the other 23 are one click away
+- Only the language in use is downloaded, so the app stays small
 - Numbers, dates and durations follow the locale (`1.234,5 km` vs `1,234.5 km`)
 - Address lookups ask Nominatim for the active language
 - National regulations and the EU rule texts are translated in the datasets
 - Switching language re-renders the current result instantly — no recalculation
+
+**Privacy by construction**
+- No HTTP cookies, no accounts, no advertising or tracking tags, no third-party
+  fonts — the only outbound calls are the ones a route actually needs
+- A consent banner where refusing is exactly as easy as accepting, and a
+  preferences dialog that can be reopened and withdrawn from any page footer
+- The published policy table is generated from the code's own storage
+  inventory, so it cannot drift from what is really stored
+- Optional self-hosted traffic measurement with no cookie, no identifier and no
+  IP address on disk — off entirely unless you configure a collector
 
 **Routing**
 - Origin and destination entry with live autocomplete
@@ -148,30 +161,153 @@ On Windows you can double-click **`start-server.cmd`** instead.
 
 ---
 
-## Language
+## Languages
 
-Spanish is the product default. The selector sits in the header: `Español` /
-`English` on the desktop, `ES` / `EN` on mobile (where the header has to fit a
-375 px phone).
+The application ships in **all 24 official languages of the European Union**.
+Spanish is the product default; English is the fallback for anything a pack has
+not translated.
+
+| | |
+|---|---|
+| Български · Čeština · Dansk · Deutsch · Ελληνικά · English | Español · Eesti · Suomi · Français · Gaeilge · Hrvatski |
+| Magyar · Italiano · Lietuvių · Latviešu · Malti · Nederlands | Polski · Português · Română · Slovenčina · Slovenščina · Svenska |
+
+The selector sits in the header: the native language name on the desktop, the
+two-letter code on mobile (where the header has to fit a 375 px phone).
+
+**Spanish and English are built in**, inside `js/core/i18n.js`, so the app is
+never untranslated even with no network. **The other 22 are separate files**
+under `js/i18n/<code>.js`, fetched only when that language is actually chosen —
+a visitor downloads one pack, not twenty-two.
 
 - The choice is stored in `localStorage` under `trp.lang` and also drives the
-  entry page and the user guide.
+  entry page, the privacy policy and the user guide.
 - Changing it re-translates the DOM and re-renders the result already on screen,
   including the embedded map panels — no network call, no recalculation.
+  Core modules emit translation *keys*, never finished sentences, which is what
+  makes a language switch free of a recalculation.
 - `util.formatNumber` / `formatDateTime` read the active locale, so figures and
-  timestamps switch too.
+  timestamps switch too (`292,1 km` in Spanish, `292.1 km` in English).
 - `api.js` sends `accept-language` to Nominatim, so place names come back in the
   selected language rather than following the browser.
+- Packs are loaded by script injection rather than `fetch`, so lazy loading also
+  works from a `file://` URL, where `fetch` is blocked by CORS.
 
-### Adding a language
+> The 22 non-base packs are machine-assisted translations. A native review is
+> recommended before production use; figures, article references and limits are
+> unaffected, since those come from the datasets rather than the packs.
 
-1. Add the code to `LOCALES` and `LANG_NAMES` in `js/core/i18n.js`, then add the
-   variant to every entry of `STRINGS` (the test suite fails on any gap).
-2. Add the same key to the language-keyed fields in
-   `data/trailer_regulations.json` and `data/eu_driving_rules.json`.
-3. Run `node tools/build-embedded-data.js`.
+### Adding or correcting a language
 
-There is nothing to compile. `tests/test_i18n.js` will tell you what is missing.
+1. To **correct** wording, edit `js/i18n/<code>.js` directly. Nothing to compile.
+2. To **add** a language, add its code to `LANGS` in `js/core/i18n.js` (name and
+   locale), then copy an existing pack and translate the values.
+3. Add the same key to the language-keyed fields in
+   `data/trailer_regulations.json` and `data/eu_driving_rules.json`, then run
+   `node tools/build-embedded-data.js`.
+
+`tests/test_i18n.js` checks every pack against the English baseline and fails on
+a missing key, a stray key, an empty string or a `{placeholder}` that does not
+match the original — a dropped `{km}` would otherwise print a literal brace to
+the driver.
+
+---
+
+## Privacy, cookies and consent
+
+The application sets **no HTTP cookies at all**. It uses `localStorage`, which
+Article 5(3) of the ePrivacy Directive treats exactly like cookies: storage that
+is *strictly necessary for a service the user explicitly asked for* is exempt
+from consent, everything else is not. Storage is therefore split three ways:
+
+| Category | What it holds | Consent |
+|----------|---------------|---------|
+| **Strictly necessary** | `trp.lang`, `trp.theme`, `trp.viewPreference`, `trp.consent`, `trp.countryCache.v1` | exempt — never asked, never blocked |
+| **Preferences** | `trp.form.v1` — the addresses and vehicle profile, remembered between visits | required |
+| **Analytics** | nothing on the device; see below | required, and only offered when a collector is configured |
+
+`js/core/consent.js` owns that inventory, and `PRIVACY.html` renders its policy
+table straight from it, so the published policy cannot drift from what the code
+actually stores. Nothing outside `necessary` is written before consent is given.
+
+The banner offers **Reject optional**, **Settings** and **Accept all**. Reject
+and accept are deliberately the same size and the same button family: EDPB
+guidance, and the Spanish AEPD in particular, treat a plain-text "reject" beside
+a prominent "accept" as a dark pattern that invalidates the consent. Consent
+lapses after `CONSENT_MONTHS` (12) and can be withdrawn at any time from the
+footer link, which also deletes the data that consent had allowed.
+
+**No third-party fonts, tags or trackers are loaded.** An earlier version pulled
+the Inter typeface from Google Fonts; that transmitted every visitor's IP address
+to Google before any consent could be given, so the app now uses the system font
+stack. The only outbound connections are the ones the route itself requires —
+Nominatim, OSRM, OpenStreetMap tiles and cdnjs for Leaflet — and `PRIVACY.html`
+lists each one with what it receives.
+
+---
+
+## Traffic measurement (optional backend)
+
+`backend/` is a small, dependency-free Node service for answering "how many
+people use this?" without tracking anybody. It is entirely optional: leave
+`ANALYTICS_ENDPOINT` empty in `js/core/config.js` and the app collects nothing,
+the analytics category disappears from the consent dialog, and no code path
+sends a request.
+
+### What makes it privacy-preserving
+
+- **No cookie, no localStorage entry, no identifier of any kind** is created on
+  the device. There is nothing to opt out of storing.
+- **The IP address is never written to disk.** The server derives an
+  irreversible `sha256(salt | ip | user-agent)`, truncated to 16 hex characters,
+  purely to avoid counting one person twice in a day. The salt is regenerated
+  every day, so the same visitor is a different value tomorrow and no visitor
+  can be followed across days — the dashboard says so in as many words.
+- **A field allowlist on the server** (`backend/store.js`) is the second gate:
+  only the declared events and fields are stored, so even a hand-crafted POST
+  cannot add a field. Addresses, coordinates and route geometry are never sent
+  by the client and would be discarded if they were.
+- **Values are banded, not exact**: a 1 783.4 km route is recorded as
+  `1000-2000km`, and a screen is `lg`, not `1440`. A single run cannot be picked
+  out of the totals.
+- **Raw events are deleted after `ANALYTICS_RETENTION_DAYS` (90).** Only the
+  aggregated daily rollup is kept.
+
+### Running it
+
+```bash
+ANALYTICS_TOKEN=choose-a-long-secret \
+ANALYTICS_ORIGINS=https://your.site \
+ANALYTICS_DIR=./analytics-data \
+node backend/server.js
+```
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PORT` | `8787` | listening port |
+| `ANALYTICS_TOKEN` | — | required to read `/api/stats` and the dashboard |
+| `ANALYTICS_ORIGINS` | — | comma-separated CORS allowlist for `/api/collect` |
+| `ANALYTICS_DIR` | `./analytics-data` | where the daily files and rollup live |
+| `ANALYTICS_RETENTION_DAYS` | `90` | age at which raw events are deleted |
+| `TRUST_PROXY` | `0` | set to `1` to read the client IP from `X-Forwarded-For` |
+
+Then point the app at it by setting `ANALYTICS_ENDPOINT` in
+`js/core/config.js` to `https://your-collector/api/collect`.
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/api/collect` | POST | receives an event, answers `204`, never echoes anything |
+| `/api/stats` | GET | aggregated JSON; requires `?token=` |
+| `/api/health` | GET | liveness |
+| `/` | GET | the dashboard below |
+
+### The dashboard
+
+`http://localhost:8787/` serves a single self-contained page: daily visitors,
+page views, routes calculated and failure rate, a two-series daily chart with a
+table view of the same numbers, and breakdowns by language, build, page,
+referrer, route distance, countries per route, screen size and failure reason.
+The token is held in `sessionStorage` and is never put in the URL.
 
 ---
 
@@ -222,7 +358,8 @@ truck_route_planner_web/
 ├─ index.html                 device detection and forwarding
 ├─ desktop.html               desktop build
 ├─ mobile.html                mobile build
-├─ USER_GUIDE.html            bilingual user guide
+├─ USER_GUIDE.html            user guide
+├─ PRIVACY.html               privacy and cookie policy, in all 24 languages
 ├─ manifest.webmanifest       PWA metadata
 ├─ sw.js                      service worker (offline app shell)
 ├─ start-server.cmd           Windows launcher for the dev server
@@ -234,7 +371,9 @@ truck_route_planner_web/
 │
 ├─ js/core/                   UI-agnostic business logic (shared by both builds)
 │  ├─ config.js               constants, legal limits, service endpoints
-│  ├─ i18n.js                 dictionary, locale, DOM translation (Spanish default)
+│  ├─ i18n.js                 dictionaries, locale, DOM translation, lazy packs
+│  ├─ consent.js              storage inventory and consent state (ePrivacy/GDPR)
+│  ├─ analytics.js            optional, consent-gated, identifier-free measurement
 │  ├─ util.js                 locale-aware formatting, storage, errors
 │  ├─ geo.js                  haversine, polyline maths, sampling
 │  ├─ embedded-data.js        GENERATED offline copy of data/*.json
@@ -252,9 +391,21 @@ truck_route_planner_web/
 ├─ js/ui/
 │  ├─ render.js               shared HTML/report renderers
 │  ├─ map-view.js             embedded Leaflet map
+│  ├─ consent-ui.js           consent banner and preferences dialog
 │  ├─ app-common.js           language, theme, toasts, autocomplete, exports
 │  ├─ desktop-app.js          desktop controller
 │  └─ mobile-app.js           mobile controller
+│
+├─ js/i18n/                   22 lazily loaded language packs
+│  ├─ bg.js  cs.js  da.js  de.js  el.js  et.js  fi.js  fr.js
+│  ├─ ga.js  hr.js  hu.js  it.js  lt.js  lv.js  mt.js  nl.js
+│  └─ pl.js  pt.js  ro.js  sk.js  sl.js  sv.js
+│                             (es and en are built into js/core/i18n.js)
+│
+├─ backend/                   optional traffic collector - no dependencies
+│  ├─ server.js               /api/collect, /api/stats, /api/health, dashboard
+│  ├─ store.js                field allowlist, daily salt, aggregation, retention
+│  └─ dashboard.html          token-protected traffic dashboard
 │
 ├─ data/
 │  ├─ toll_rates.json         44 countries: rate, toll system, bounding boxes
@@ -262,13 +413,16 @@ truck_route_planner_web/
 │  ├─ trailer_regulations.json 30 countries + EU baseline, ES/EN
 │  └─ eu_driving_rules.json   Regulation 561/2006 et al., ES/EN, by article
 │
-├─ tests/                     92 assertions, no network, no dependencies
+├─ tests/                     175 assertions, no network, no dependencies
 │  ├─ harness.js
 │  ├─ test_time_estimation.js
 │  ├─ test_toll_estimation.js
 │  ├─ test_stop_suggestions.js
 │  ├─ test_legal_stops.js
-│  ├─ test_i18n.js
+│  ├─ test_multi_manning.js
+│  ├─ test_i18n.js            includes all 22 packs against the baseline
+│  ├─ test_consent.js
+│  ├─ test_analytics.js       client payload + backend allowlist and rollups
 │  ├─ run_node.js             headless runner
 │  └─ test_runner.html        browser runner
 │
@@ -286,8 +440,9 @@ are blocked by the browser under the `file://` protocol — the app has to work
 when someone simply double-clicks a file. It also means there is no bundler, no
 transpiler and no `node_modules`.
 
-**Separation.** `js/core/` never touches the DOM. `js/ui/` never talks to the
-network. Core modules never contain user-visible prose either: they emit
+**Separation.** `js/core/` never touches the DOM — `consent.js` is the one
+deliberate exception, since `localStorage` is the thing it exists to govern.
+`js/ui/` never talks to the network. Core modules never contain user-visible prose either: they emit
 translation keys (`{key, params}`) that the renderers resolve, which is what lets
 a language switch re-render an existing result with no recalculation.
 
@@ -468,11 +623,25 @@ index.html?view=mobile      desktop.html?view=desktop      mobile.html?view=mobi
 
 ## Tests
 
-92 assertions across five suites — the time model, toll aggregation, stop
+175 assertions across nine suites — the time model, toll aggregation, stop
 intervals and parking proximity, the EU legal stop plan and compliance checks,
-and localisation (including a check that no dictionary key is left untranslated
-and that both languages of every dataset entry line up). No network access and
-no dependencies.
+multi-manning, localisation, consent and analytics. No network access and no
+dependencies, so the whole suite runs offline in about a second.
+
+Three of these are worth knowing about:
+
+- **Localisation** checks all 22 language packs against the English baseline and
+  fails on a missing key, a stray key, an empty string or a mismatched
+  `{placeholder}` — the failure mode that would otherwise reach a driver as a
+  literal brace or a silently English sentence.
+- **Consent** pins the rules that carry legal weight: necessary storage is never
+  blocked, optional storage is refused until granted, a refusal is recorded
+  rather than re-asked, a stale or corrupt decision re-prompts instead of being
+  trusted, and withdrawing deletes what the consent had allowed.
+- **Analytics** asserts from both ends that nothing identifying can escape: an
+  address handed to `buildPayload` on purpose does not appear in the payload,
+  and an IP or an unknown field posted directly at the collector never reaches
+  disk.
 
 **Headless:**
 
@@ -498,7 +667,25 @@ served, and put your domain in `CNAME` if you use one.
 work. Over plain HTTP the app still runs; it just does not install or cache.
 
 After deploying a change, bump `CACHE_VERSION` in `sw.js` so returning visitors
-pick up the new shell immediately.
+pick up the new shell immediately. The 22 language packs are deliberately not in
+the service worker's precache list — precaching packs nobody will open would slow
+every install down; each one is cached the first time it is actually loaded.
+
+**Before going live, check three things:**
+
+1. **The controller and contact details** in `privacy.s8body` (all 24 packs)
+   name whoever is actually publishing the app. A privacy policy naming the
+   wrong controller is worse than none.
+2. **`ANALYTICS_ENDPOINT` in `js/core/config.js`.** Left empty — the default —
+   the app measures nothing and the analytics category is not even offered. Set
+   it only if you are running `backend/server.js`, and set
+   `ANALYTICS_ORIGINS` on the collector to your domain.
+3. **`ANALYTICS_TOKEN`** is a real secret if the collector is public: it is the
+   only thing standing between the internet and your dashboard.
+
+If you fork this for a different operator, the language packs are the only place
+the policy wording lives, and `js/core/consent.js` is the only place the storage
+inventory lives — change those two and `PRIVACY.html` follows automatically.
 
 ---
 

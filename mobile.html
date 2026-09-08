@@ -14,9 +14,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/mobile.css">
 </head>
@@ -155,6 +152,7 @@
 
       <footer class="view-footer">
         <span data-i18n-html="app.footerDisclaimer"></span>
+        <p style="margin:8px 0 0"><button type="button" class="privacy-link" data-action="privacy-settings" data-i18n="cookie.manage"></button></p>
         <a class="author-link author-link--onDark" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
            aria-label="created by Gabor Gasko - open his LinkedIn profile">
 <span class="author-link__label">created by</span><span class="author-link__name">Gabor Gasko</span>
@@ -226,7 +224,7 @@
     <section class="view" id="viewInfo" hidden>
       <div class="card">
         <div class="card__title" data-i18n="info.about"></div>
-        <p><strong data-i18n="app.name">Planificador de ruta - Gabor</strong> <span id="m_appVersion">v2.2.0</span> &middot;
+        <p><strong data-i18n="app.name">Planificador de ruta - Gabor</strong> <span id="m_appVersion">v2.3.0</span> &middot;
            <span data-i18n="info.dataSource"></span>: <span id="m_dataSource">-</span></p>
         <p class="small muted" data-i18n-html="info.aboutText"></p>
         <a class="author-link author-link--lg" href="https://www.linkedin.com/in/gaborgasko/" target="_blank" rel="noopener noreferrer"
@@ -249,6 +247,8 @@
         <div class="card__title" data-i18n="info.links"></div>
         <p><a href="USER_GUIDE.html" target="_blank" rel="noopener" data-i18n="info.openGuide"></a></p>
         <p><a href="desktop.html?view=desktop" data-i18n="info.switchDesktop"></a></p>
+        <p><a href="PRIVACY.html" data-i18n="cookie.moreInfo"></a></p>
+        <p><button type="button" class="privacy-link" data-action="privacy-settings" data-i18n="cookie.manage"></button></p>
       </div>
 
       <div class="warn-box" data-i18n-html="app.footerDisclaimer"></div>
@@ -289,6 +289,8 @@
 <script src="js/core/config.js"></script>
 <script src="js/core/icons.js"></script>
 <script src="js/core/i18n.js"></script>
+<script src="js/core/consent.js"></script>
+<script src="js/core/analytics.js"></script>
 <script src="js/core/util.js"></script>
 <script src="js/core/geo.js"></script>
 <script src="js/core/embedded-data.js"></script>
@@ -305,6 +307,7 @@
 
 <script src="js/ui/render.js"></script>
 <script src="js/ui/map-view.js"></script>
+<script src="js/ui/consent-ui.js"></script>
 <script src="js/ui/app-common.js"></script>
 <script src="js/ui/mobile-app.js"></script>
 <script>

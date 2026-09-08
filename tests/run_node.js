@@ -20,6 +20,8 @@ const root = path.resolve(__dirname, '..');
 [
   'js/core/config.js',
   'js/core/i18n.js',
+  'js/core/consent.js',
+  'js/core/analytics.js',
   'js/core/util.js',
   'js/core/geo.js',
   'js/core/embedded-data.js',
@@ -36,7 +38,9 @@ const root = path.resolve(__dirname, '..');
   'tests/test_stop_suggestions.js',
   'tests/test_legal_stops.js',
   'tests/test_multi_manning.js',
-  'tests/test_i18n.js'
+  'tests/test_i18n.js',
+  'tests/test_consent.js',
+  'tests/test_analytics.js'
 ].forEach((file) => require(path.join(root, file)));
 
 const E = String.fromCharCode(27);

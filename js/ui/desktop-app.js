@@ -254,8 +254,16 @@
 
     state.running = app.runPlan(request, function (p) { setProgress(p.pct, p.message); });
 
+    var startedAt = Date.now();
     state.running.promise.then(function (result) {
       renderResult(result);
+      TRP.analytics.track('route_calculated', {
+        distanceKm: result.route.distanceKm,
+        durationMs: Date.now() - startedAt,
+        countries: result.countries.length,
+        tollDetail: values.tollDetail,
+        drivers: values.drivers
+      });
       showTab('overview');
       app.toast(t('overview.calculated', {
         km: util.formatNumber(result.route.distanceKm, 0),
@@ -263,6 +271,7 @@
       }), 'ok');
     }).catch(function (err) {
       if (err && err.code === 'CANCELLED') return;
+      TRP.analytics.track('route_failed', { errorCode: err && err.code });
       var message = app.friendlyError(err);
       app.toast(message, 'error');
       el.panelOverview.innerHTML = card('overview.failed',
@@ -385,6 +394,7 @@
     cacheElements();
     app.initLanguage(el.langSelect, onLanguageChange);
     app.initTheme(el.themeToggle);
+    app.initPrivacy('desktop');
     initTabs();
     applyForm(app.loadForm());
     clearResults();

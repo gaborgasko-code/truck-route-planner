@@ -13,7 +13,7 @@
 
   var CONFIG = {
     APP_NAME: 'Planificador de ruta - Gabor',
-    APP_VERSION: '2.2.0',
+    APP_VERSION: '2.3.0',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',
     AUTHOR_URL: 'https://www.linkedin.com/in/gaborgasko/',
@@ -84,6 +84,26 @@
     ],
     EURO_FACTORS: { VI: 1.0, V: 1.12, IV: 1.2, III: 1.35, II: 1.5 },
     AXLE_FACTORS: { 2: 0.85, 3: 0.92, 4: 1.0, 5: 1.05, 6: 1.1 },
+
+    /* ---- Localisation ---- */
+    /* Spanish stays the product default. Set true to follow the browser
+       language instead, when it is one of the 24 EU languages. */
+    LANG_AUTODETECT: false,
+
+    /* ---- Consent (ePrivacy / GDPR) ---- */
+    CONSENT_KEY: 'trp.consent',
+    /* Bump when the categories change, to re-ask everyone. */
+    CONSENT_VERSION: 1,
+    /* Re-ask after this many months (AEPD guidance: 24 months maximum). */
+    CONSENT_MONTHS: 12,
+
+    /* ---- Audience measurement ---- */
+    /* Absolute or relative URL of the collector. Empty disables analytics
+       completely: nothing is sent and the category is hidden. */
+    ANALYTICS_ENDPOINT: '',
+    ANALYTICS_SITE: 'planificador',
+    /* Raw events are pruned on the server after this many days. */
+    ANALYTICS_RETENTION_DAYS: 90,
 
     STORAGE_PREFIX: 'trp.',
     /* Language-neutral fallback; the UI uses i18n key app.footerDisclaimer. */

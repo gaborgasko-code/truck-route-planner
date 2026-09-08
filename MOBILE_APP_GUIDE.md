@@ -220,7 +220,9 @@ The web app was written with the native wrapper in mind:
 | Hidden-tab map | `invalidateSize()` before drawing and after layout settles, SVG renderer to keep the polyline aligned |
 | Orientation change | Map re-measures on `orientationchange` |
 | Offline start | Service worker caches the app shell and the datasets |
-| Language | Spanish by default, English in the header; the choice persists in `localStorage` and survives an app update as long as `appId` and the scheme stay the same |
+| Language | All 24 EU languages, Spanish by default; the two-letter code in the header on a phone. The choice persists in `localStorage` and survives an app update as long as `appId` and the scheme stay the same |
+| Language packs | Loaded by script injection rather than `fetch`, so lazy loading also works from the `file://`-style origin a packaged build uses |
+| Consent | The banner sits above the bottom navigation bar and stacks its buttons on a narrow screen, with reject and accept at equal weight |
 | Legal stops | The EU rule dataset ships with the app, so the compliance view works with no connection |
 | Rate limits | Nominatim calls are serialised at 1 req/s with an offline bounding-box pre-filter and a persistent cache |
 
@@ -267,13 +269,24 @@ Everything else runs unchanged.
       (`versionCode`/`versionName`) and Xcode (`CFBundleShortVersionString`)
 - [ ] Tested on a real phone in both portrait and landscape
 - [ ] Tested in airplane mode: the shell opens and shows a clear network error
-- [ ] Store listing prepared in **Spanish and English**, matching the in-app default
+- [ ] Store listing prepared in **Spanish** first, matching the in-app default;
+      add other EU languages as the audience justifies it
 - [ ] Store listing states clearly that tolls, times, **legal stops** and
       regulations are **estimates only**, and that the 561/2006 summary does not
       replace the legal text
 - [ ] Privacy note included: addresses typed by the user are sent to
-      OpenStreetMap Nominatim and the OSRM routing service; nothing else leaves
-      the device, and no analytics or tracking is used
+      OpenStreetMap Nominatim and the OSRM routing service, and map tiles are
+      fetched from OpenStreetMap. No cookies, no accounts, no advertising or
+      tracking tags, no third-party fonts.
+- [ ] **Data safety / App privacy form answered against the build you ship.**
+      With `ANALYTICS_ENDPOINT` empty — the default — nothing is collected and
+      you can declare "no data collected". If you enable the collector, declare
+      it honestly: anonymous, aggregated app-usage diagnostics, not linked to a
+      user, not used for tracking, and not shared with third parties.
+- [ ] `PRIVACY.html` reachable from inside the app and hosted at a public URL,
+      since both stores require a privacy policy link on the listing
+- [ ] The controller and contact details in `privacy.s8body` name the actual
+      publisher, in every language pack you ship
 
 ---
 

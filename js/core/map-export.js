@@ -123,7 +123,7 @@
 
   var STYLE = [
     '*{box-sizing:border-box}',
-    'html,body{height:100%;margin:0;font:14px/1.45 Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#101828}',
+    'html,body{height:100%;margin:0;font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#101828}',
     '#map{position:absolute;inset:0}',
     '.hdr{position:absolute;top:0;left:0;right:0;height:48px;z-index:1200;background:#fff;color:#101828;',
     'display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #e4e7ec;box-shadow:0 1px 3px rgba(16,24,40,.08)}',

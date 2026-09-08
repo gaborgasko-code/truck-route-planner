@@ -28,10 +28,26 @@
       assert.equal(i18n.detect(), 'es', 'with no stored choice the app must start in Spanish');
     });
 
-    T.test('both languages are offered', function () {
-      assert.deepEqual(i18n.available(), ['es', 'en']);
+    T.test('all 24 official EU languages are offered', function () {
+      var codes = i18n.available();
+      assert.equal(codes.length, 24, 'the EU has 24 official languages');
+      /* The full list, so a dropped or renamed pack fails here rather than silently. */
+      ['bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'ga', 'hr',
+       'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv'
+      ].forEach(function (code) {
+        assert.ok(codes.indexOf(code) !== -1, code + ' is offered');
+        assert.ok(i18n.languageName(code), code + ' has an endonym for the picker');
+      });
       assert.equal(i18n.languageName('es'), 'Español');
       assert.equal(i18n.languageName('en'), 'English');
+    });
+
+    T.test('every offered language has a locale for number and date formatting', function () {
+      i18n.available().forEach(function (code) {
+        var entry = i18n.LANGS[code];
+        assert.ok(entry && /^[a-z]{2}-[A-Z]{2}$/.test(entry.locale),
+          code + ' has a well-formed locale, got ' + (entry && entry.locale));
+      });
     });
 
     T.test('the locale follows the language', function () {
@@ -44,8 +60,20 @@
 
     T.test('an unknown language code is ignored', function () {
       i18n.set('es', true);
-      i18n.set('fr', true);
+      i18n.set('zz', true);      /* not an EU language, and never will be */
+      assert.equal(i18n.lang(), 'es', 'the current language survives a bad code');
+      i18n.set('en-US', true);   /* a region tag we do not carry a pack for */
       assert.equal(i18n.lang(), 'es');
+      i18n.set('', true);
+      assert.equal(i18n.lang(), 'es');
+    });
+
+    T.test('a non-base language must be loaded before it can be selected', function () {
+      i18n.set('es', true);
+      /* `set` is synchronous and only accepts what is already registered;
+         the async `setAsync` path is what fetches a pack on demand. */
+      assert.equal(i18n.isSupported('de'), true, 'German is a supported language');
+      assert.equal(i18n.lang(), 'es', 'but selecting it did not happen behind our back');
     });
 
     /* ------------------------------------------------------- completeness */
@@ -188,6 +216,88 @@
         assert.ok(ev.titleKey, 'an event has no titleKey');
         assert.ok(i18n.has(ev.titleKey), 'unknown event key: ' + ev.titleKey);
       });
+    });
+  });
+
+  /* ------------------------------------------------- the 22 language packs */
+
+  /*
+   * Spanish and English live inside js/core/i18n.js; the other 22 are separate
+   * files loaded on demand. A pack that is short a key falls back silently to
+   * English at runtime, which is easy to miss in review, so check the whole
+   * set here. Node only: in the browser the packs are fetched asynchronously
+   * and this runner is synchronous.
+   */
+  if (typeof require !== 'function' || typeof module === 'undefined') return;
+
+  T.describe('language packs', function () {
+    var PACKS = i18n.available().filter(function (code) {
+      return i18n.BASE_LANGS.indexOf(code) === -1;
+    });
+
+    /* Load every pack against a throwaway registry, so the live one is untouched. */
+    var loaded = {};
+    var realRegister = i18n.register;
+    i18n.register = function (code, dict) { loaded[code] = dict; };
+    try {
+      PACKS.forEach(function (code) { require('../js/i18n/' + code + '.js'); });
+    } finally {
+      i18n.register = realRegister;
+    }
+
+    var baseline = Object.keys(i18n.STRINGS);
+    function placeholders(value) {
+      return (String(value).match(/\{[a-zA-Z0-9_]+\}/g) || []).sort().join(',');
+    }
+
+    T.test('there is a file for every non-base language', function () {
+      assert.equal(PACKS.length, 22, 'es and en are inline, the other 22 are files');
+      PACKS.forEach(function (code) {
+        assert.ok(loaded[code], 'js/i18n/' + code + '.js did not register a dictionary');
+      });
+    });
+
+    PACKS.forEach(function (code) {
+      T.test(code + ' translates every key, with matching placeholders', function () {
+        var dict = loaded[code];
+        var missing = baseline.filter(function (k) { return !(k in dict); });
+        var extra = Object.keys(dict).filter(function (k) { return !(k in i18n.STRINGS); });
+        var blank = Object.keys(dict).filter(function (k) { return !String(dict[k]).trim(); });
+        var drift = baseline.filter(function (k) {
+          return k in dict && placeholders(i18n.STRINGS[k].en) !== placeholders(dict[k]);
+        });
+
+        assert.equal(missing.length, 0, 'missing keys: ' + missing.slice(0, 5).join(', '));
+        assert.equal(extra.length, 0, 'keys no longer in the app: ' + extra.slice(0, 5).join(', '));
+        assert.equal(blank.length, 0, 'empty translations: ' + blank.slice(0, 5).join(', '));
+        /* A dropped {km} renders a literal brace to the driver, so this matters. */
+        assert.equal(drift.length, 0, 'placeholder mismatch: ' + drift.slice(0, 5).join(', '));
+      });
+    });
+
+    T.test('the author credit is identical in every language', function () {
+      PACKS.forEach(function (code) {
+        assert.equal(loaded[code]['app.author'], 'created by Gabor Gasko',
+          code + ' altered the author credit');
+      });
+    });
+
+    /*
+     * Regression: `init()` used to upgrade to the stored language silently.
+     * The main UI still repainted, because initLanguage() re-renders from its
+     * own promise, but anything relying on onChange - the consent banner -
+     * stayed in the default language on top of an otherwise translated page.
+     */
+    T.test('switching language notifies listeners so late UI repaints', function () {
+      var heard = [];
+      i18n.onChange(function (code) { heard.push(code); });
+      i18n.set('en');
+      assert.deepEqual(heard, ['en'], 'a plain set() announces the change');
+
+      heard.length = 0;
+      i18n.set('es', true);
+      assert.equal(heard.length, 0, 'and the silent flag still suppresses it');
+      i18n.set('es');
     });
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

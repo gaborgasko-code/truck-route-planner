@@ -14,8 +14,44 @@
 
   var STORAGE_KEY = 'trp.lang';
   var DEFAULT_LANG = 'es';
-  var LOCALES = { es: 'es-ES', en: 'en-GB' };
-  var LANG_NAMES = { es: 'Español', en: 'English' };
+
+  /* Shipped inline, so the app always works even with no extra files. */
+  var BASE_LANGS = ['es', 'en'];
+
+  /* Looked up in order when a key is missing from the active language. */
+  var FALLBACK_CHAIN = ['en', 'es'];
+
+  /**
+   * The 24 official languages of the European Union.
+   * `es` and `en` live in this file; the rest load on demand from
+   * js/i18n/<code>.js, which keeps the initial download small.
+   */
+  var LANGS = {
+    bg: { name: 'Български', locale: 'bg-BG' },
+    cs: { name: 'Čeština', locale: 'cs-CZ' },
+    da: { name: 'Dansk', locale: 'da-DK' },
+    de: { name: 'Deutsch', locale: 'de-DE' },
+    el: { name: 'Ελληνικά', locale: 'el-GR' },
+    en: { name: 'English', locale: 'en-GB' },
+    es: { name: 'Español', locale: 'es-ES' },
+    et: { name: 'Eesti', locale: 'et-EE' },
+    fi: { name: 'Suomi', locale: 'fi-FI' },
+    fr: { name: 'Français', locale: 'fr-FR' },
+    ga: { name: 'Gaeilge', locale: 'ga-IE' },
+    hr: { name: 'Hrvatski', locale: 'hr-HR' },
+    hu: { name: 'Magyar', locale: 'hu-HU' },
+    it: { name: 'Italiano', locale: 'it-IT' },
+    lt: { name: 'Lietuvių', locale: 'lt-LT' },
+    lv: { name: 'Latviešu', locale: 'lv-LV' },
+    mt: { name: 'Malti', locale: 'mt-MT' },
+    nl: { name: 'Nederlands', locale: 'nl-NL' },
+    pl: { name: 'Polski', locale: 'pl-PL' },
+    pt: { name: 'Português', locale: 'pt-PT' },
+    ro: { name: 'Română', locale: 'ro-RO' },
+    sk: { name: 'Slovenčina', locale: 'sk-SK' },
+    sl: { name: 'Slovenščina', locale: 'sl-SI' },
+    sv: { name: 'Svenska', locale: 'sv-SE' }
+  };
 
   var STRINGS = {
 
@@ -512,15 +548,159 @@
     'splash.noscript': {
       es: 'Se necesita JavaScript. Elija arriba la versión de escritorio o la versión móvil.',
       en: 'JavaScript is required. Choose the desktop or mobile version above.'
-    }
+    },
+
+    /* ------------------------------------------------- consent / cookies */
+    'cookie.title': { es: 'Privacidad y almacenamiento local', en: 'Privacy and local storage' },
+    'cookie.intro': {
+      es: 'Esta aplicación no usa cookies publicitarias ni de seguimiento. Guardamos algunos datos en su navegador para que funcione y, si usted lo autoriza, medimos el uso de forma anónima para saber cuánta gente la utiliza.',
+      en: 'This application uses no advertising or tracking cookies. We store a little data in your browser so it works and, if you allow it, we measure usage anonymously to see how many people use it.'
+    },
+    'cookie.acceptAll': { es: 'Aceptar todo', en: 'Accept all' },
+    'cookie.rejectAll': { es: 'Rechazar opcionales', en: 'Reject optional' },
+    'cookie.settings': { es: 'Configurar', en: 'Settings' },
+    'cookie.save': { es: 'Guardar selección', en: 'Save choices' },
+    'cookie.close': { es: 'Cerrar', en: 'Close' },
+    'cookie.manage': { es: 'Privacidad y cookies', en: 'Privacy and cookies' },
+    'cookie.moreInfo': { es: 'Política de privacidad', en: 'Privacy policy' },
+    'cookie.settingsTitle': { es: 'Preferencias de privacidad', en: 'Privacy preferences' },
+    'cookie.settingsIntro': {
+      es: 'Elija qué puede guardar la aplicación en este dispositivo. Puede cambiarlo cuando quiera desde el enlace del pie de página.',
+      en: 'Choose what the application may store on this device. You can change it at any time from the link in the footer.'
+    },
+    'cookie.alwaysOn': { es: 'Siempre activo', en: 'Always on' },
+    'cookie.saved': { es: 'Preferencias de privacidad guardadas.', en: 'Privacy preferences saved.' },
+    'cookie.decidedOn': { es: 'Su elección se registró el {date}.', en: 'Your choice was recorded on {date}.' },
+    'cookie.noChoice': { es: 'Todavía no ha elegido.', en: 'You have not chosen yet.' },
+    'cookie.withdraw': { es: 'Retirar el consentimiento', en: 'Withdraw consent' },
+    'cookie.withdrawn': { es: 'Consentimiento retirado y datos locales opcionales borrados.', en: 'Consent withdrawn and optional local data cleared.' },
+
+    'cookie.cat.necessary': { es: 'Imprescindible', en: 'Strictly necessary' },
+    'cookie.cat.necessaryDesc': {
+      es: 'Idioma, tema, la versión (escritorio o móvil) y la caché de países que evita repetir consultas. Sin esto la aplicación no puede funcionar, por lo que no requiere consentimiento.',
+      en: 'Language, theme, the chosen build (desktop or mobile) and the country cache that avoids repeat lookups. The application cannot work without these, so they need no consent.'
+    },
+    'cookie.cat.preferences': { es: 'Preferencias', en: 'Preferences' },
+    'cookie.cat.preferencesDesc': {
+      es: 'Recuerda las direcciones y el perfil del vehículo entre visitas para no tener que reescribirlos. Es solo comodidad: la aplicación funciona igual sin ello.',
+      en: 'Remembers your addresses and vehicle profile between visits so you do not retype them. Pure convenience: the application works the same without it.'
+    },
+    'cookie.cat.analytics': { es: 'Medición de audiencia', en: 'Audience measurement' },
+    'cookie.cat.analyticsDesc': {
+      es: 'Recuento anónimo y agregado de visitas y rutas calculadas, en nuestro propio servidor. Sin cookies, sin identificadores persistentes, sin dirección IP almacenada y sin compartir con terceros.',
+      en: 'Anonymous, aggregated counts of visits and calculated routes, on our own server. No cookies, no persistent identifier, no stored IP address and nothing shared with third parties.'
+    },
+
+    /* ---------------------------------------------------- storage items */
+    'store.lang.name': { es: 'Idioma', en: 'Language' },
+    'store.lang.purpose': { es: 'Recuerda el idioma elegido.', en: 'Remembers the language you chose.' },
+    'store.theme.name': { es: 'Tema', en: 'Theme' },
+    'store.theme.purpose': { es: 'Recuerda el tema claro u oscuro.', en: 'Remembers the light or dark theme.' },
+    'store.view.name': { es: 'Versión', en: 'Build' },
+    'store.view.purpose': { es: 'Recuerda si prefiere la versión de escritorio o la móvil.', en: 'Remembers whether you prefer the desktop or mobile build.' },
+    'store.consent.name': { es: 'Consentimiento', en: 'Consent' },
+    'store.consent.purpose': { es: 'Guarda su elección de privacidad para no volver a preguntarle.', en: 'Stores your privacy choice so you are not asked again.' },
+    'store.countryCache.name': { es: 'Caché de países', en: 'Country cache' },
+    'store.countryCache.purpose': { es: 'Guarda qué país corresponde a coordenadas ya consultadas, para no repetir peticiones al geocodificador.', en: 'Remembers which country a coordinate belongs to, so the geocoder is not asked twice.' },
+    'store.form.name': { es: 'Formulario', en: 'Form' },
+    'store.form.purpose': { es: 'Guarda las direcciones y el perfil del vehículo introducidos.', en: 'Stores the addresses and vehicle profile you entered.' },
+
+    /* --------------------------------------------------- privacy policy */
+    'privacy.title': { es: 'Política de privacidad y cookies', en: 'Privacy and cookie policy' },
+    'privacy.updated': { es: 'Última actualización', en: 'Last updated' },
+    'privacy.intro': {
+      es: 'Esta página explica qué datos trata esta aplicación, qué guarda en su dispositivo y con quién se comunica. Está redactada para el Reglamento (UE) 2016/679 (RGPD) y la Directiva 2002/58/CE (ePrivacy).',
+      en: 'This page explains what data this application processes, what it stores on your device and who it talks to. It is written for Regulation (EU) 2016/679 (GDPR) and Directive 2002/58/EC (ePrivacy).'
+    },
+    'privacy.s1': { es: 'Resumen', en: 'In short' },
+    'privacy.s1body': {
+      es: 'No hay cuentas, ni cookies publicitarias, ni perfilado, ni venta de datos. Las direcciones que escribe se envían a los servicios de mapas para calcular la ruta. Todo lo demás se queda en su navegador, salvo la medición de audiencia anónima si usted la autoriza.',
+      en: 'There are no accounts, no advertising cookies, no profiling and no data sales. The addresses you type are sent to the mapping services to calculate the route. Everything else stays in your browser, apart from the anonymous audience measurement if you allow it.'
+    },
+    'privacy.s2': { es: 'Qué se guarda en su dispositivo', en: 'What is stored on your device' },
+    'privacy.s2body': {
+      es: 'La aplicación no escribe cookies HTTP. Usa el almacenamiento local del navegador (localStorage), que la normativa ePrivacy trata igual que las cookies. Esta es la lista completa:',
+      en: 'The application writes no HTTP cookies. It uses browser local storage (localStorage), which the ePrivacy rules treat the same way as cookies. This is the complete list:'
+    },
+    'privacy.colItem': { es: 'Elemento', en: 'Item' },
+    'privacy.colPurpose': { es: 'Finalidad', en: 'Purpose' },
+    'privacy.colCategory': { es: 'Categoría', en: 'Category' },
+    'privacy.colRetention': { es: 'Conservación', en: 'Retention' },
+    'privacy.retentionUntilCleared': { es: 'Hasta que borre los datos del sitio', en: 'Until you clear site data' },
+    'privacy.retentionMonths': { es: '{n} meses', en: '{n} months' },
+    'privacy.s3': { es: 'Terceros a los que se conecta', en: 'Third parties it connects to' },
+    'privacy.s3body': {
+      es: 'Para calcular una ruta y dibujar el mapa, su navegador se conecta directamente a estos servicios. Reciben su dirección IP porque es inherente a cualquier petición de internet. No les enviamos ningún identificador propio.',
+      en: 'To calculate a route and draw the map your browser connects directly to these services. They receive your IP address, which is inherent to any internet request. We send them no identifier of our own.'
+    },
+    'privacy.colService': { es: 'Servicio', en: 'Service' },
+    'privacy.colData': { es: 'Qué recibe', en: 'What it receives' },
+    'privacy.thirdNominatim': { es: 'La dirección que escribe y las coordenadas de la ruta, para convertirlas en lugares.', en: 'The address you type and the route coordinates, to turn them into places.' },
+    'privacy.thirdOsrm': { es: 'Las coordenadas de origen y destino, para calcular la ruta por carretera.', en: 'The origin and destination coordinates, to calculate the road route.' },
+    'privacy.thirdTiles': { es: 'Las coordenadas de las teselas del mapa que está viendo.', en: 'The coordinates of the map tiles you are looking at.' },
+    'privacy.thirdCdn': { es: 'La petición de la biblioteca de mapas Leaflet.', en: 'The request for the Leaflet mapping library.' },
+    'privacy.s4': { es: 'Medición de audiencia', en: 'Audience measurement' },
+    'privacy.s4body': {
+      es: 'Si la autoriza, contamos las visitas en nuestro propio servidor. No se instala ninguna cookie ni identificador. El servidor calcula un valor irreversible a partir de la IP, el navegador y una sal que se renueva cada día, solo para no contar dos veces a la misma persona el mismo día; la IP no se almacena en ningún momento y el valor deja de ser correlacionable al día siguiente. Los datos son agregados, no se comparten con nadie y no permiten identificarle.',
+      en: 'If you allow it, we count visits on our own server. No cookie or identifier is installed. The server derives an irreversible value from the IP address, the browser and a salt that is regenerated every day, purely so the same person is not counted twice on the same day; the IP is never stored and the value stops being correlatable the next day. The data is aggregated, shared with nobody and cannot identify you.'
+    },
+    'privacy.s4list': {
+      es: 'Se registran: la página vista, el idioma, la versión (escritorio o móvil), el dominio de procedencia y, al calcular una ruta, el número de países, un rango de distancia y el tiempo de cálculo. <strong>Nunca</strong> se registran direcciones, coordenadas ni el contenido del formulario.',
+      en: 'What is recorded: the page viewed, the language, the build (desktop or mobile), the referring domain and, when a route is calculated, the number of countries, a distance band and the calculation time. Addresses, coordinates and form contents are <strong>never</strong> recorded.'
+    },
+    'privacy.s5': { es: 'Base jurídica', en: 'Legal basis' },
+    'privacy.s5body': {
+      es: 'El almacenamiento imprescindible y las llamadas a los servicios de mapas se amparan en la ejecución del servicio que usted solicita (art. 6.1.b RGPD y la excepción del art. 5.3 de la Directiva ePrivacy). Las preferencias y la medición de audiencia se basan en su consentimiento (art. 6.1.a RGPD), que puede retirar en cualquier momento.',
+      en: 'Strictly necessary storage and the calls to the mapping services rely on performing the service you requested (Art. 6(1)(b) GDPR and the Art. 5(3) ePrivacy exemption). Preferences and audience measurement rely on your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time.'
+    },
+    'privacy.s6': { es: 'Sus derechos', en: 'Your rights' },
+    'privacy.s6body': {
+      es: 'Puede retirar el consentimiento con un clic desde el enlace del pie de página, y borrar todo lo guardado eliminando los datos del sitio en su navegador. Como no se conserva ningún identificador ni dato personal en el servidor, no hay un perfil que consultar, rectificar o suprimir. Tiene derecho a reclamar ante la autoridad de control de su país.',
+      en: 'You can withdraw consent with one click from the link in the footer, and erase everything stored by clearing site data in your browser. Because no identifier or personal data is kept on the server, there is no profile to access, rectify or erase. You have the right to complain to your national supervisory authority.'
+    },
+    'privacy.s7': { es: 'Conservación', en: 'Retention' },
+    'privacy.s7body': {
+      es: 'Su elección de privacidad se vuelve a solicitar a los {months} meses. Los registros de audiencia en bruto se eliminan a los {days} días; solo se conservan los totales diarios agregados.',
+      en: 'Your privacy choice is asked again after {months} months. Raw audience records are deleted after {days} days; only aggregated daily totals are kept.'
+    },
+    'privacy.s8': { es: 'Responsable y contacto', en: 'Controller and contact' },
+    'privacy.s8body': {
+      es: 'Esta aplicación la publica Gabor Gasko. Para cualquier cuestión sobre privacidad, use el perfil de contacto enlazado en la cabecera.',
+      en: 'This application is published by Gabor Gasko. For any privacy question, use the contact profile linked in the header.'
+    },
+    'privacy.manageBtn': { es: 'Cambiar mis preferencias', en: 'Change my preferences' },
+    'privacy.backToApp': { es: 'Volver a la aplicación', en: 'Back to the application' },
+
+    /* ------------------------------------------------ language fallback */
+    'lang.notTranslated': {
+      es: 'Esta sección aún no está traducida al {target}; se muestra en {shown}.',
+      en: 'This section is not translated into {target} yet; it is shown in {shown}.'
+    },
+    'lang.pickTitle': { es: 'Idioma', en: 'Language' }
   };
+
 
   var current = DEFAULT_LANG;
   var listeners = [];
+  var loaded = { es: true, en: true };
+  var loading = {};
 
-  function available() { return ['es', 'en']; }
+  /* ------------------------------------------------------------ metadata */
 
-  function languageName(code) { return LANG_NAMES[code] || code; }
+  /** Every supported language code, alphabetically. */
+  function available() { return Object.keys(LANGS).sort(); }
+
+  /** Languages whose strings are already in memory. */
+  function ready() { return available().filter(function (c) { return !!loaded[c]; }); }
+
+  function isSupported(code) {
+    return !!code && Object.prototype.hasOwnProperty.call(LANGS, code);
+  }
+
+  /** Native name, e.g. `Deutsch`. */
+  function languageName(code) {
+    return (LANGS[code] && LANGS[code].name) || code;
+  }
 
   /** Two-letter label for tight layouts such as the mobile header. */
   function languageShort(code) { return String(code || '').toUpperCase(); }
@@ -529,24 +709,113 @@
   function lang() { return current; }
 
   /** BCP-47 locale for Intl formatting. */
-  function locale() { return LOCALES[current] || LOCALES[DEFAULT_LANG]; }
+  function locale() {
+    return (LANGS[current] && LANGS[current].locale) || LANGS[DEFAULT_LANG].locale;
+  }
+
+  /* ------------------------------------------------------------- loading */
+
+  /**
+   * Merge a flat `{key: 'text'}` dictionary for one language.
+   * Every js/i18n/<code>.js file calls this as it loads.
+   */
+  function register(code, dict) {
+    if (!isSupported(code) || !dict) return false;
+    Object.keys(dict).forEach(function (key) {
+      if (!STRINGS[key]) STRINGS[key] = {};
+      STRINGS[key][code] = dict[key];
+    });
+    loaded[code] = true;
+    return true;
+  }
+
+  /** Path of a language pack, resolved relative to this file. */
+  function scriptUrl(code) {
+    var base = 'js/i18n/';
+    if (typeof document !== 'undefined') {
+      var self = document.querySelector('script[src*="core/i18n.js"]');
+      if (self) base = self.getAttribute('src').replace(/core\/i18n\.js.*$/, 'i18n/');
+    }
+    return base + code + '.js';
+  }
+
+  /**
+   * Load one language pack. Resolves immediately for the built-in languages
+   * and for anything already loaded, and never rejects: a missing pack simply
+   * leaves the fallback chain in charge.
+   *
+   * @returns {Promise<boolean>} whether the language is usable
+   */
+  function load(code) {
+    if (!isSupported(code)) return Promise.resolve(false);
+    if (loaded[code]) return Promise.resolve(true);
+    if (loading[code]) return loading[code];
+
+    var promise;
+    if (typeof document === 'undefined') {
+      /* Node (tests, tooling): load synchronously. */
+      promise = new Promise(function (resolve) {
+        try {
+          require('../i18n/' + code + '.js');
+          resolve(!!loaded[code]);
+        } catch (e) {
+          resolve(false);
+        }
+      });
+    } else {
+      promise = new Promise(function (resolve) {
+        var script = document.createElement('script');
+        script.src = scriptUrl(code);
+        script.async = true;
+        script.onload = function () { resolve(!!loaded[code]); };
+        script.onerror = function () { resolve(false); };
+        (document.head || document.documentElement).appendChild(script);
+      });
+    }
+
+    loading[code] = promise;
+    return promise;
+  }
+
+  /* ----------------------------------------------------------- selection */
 
   function stored() {
     try {
       var value = localStorage.getItem(STORAGE_KEY);
-      return (value === 'es' || value === 'en') ? value : null;
+      return isSupported(value) ? value : null;
     } catch (e) {
       return null;
     }
   }
 
-  /** Spanish is the product default; a stored choice always wins. */
-  function detect() {
-    return stored() || DEFAULT_LANG;
+  /** The browser's preferred language, when it is one of the EU 24. */
+  function browserLanguage() {
+    if (typeof navigator === 'undefined') return null;
+    var list = navigator.languages || [navigator.language];
+    for (var i = 0; i < list.length; i++) {
+      var code = String(list[i] || '').slice(0, 2).toLowerCase();
+      if (isSupported(code)) return code;
+    }
+    return null;
   }
 
+  /**
+   * Spanish is the product default. A stored choice always wins; the browser
+   * language is only consulted when CONFIG.LANG_AUTODETECT is switched on.
+   */
+  function detect() {
+    var saved = stored();
+    if (saved) return saved;
+    var autodetect = TRP.CONFIG && TRP.CONFIG.LANG_AUTODETECT;
+    return (autodetect && browserLanguage()) || DEFAULT_LANG;
+  }
+
+  /**
+   * Switch language. The built-in languages are always present; anything else
+   * has to be loaded first, so prefer `setAsync`.
+   */
   function set(code, silent) {
-    if (!LOCALES[code]) return current;
+    if (!isSupported(code)) return current;
     current = code;
     try { localStorage.setItem(STORAGE_KEY, code); } catch (e) { /* ignore */ }
     if (typeof document !== 'undefined' && document.documentElement) {
@@ -556,15 +825,32 @@
     return current;
   }
 
+  /** Load the language pack if needed, then switch. */
+  function setAsync(code, silent) {
+    return load(code).then(function () { return set(code, silent); });
+  }
+
   function onChange(fn) { if (typeof fn === 'function') listeners.push(fn); }
+
+  /* -------------------------------------------------------------- lookup */
+
+  /** First language in the fallback chain that actually has this entry. */
+  function resolveEntry(entry) {
+    if (!entry) return null;
+    if (entry[current] != null) return entry[current];
+    for (var i = 0; i < FALLBACK_CHAIN.length; i++) {
+      if (entry[FALLBACK_CHAIN[i]] != null) return entry[FALLBACK_CHAIN[i]];
+    }
+    return null;
+  }
 
   /**
    * Translate a key, interpolating `{name}` placeholders.
    * Unknown keys return the key itself, which makes gaps obvious.
    */
   function t(key, params) {
-    var entry = STRINGS[key];
-    var text = entry ? (entry[current] != null ? entry[current] : entry.en) : key;
+    var text = resolveEntry(STRINGS[key]);
+    if (text == null) text = key;
     if (params) {
       text = String(text).replace(/\{(\w+)\}/g, function (match, name) {
         return params[name] != null ? params[name] : match;
@@ -573,8 +859,13 @@
     return text;
   }
 
-  /** True when the key exists in the dictionary. */
+  /** True when the key exists in the dictionary at all. */
   function has(key) { return Object.prototype.hasOwnProperty.call(STRINGS, key); }
+
+  /** True when the key has a translation in the active language specifically. */
+  function hasNative(key) {
+    return !!(STRINGS[key] && STRINGS[key][current] != null);
+  }
 
   /**
    * Pick the right language out of a `{es: ..., en: ...}` value, or return
@@ -583,10 +874,28 @@
   function pick(value) {
     if (value == null) return value;
     if (Array.isArray(value) || typeof value !== 'object') return value;
-    if (value[current] != null) return value[current];
-    if (value.en != null) return value.en;
-    if (value.es != null) return value.es;
-    return value;
+    var resolved = resolveEntry(value);
+    if (resolved != null) return resolved;
+    var keys = Object.keys(value);
+    return keys.length ? value[keys[0]] : value;
+  }
+
+  /**
+   * True when a language-keyed dataset value has nothing in the active
+   * language, so the UI can tell the reader which language they are seeing.
+   */
+  function isFallback(value) {
+    if (value == null || Array.isArray(value) || typeof value !== 'object') return false;
+    return value[current] == null;
+  }
+
+  /** The language a fallback value actually ended up in. */
+  function fallbackLanguage(value) {
+    if (!isFallback(value)) return current;
+    for (var i = 0; i < FALLBACK_CHAIN.length; i++) {
+      if (value[FALLBACK_CHAIN[i]] != null) return FALLBACK_CHAIN[i];
+    }
+    return current;
   }
 
   /** Translate a dataset keyword such as a parking facility. */
@@ -618,27 +927,56 @@
     });
   }
 
-  /** Initialise from storage (Spanish unless the user chose otherwise). */
+  /**
+   * Initialise from storage. Returns a promise, so the caller can wait for a
+   * lazily loaded pack before the first render.
+   */
   function init() {
-    set(detect(), true);
-    return current;
+    var code = detect();
+    if (loaded[code]) {
+      set(code, true);
+      return Promise.resolve(current);
+    }
+    /*
+     * Paint the default straight away, then upgrade when the pack arrives.
+     *
+     * The first `set` is silent because nothing has rendered yet. The upgrade
+     * must NOT be: by the time the pack lands, parts of the UI built outside
+     * the initial render - the consent banner above all - are already on
+     * screen in the default language, and only an `onChange` notification
+     * repaints them.
+     */
+    set(DEFAULT_LANG, true);
+    return setAsync(code).then(function () { return current; });
   }
 
   TRP.i18n = {
     STORAGE_KEY: STORAGE_KEY,
     DEFAULT_LANG: DEFAULT_LANG,
+    BASE_LANGS: BASE_LANGS,
+    FALLBACK_CHAIN: FALLBACK_CHAIN,
+    LANGS: LANGS,
     STRINGS: STRINGS,
     available: available,
+    ready: ready,
+    isSupported: isSupported,
     languageName: languageName,
     languageShort: languageShort,
     lang: lang,
     locale: locale,
+    register: register,
+    load: load,
     detect: detect,
+    browserLanguage: browserLanguage,
     set: set,
+    setAsync: setAsync,
     onChange: onChange,
     t: t,
     has: has,
+    hasNative: hasNative,
     pick: pick,
+    isFallback: isFallback,
+    fallbackLanguage: fallbackLanguage,
     term: term,
     applyDom: applyDom,
     init: init
