@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.4.0';
+var CACHE_VERSION = 'trp-shell-v2.4.1';
 
 /*
  * The 22 translation packs in js/i18n/ are deliberately NOT listed here.

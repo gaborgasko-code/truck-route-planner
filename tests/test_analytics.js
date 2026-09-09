@@ -331,4 +331,38 @@
     });
   });
 
+
+  describe('analytics - one definition of what an event may carry', function () {
+    test('eventParams bands the figures and drops everything else', function () {
+      var p = analytics.eventParams({
+        distanceKm: 1783.4, durationMs: 4200, countries: 4, drivers: 2,
+        tollDetail: 'precise', errorCode: 'TIMEOUT',
+        origin: 'Calle Mayor 1, Madrid', polyline: 'abcdefgh'
+      });
+      assert.equal(p.distance, '1000-2000km', 'banded, not the exact figure');
+      assert.equal(p.countries, 4);
+      assert.equal(p.drivers, 2);
+      assert.equal(p.origin, undefined, 'an address is not copied');
+      assert.equal(p.polyline, undefined, 'nor route geometry');
+      assert.equal(JSON.stringify(p).indexOf('1783'), -1, 'the exact distance never leaves');
+    });
+
+    test('buildPayload and eventParams cannot disagree', function () {
+      /* Google Analytics and the self-hosted collector are fed from the same
+         function, so adding a destination never means re-deciding what is
+         safe to send. */
+      var props = { distanceKm: 250, countries: 2, drivers: 1 };
+      var direct = analytics.eventParams(props);
+      var payload = analytics.buildPayload('route_calculated', props, CTX);
+      Object.keys(direct).forEach(function (k) {
+        assert.equal(payload[k], direct[k], k + ' differs between the two paths');
+      });
+    });
+
+    test('clamps a nonsense country count instead of passing it on', function () {
+      assert.equal(analytics.eventParams({ countries: 9999 }).countries, 20);
+      assert.equal(analytics.eventParams({ drivers: 7 }).drivers, 1);
+    });
+  });
+
 })(typeof globalThis !== 'undefined' ? globalThis : this);

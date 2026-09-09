@@ -72,6 +72,27 @@
   }
 
   /**
+   * The event-specific fields that are safe to send anywhere.
+   *
+   * One definition, used by the self-hosted collector and by Google Analytics
+   * alike. Free text never survives it: distances and timings come out as
+   * coarse bands, counts are clamped, and anything not named here - an
+   * address, a coordinate, a polyline - is simply not copied. Adding a new
+   * destination for events should never mean re-deciding what is safe.
+   */
+  function eventParams(props) {
+    var p = props || {};
+    var out = {};
+    if (p.distanceKm != null) out.distance = band(p.distanceKm, DISTANCE_BANDS, 'km');
+    if (p.durationMs != null) out.speed = band(p.durationMs, DURATION_BANDS, 'ms');
+    if (p.countries != null) out.countries = Math.min(20, Math.max(0, Math.round(Number(p.countries) || 0)));
+    if (p.tollDetail) out.detail = String(p.tollDetail).slice(0, 12);
+    if (p.drivers != null) out.drivers = Number(p.drivers) === 2 ? 2 : 1;
+    if (p.errorCode) out.error = String(p.errorCode).slice(0, 24);
+    return out;
+  }
+
+  /**
    * Build the exact object that would be sent. Pure: everything it needs is
    * passed in, so the tests can pin the output down.
    *
@@ -91,13 +112,8 @@
       ref: referrerHost(context.referrer, context.host).slice(0, 80)
     };
 
-    var p = props || {};
-    if (p.distanceKm != null) payload.distance = band(p.distanceKm, DISTANCE_BANDS, 'km');
-    if (p.durationMs != null) payload.speed = band(p.durationMs, DURATION_BANDS, 'ms');
-    if (p.countries != null) payload.countries = Math.min(20, Math.max(0, Math.round(Number(p.countries) || 0)));
-    if (p.tollDetail) payload.detail = String(p.tollDetail).slice(0, 12);
-    if (p.drivers != null) payload.drivers = Number(p.drivers) === 2 ? 2 : 1;
-    if (p.errorCode) payload.error = String(p.errorCode).slice(0, 24);
+    var p = eventParams(props);
+    Object.keys(p).forEach(function (k) { payload[k] = p[k]; });
     return payload;
   }
 
@@ -186,6 +202,7 @@
     screenBand: screenBand,
     referrerHost: referrerHost,
     pagePath: pagePath,
+    eventParams: eventParams,
     buildPayload: buildPayload,
     enabled: enabled,
     track: track,

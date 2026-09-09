@@ -318,6 +318,21 @@
    * Consent banner, then audience measurement. Analytics starts only if
    * the visitor has already agreed; consent-ui re-triggers it otherwise.
    */
+  /**
+   * Record one event on every measurement backend that is switched on.
+   *
+   * The two are counted separately and neither knows about the other, so this
+   * is the single place that fans out. GA gets the same banded values as the
+   * self-hosted collector rather than the raw figures, because the privacy
+   * policy promises a distance band and that has to be true of both.
+   */
+  function trackEvent(name, props) {
+    if (TRP.analytics) TRP.analytics.track(name, props);
+    if (TRP.ga && TRP.ga.enabled()) {
+      TRP.ga.track(name, TRP.analytics ? TRP.analytics.eventParams(props) : {});
+    }
+  }
+
   function initPrivacy(view) {
     TRP.consentUI.init();
     TRP.analytics.init(view);
@@ -327,6 +342,7 @@
   TRP.appCommon = {
     FORM_KEY: FORM_KEY,
     initPrivacy: initPrivacy,
+    trackEvent: trackEvent,
     initLanguage: initLanguage,
     t: t,
     applyTheme: applyTheme,
