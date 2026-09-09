@@ -18,7 +18,8 @@
     'app.author': true,      /* the credit must read the same everywhere */
     'nav.plan': true, 'nav.info': true,
     'toll.km': true, 'toll.total': true, 'map.total': true,
-    'stat.times45': true, 'legal.atKm': true
+    'stat.times45': true, 'legal.atKm': true,
+    'store.ga.name': true   /* a product name, not a phrase to translate */
   };
 
   T.describe('localisation', function () {

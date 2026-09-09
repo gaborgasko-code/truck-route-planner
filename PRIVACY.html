@@ -46,6 +46,11 @@
   .p-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
   .p-actions .btn { width: auto; padding: 10px 16px; }
   .p-updated { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .p-kind {
+    display: inline-block; margin-left: 4px; padding: 1px 6px;
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 11px; color: var(--muted); vertical-align: middle;
+  }
   .p-foot {
     background: var(--brand-900); color: #b9cbe4;
     padding: 18px 22px; font-size: 12.5px; line-height: 1.6;
@@ -70,7 +75,7 @@
 </header>
 
 <div class="p-wrap">
-  <p class="p-updated"><span data-i18n="privacy.updated"></span>: <span id="updated">2026-09-08</span></p>
+  <p class="p-updated"><span data-i18n="privacy.updated"></span>: <span id="updated">2026-09-09</span></p>
 
   <section class="p-section">
     <h2 data-i18n="privacy.s1"></h2>
@@ -167,16 +172,29 @@
     { name: 'OpenStreetMap Nominatim', host: 'nominatim.openstreetmap.org', key: 'privacy.thirdNominatim' },
     { name: 'OSRM', host: 'router.project-osrm.org', key: 'privacy.thirdOsrm' },
     { name: 'OpenStreetMap tiles', host: 'tile.openstreetmap.org', key: 'privacy.thirdTiles' },
-    { name: 'Cloudflare cdnjs', host: 'cdnjs.cloudflare.com', key: 'privacy.thirdCdn' }
+    { name: 'Cloudflare cdnjs', host: 'cdnjs.cloudflare.com', key: 'privacy.thirdCdn' },
+    /* Only contacted once the visitor has granted the analytics category, so
+       the row is hidden unless GA is actually configured for this build. */
+    {
+      name: 'Google Analytics', host: 'www.googletagmanager.com',
+      key: 'privacy.thirdGoogle',
+      when: function () { return !!(TRP.CONFIG && TRP.CONFIG.GA_MEASUREMENT_ID); }
+    }
   ];
 
   function renderStorage() {
-    document.getElementById('storageTable').innerHTML = TRP.consent.INVENTORY.map(function (item) {
+    /* inventory(), not INVENTORY: rows for an integration this build does not
+       use must not appear in a published policy. */
+    document.getElementById('storageTable').innerHTML = TRP.consent.inventory().map(function (item) {
       var retention = item.retentionMonths
         ? t('privacy.retentionMonths', { n: item.retentionMonths })
         : t('privacy.retentionUntilCleared');
+      /* A cookie and a localStorage entry are not the same thing to a reader,
+         and the name alone does not say which. */
+      var where = item.kind === 'cookie' ? 'cookie' : 'localStorage';
       return '<tr><td><strong>' + esc(t('store.' + item.id + '.name')) + '</strong><br>' +
-        '<code>' + esc(item.key) + '</code></td>' +
+        '<code>' + esc(item.key) + (item.prefix ? '*' : '') + '</code> ' +
+        '<span class="p-kind">' + esc(where) + '</span></td>' +
         '<td>' + esc(t('store.' + item.id + '.purpose')) + '</td>' +
         '<td>' + esc(t('cookie.cat.' + item.category)) + '</td>' +
         '<td>' + esc(retention) + '</td></tr>';
@@ -184,7 +202,9 @@
   }
 
   function renderThird() {
-    document.getElementById('thirdTable').innerHTML = THIRD_PARTIES.map(function (p) {
+    document.getElementById('thirdTable').innerHTML = THIRD_PARTIES.filter(function (p) {
+      return !p.when || p.when();
+    }).map(function (p) {
       return '<tr><td><strong>' + esc(p.name) + '</strong><br><code>' + esc(p.host) + '</code></td>' +
         '<td>' + esc(t(p.key)) + '</td></tr>';
     }).join('');

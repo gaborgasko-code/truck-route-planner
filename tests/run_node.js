@@ -22,6 +22,7 @@ const root = path.resolve(__dirname, '..');
   'js/core/i18n.js',
   'js/core/consent.js',
   'js/core/analytics.js',
+  'js/core/ga.js',
   'js/core/util.js',
   'js/core/geo.js',
   'js/core/embedded-data.js',
@@ -42,7 +43,8 @@ const root = path.resolve(__dirname, '..');
   'tests/test_consent.js',
   'tests/test_analytics.js',
   'tests/test_firestore_store.js',
-  'tests/test_d1_store.js'
+  'tests/test_d1_store.js',
+  'tests/test_ga.js'
 ].forEach((file) => require(path.join(root, file)));
 
 const E = String.fromCharCode(27);

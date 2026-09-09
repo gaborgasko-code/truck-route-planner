@@ -52,8 +52,9 @@ Current version: **2.3.0**.
 - Switching language re-renders the current result instantly — no recalculation
 
 **Privacy by construction**
-- No HTTP cookies, no accounts, no advertising or tracking tags, no third-party
-  fonts — the only outbound calls are the ones a route actually needs
+- No advertising cookies, no profiling, no data sales, no third-party fonts
+- Optional Google Analytics, consent-gated: the tag is injected only after the
+  visitor accepts, and withdrawing deletes the cookies again
 - A consent banner where refusing is exactly as easy as accepting, and a
   preferences dialog that can be reopened and withdrawn from any page footer
 - The published policy table is generated from the code's own storage
@@ -381,6 +382,7 @@ truck_route_planner_web/
 │  ├─ i18n.js                 dictionaries, locale, DOM translation, lazy packs
 │  ├─ consent.js              storage inventory and consent state (ePrivacy/GDPR)
 │  ├─ analytics.js            optional, consent-gated, identifier-free measurement
+│  ├─ ga.js                   optional Google Analytics, injected only on consent
 │  ├─ util.js                 locale-aware formatting, storage, errors
 │  ├─ geo.js                  haversine, polyline maths, sampling
 │  ├─ embedded-data.js        GENERATED offline copy of data/*.json
@@ -429,7 +431,7 @@ truck_route_planner_web/
 │  ├─ trailer_regulations.json 30 countries + EU baseline, ES/EN
 │  └─ eu_driving_rules.json   Regulation 561/2006 et al., ES/EN, by article
 │
-├─ tests/                     220 assertions, no network, no dependencies
+├─ tests/                     239 assertions, no network, no dependencies
 │  ├─ harness.js
 │  ├─ test_time_estimation.js
 │  ├─ test_toll_estimation.js
@@ -441,6 +443,7 @@ truck_route_planner_web/
 │  ├─ test_analytics.js       client payload + backend allowlist and rollups
 │  ├─ test_firestore_store.js live counters vs a rebuild, against a fake db
 │  ├─ test_d1_store.js        the same for D1, plus the scheduled prune
+│  ├─ test_ga.js              load order, cookie deletion, policy accuracy
 │  ├─ run_node.js             headless runner
 │  └─ test_runner.html        browser runner
 │
@@ -641,9 +644,9 @@ index.html?view=mobile      desktop.html?view=desktop      mobile.html?view=mobi
 
 ## Tests
 
-220 assertions across twelve suites — the time model, toll aggregation, stop
+239 assertions across fourteen suites — the time model, toll aggregation, stop
 intervals and parking proximity, the EU legal stop plan and compliance checks,
-multi-manning, localisation, consent, analytics and the Firestore and D1 backends. No network access and no
+multi-manning, localisation, consent, analytics, Google Analytics, and the Firestore and D1 backends. No network access and no
 dependencies, so the whole suite runs offline in about a second.
 
 Three of these are worth knowing about:

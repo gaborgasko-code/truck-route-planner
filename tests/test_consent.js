@@ -55,12 +55,14 @@
       value: store, configurable: true, writable: true
     });
     var endpointBefore = CONFIG.ANALYTICS_ENDPOINT;
+    var gaBefore = CONFIG.GA_MEASUREMENT_ID;
     try {
       /* consent.js caches the parsed record; reset() drops it. */
       TRP.consent.reset();
       return fn(store, TRP.consent);
     } finally {
       CONFIG.ANALYTICS_ENDPOINT = endpointBefore;
+      CONFIG.GA_MEASUREMENT_ID = gaBefore;
       TRP.consent.reset();
       if (realStorage) Object.defineProperty(global, 'localStorage', realStorage);
       else delete global.localStorage;
@@ -70,7 +72,10 @@
   describe('consent - categories offered', function () {
     test('analytics is not offered when no collector is configured', function () {
       withStorage(function (store, consent) {
+        /* Analytics is offered if EITHER measurement backend exists, so a
+           test about "no collector" has to clear both. */
         CONFIG.ANALYTICS_ENDPOINT = '';
+        CONFIG.GA_MEASUREMENT_ID = '';
         var offered = consent.offered();
         assert.ok(offered.indexOf(consent.PREFERENCES) !== -1,
           'preferences must always be offered');
@@ -96,7 +101,13 @@
         consent.INVENTORY.forEach(function (item) {
           assert.ok(consent.CATEGORIES.indexOf(item.category) !== -1,
             item.key + ' has a known category');
-          assert.ok(/^trp\./.test(item.key), item.key + ' is namespaced');
+          assert.ok(item.kind === 'local' || item.kind === 'cookie',
+            item.key + ' says where it lives');
+          /* Our own storage is namespaced. A third-party cookie name is not
+             ours to choose, so the rule only covers what we write. */
+          if (item.kind === 'local') {
+            assert.ok(/^trp\./.test(item.key), item.key + ' is namespaced');
+          }
         });
         /* The privacy page renders one row per entry; duplicates would double it. */
         var keys = consent.INVENTORY.map(function (i) { return i.key; });

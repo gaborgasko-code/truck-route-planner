@@ -131,8 +131,8 @@
       en: 'Precise mode is the most accurate but slower, because border detection falls back to a reverse-geocoder limited to one request per second.'
     },
     'form.servicesNote': {
-      es: 'Solo servicios gratuitos: Nominatim de OpenStreetMap para la geocodificación y el servidor de demostración OSRM para las rutas. Sin clave de API, sin cuenta y sin seguimiento.',
-      en: 'Free services only — OpenStreetMap Nominatim for geocoding and the OSRM demo server for routing. No API key, no account, no tracking.'
+      es: "Solo servicios gratuitos: OpenStreetMap Nominatim para la geocodificación y el servidor de demostración OSRM para las rutas. No hace falta clave de API ni cuenta.",
+      en: "Free services only — OpenStreetMap Nominatim for geocoding and the OSRM demo server for routing. No API key and no account required."
     },
     'form.servicesNoteShort': {
       es: 'Servicios gratuitos de OpenStreetMap y OSRM. No se necesita clave de API ni cuenta.',
@@ -553,8 +553,8 @@
     /* ------------------------------------------------- consent / cookies */
     'cookie.title': { es: 'Privacidad y almacenamiento local', en: 'Privacy and local storage' },
     'cookie.intro': {
-      es: 'Esta aplicación no usa cookies publicitarias ni de seguimiento. Guardamos algunos datos en su navegador para que funcione y, si usted lo autoriza, medimos el uso de forma anónima para saber cuánta gente la utiliza.',
-      en: 'This application uses no advertising or tracking cookies. We store a little data in your browser so it works and, if you allow it, we measure usage anonymously to see how many people use it.'
+      es: "Esta aplicación no usa cookies publicitarias ni elabora perfiles sobre usted. Guardamos algunos datos en su navegador para que funcione y, si usted lo autoriza, medimos las visitas con Google Analytics para saber cuánta gente la utiliza.",
+      en: "This application uses no advertising cookies and does not profile you. We store some data in your browser so it works and, if you allow it, we measure visits with Google Analytics to see how many people use it."
     },
     'cookie.acceptAll': { es: 'Aceptar todo', en: 'Accept all' },
     'cookie.rejectAll': { es: 'Rechazar opcionales', en: 'Reject optional' },
@@ -587,8 +587,8 @@
     },
     'cookie.cat.analytics': { es: 'Medición de audiencia', en: 'Audience measurement' },
     'cookie.cat.analyticsDesc': {
-      es: 'Recuento anónimo y agregado de visitas y rutas calculadas, en nuestro propio servidor. Sin cookies, sin identificadores persistentes, sin dirección IP almacenada y sin compartir con terceros.',
-      en: 'Anonymous, aggregated counts of visits and calculated routes, on our own server. No cookies, no persistent identifier, no stored IP address and nothing shared with third parties.'
+      es: "Cuenta las visitas y las rutas calculadas para saber cuánto se usa la aplicación. Utiliza Google Analytics, que instala cookies en su navegador y trata los datos en servidores de Google. Las funciones publicitarias y de seguimiento entre dispositivos están desactivadas. No se carga nada ni se instala ninguna cookie hasta que usted acepte.",
+      en: "Counts visits and calculated routes so we can see how much the application is used. It uses Google Analytics, which sets cookies in your browser and processes the data on Google servers. Advertising and cross-device features are switched off. Nothing is loaded and no cookie is set until you accept."
     },
 
     /* ---------------------------------------------------- storage items */
@@ -612,15 +612,23 @@
       es: 'Esta página explica qué datos trata esta aplicación, qué guarda en su dispositivo y con quién se comunica. Está redactada para el Reglamento (UE) 2016/679 (RGPD) y la Directiva 2002/58/CE (ePrivacy).',
       en: 'This page explains what data this application processes, what it stores on your device and who it talks to. It is written for Regulation (EU) 2016/679 (GDPR) and Directive 2002/58/EC (ePrivacy).'
     },
+    'store.ga.name': {
+      es: "Google Analytics",
+      en: "Google Analytics"
+    },
+    'store.ga.purpose': {
+      es: "Reconoce una visita repetida para no contar dos veces a la misma persona. Instalada por Google Analytics.",
+      en: "Recognises a returning visit so the same person is not counted twice. Set by Google Analytics."
+    },
     'privacy.s1': { es: 'Resumen', en: 'In short' },
     'privacy.s1body': {
-      es: 'No hay cuentas, ni cookies publicitarias, ni perfilado, ni venta de datos. Las direcciones que escribe se envían a los servicios de mapas para calcular la ruta. Todo lo demás se queda en su navegador, salvo la medición de audiencia anónima si usted la autoriza.',
-      en: 'There are no accounts, no advertising cookies, no profiling and no data sales. The addresses you type are sent to the mapping services to calculate the route. Everything else stays in your browser, apart from the anonymous audience measurement if you allow it.'
+      es: "No hay cuentas, ni cookies publicitarias, ni elaboración de perfiles, ni venta de datos. Las direcciones que escribe se envían a los servicios de mapas para calcular la ruta. Todo lo demás permanece en su navegador, salvo la medición de visitas descrita más abajo, si usted la autoriza.",
+      en: "There are no accounts, no advertising cookies, no profiling and no data sales. The addresses you type are sent to the mapping services to calculate the route. Everything else stays in your browser, apart from the visit measurement described below if you allow it."
     },
     'privacy.s2': { es: 'Qué se guarda en su dispositivo', en: 'What is stored on your device' },
     'privacy.s2body': {
-      es: 'La aplicación no escribe cookies HTTP. Usa el almacenamiento local del navegador (localStorage), que la normativa ePrivacy trata igual que las cookies. Esta es la lista completa:',
-      en: 'The application writes no HTTP cookies. It uses browser local storage (localStorage), which the ePrivacy rules treat the same way as cookies. This is the complete list:'
+      es: "La aplicación por sí misma no escribe cookies HTTP: utiliza el almacenamiento local del navegador (localStorage), que las normas ePrivacy tratan igual que las cookies. Google Analytics sí instala cookies, si usted lo autoriza. Aquí se enumeran ambos:",
+      en: "The application itself writes no HTTP cookies; it uses browser local storage (localStorage), which the ePrivacy rules treat exactly like cookies. Google Analytics does set cookies, if you allow it. Both are listed here:"
     },
     'privacy.colItem': { es: 'Elemento', en: 'Item' },
     'privacy.colPurpose': { es: 'Finalidad', en: 'Purpose' },
@@ -641,12 +649,16 @@
     'privacy.thirdCdn': { es: 'La petición de la biblioteca de mapas Leaflet.', en: 'The request for the Leaflet mapping library.' },
     'privacy.s4': { es: 'Medición de audiencia', en: 'Audience measurement' },
     'privacy.s4body': {
-      es: 'Si la autoriza, contamos las visitas en nuestro propio servidor. No se instala ninguna cookie ni identificador. El servidor calcula un valor irreversible a partir de la IP, el navegador y una sal que se renueva cada día, solo para no contar dos veces a la misma persona el mismo día; la IP no se almacena en ningún momento y el valor deja de ser correlacionable al día siguiente. Los datos son agregados, no se comparten con nadie y no permiten identificarle.',
-      en: 'If you allow it, we count visits on our own server. No cookie or identifier is installed. The server derives an irreversible value from the IP address, the browser and a salt that is regenerated every day, purely so the same person is not counted twice on the same day; the IP is never stored and the value stops being correlatable the next day. The data is aggregated, shared with nobody and cannot identify you.'
+      es: "Si la autoriza, las visitas se miden con Google Analytics 4, prestado en Europa por Google Ireland Limited, que actúa como encargado del tratamiento. Google Analytics instala cookies en su navegador para reconocer una visita repetida y envía los datos a Google, que los conserva hasta 14 meses. Google Analytics acorta las direcciones IP antes de almacenarlas. Hemos desactivado Google Signals y la personalización publicitaria, de modo que los datos sirven para contar el uso y no para crear un perfil publicitario. No se carga nada ni se instala ninguna cookie hasta que usted acepte, y si retira el consentimiento las cookies se borran.",
+      en: "If you allow it, visits are measured with Google Analytics 4, provided in Europe by Google Ireland Limited acting as our processor. Google Analytics sets cookies in your browser to recognise a returning visit and sends the data to Google, who keep it for up to 14 months. Google Analytics shortens IP addresses before storing them. We have switched off Google Signals and advertising personalisation, so the data is used to count usage rather than to build an advertising profile. Nothing is loaded and no cookie is set until you accept, and withdrawing your consent deletes the cookies again."
+    },
+    'privacy.thirdGoogle': {
+      es: "La página que consulta, su dirección IP (que se acorta antes de almacenarse), su dispositivo y navegador y los eventos indicados más arriba.",
+      en: "The page you view, your IP address (shortened before it is stored), your device and browser, and the events listed above."
     },
     'privacy.s4list': {
-      es: 'Se registran: la página vista, el idioma, la versión (escritorio o móvil), el dominio de procedencia y, al calcular una ruta, el número de países, un rango de distancia y el tiempo de cálculo. <strong>Nunca</strong> se registran direcciones, coordenadas ni el contenido del formulario.',
-      en: 'What is recorded: the page viewed, the language, the build (desktop or mobile), the referring domain and, when a route is calculated, the number of countries, a distance band and the calculation time. Addresses, coordinates and form contents are <strong>never</strong> recorded.'
+      es: "Se registra: la página vista, el idioma, la versión (escritorio o móvil), el sitio de procedencia, una ubicación aproximada deducida de la IP, el tipo de dispositivo y navegador y, al calcular una ruta, el número de países, un intervalo de distancia y el tiempo de cálculo. Las direcciones, las coordenadas y el contenido del formulario <strong>nunca</strong> se registran.",
+      en: "What is recorded: the page viewed, the language, the build (desktop or mobile), the referring site, an approximate location derived from the IP address, the device and browser type and, when a route is calculated, the number of countries, a distance band and the calculation time. Addresses, coordinates and form contents are <strong>never</strong> recorded."
     },
     'privacy.s5': { es: 'Base jurídica', en: 'Legal basis' },
     'privacy.s5body': {

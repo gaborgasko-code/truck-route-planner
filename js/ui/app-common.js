@@ -321,6 +321,7 @@
   function initPrivacy(view) {
     TRP.consentUI.init();
     TRP.analytics.init(view);
+    if (TRP.ga) TRP.ga.init();
   }
 
   TRP.appCommon = {
