@@ -106,7 +106,7 @@
     /* Google Analytics 4 measurement id, e.g. 'G-XXXXXXXXXX'. Empty means
        GA is not loaded at all and the tag is never injected. Whatever is set
        here, nothing loads until the visitor grants the analytics category. */
-    GA_MEASUREMENT_ID: '',
+    GA_MEASUREMENT_ID: 'G-1K6KPNCK3B',
     /* Raw events are pruned on the server after this many days. */
     ANALYTICS_RETENTION_DAYS: 90,
 
