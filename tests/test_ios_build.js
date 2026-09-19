@@ -219,4 +219,48 @@
     });
   });
 
+
+  describe('ios - the native plugins are wired in', function () {
+    const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+    const declared = Object.assign({}, pkg.dependencies, pkg.devDependencies);
+
+    test('the plugins the app calls are declared', function () {
+      /* Capacitor discovers plugins by scanning package.json, and it reads
+         both dependencies and devDependencies - verified in
+         @capacitor/cli/dist/plugin.js getDependencies(). A plugin that is not
+         declared is simply not linked, and the feature fails silently at
+         runtime while the build stays green. */
+      ['@capacitor/local-notifications', '@capacitor/geolocation'].forEach(function (name) {
+        assert.ok(declared[name], name + ' is not declared in package.json');
+      });
+    });
+
+    test('each plugin actually supports iOS', function () {
+      ['@capacitor/local-notifications', '@capacitor/geolocation'].forEach(function (name) {
+        const dir = path.join(root, 'node_modules', name, 'package.json');
+        if (!fs.existsSync(dir)) return;    /* not installed in this checkout */
+        const meta = JSON.parse(fs.readFileSync(dir, 'utf8'));
+        assert.ok(meta.capacitor && meta.capacitor.ios,
+          name + ' declares no iOS support');
+      });
+    });
+
+    test('every plugin the code calls is one we declared', function () {
+      /* The reverse direction: asking for a plugin that was never added
+         returns undefined and the feature quietly does nothing. */
+      const native = fs.readFileSync(path.join(root, 'js', 'ui', 'native.js'), 'utf8');
+      const calls = native.match(/plugin\(['"]([A-Za-z]+)['"]\)/g) || [];
+      const used = calls.map(function (m) {
+        return m.replace(/^plugin\(['"]/, '').replace(/['"]\)$/, '');
+      });
+      const known = { LocalNotifications: '@capacitor/local-notifications',
+        Geolocation: '@capacitor/geolocation' };
+      used.forEach(function (name) {
+        assert.ok(known[name], 'native.js calls an unknown plugin: ' + name);
+        assert.ok(declared[known[name]], name + ' is used but ' + known[name] + ' is not declared');
+      });
+      assert.ok(used.length >= 2, 'found ' + used.length + ' plugin call sites');
+    });
+  });
+
 })(typeof globalThis !== 'undefined' ? globalThis : this);
