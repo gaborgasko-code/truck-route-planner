@@ -1,0 +1,25 @@
+{
+  "name": "truck-route-planner",
+  "version": "2.3.0",
+  "description": "Truck Route Planner - road routing, EU driving time, tolls, legal stops and safe parking for heavy goods vehicles. created by Gabor Gasko",
+  "private": true,
+  "author": "Gabor Gasko",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node tests/run_node.js",
+    "serve": "node tools/serve.js",
+    "build:data": "node tools/build-embedded-data.js",
+    "build:backends": "node tools/build-backends.js",
+    "build:app": "node tools/build-app.js",
+    "build:icons": "node tools/build-app-icons.js",
+    "ios:add": "npm run build:app && npx cap add ios",
+    "ios:sync": "npm run build:app && npx cap sync ios",
+    "ios:open": "npm run ios:sync && npx cap open ios"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "sharp": "^0.34.0"
+  }
+}

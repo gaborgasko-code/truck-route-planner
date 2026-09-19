@@ -1,0 +1,15 @@
+{
+  "appId": "online.ggabor.planificador",
+  "appName": "Planificador",
+  "webDir": "www",
+  "backgroundColor": "#0b1220",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0b1220",
+    "limitsNavigationsToAppBoundDomains": false,
+    "preferredContentMode": "mobile"
+  },
+  "server": {
+    "iosScheme": "capacitor"
+  }
+}

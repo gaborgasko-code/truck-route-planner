@@ -14,3 +14,14 @@ npm-debug.log*
 # no IP and no user agent, they are visitor data and belong on the server only.
 analytics-data/
 backend/analytics-data/
+
+# Native app build output. All generated: `npm run build:app` rebuilds www/,
+# and `npx cap add ios` rebuilds the Xcode project. A committed ios/ would be a
+# merge-conflict machine that silently drifts from capacitor.config.json.
+www/
+ios/
+android/
+build/
+DerivedData/
+*.ipa
+*.xcarchive

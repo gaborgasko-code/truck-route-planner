@@ -41,7 +41,7 @@ crons = ["17 3 * * *"]
 [vars]
 # Only these origins may POST events. A wildcard would let any site write into
 # the counters.
-ANALYTICS_ORIGINS = "https://planificador.ggabor.online"
+ANALYTICS_ORIGINS = "https://planificador.ggabor.online,capacitor://localhost"
 ANALYTICS_SITE = "planificador"
 
 # Days a raw event is kept before the scheduled prune deletes it.
