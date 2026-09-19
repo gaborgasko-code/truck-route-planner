@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Terug naar de applicatie',
 
     'lang.notTranslated': 'Dit onderdeel is nog niet vertaald naar {target}; het wordt in {shown} getoond.',
-    'lang.pickTitle': 'Taal'
+    'lang.pickTitle': 'Taal',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pauzeherinneringen',
+    'remind.enable': 'Herinner mij aan mijn pauzes',
+    'remind.disable': 'Herinneringen uitschakelen',
+    'remind.on': 'Herinneringen staan aan voor deze rit.',
+    'remind.off': 'Herinneringen staan uit.',
+    'remind.note': 'De herinneringen volgen de vertrektijd hierboven. Vertrekt u op een ander tijdstip, bereken de route dan opnieuw.',
+    'remind.unavailable': 'Herinneringen werken in de iPhone-app. In een browser zou de pagina open moeten blijven, dus ze zouden niet aankomen.',
+    'remind.denied': 'Meldingen staan uit voor deze app. Zet ze aan in Instellingen.',
+    'remind.breakSoonTitle': 'Pauze over {lead} minuten',
+    'remind.breakSoonBody': 'Bij km {km} bereikt u 4 uur 30 min rijtijd. Zoek een plek om {minutes} minuten te stoppen.',
+    'remind.breakNowTitle': 'Tijd om te stoppen',
+    'remind.breakNowBody': 'U hebt 4 uur 30 min gereden. De wet vereist minstens {minutes} minuten voordat u verder rijdt.',
+    'remind.restSoonTitle': 'Dagelijkse rust over {lead} minuten',
+    'remind.restSoonBody': 'Uw rijdag eindigt bij km {km}. U hebt {hours} uur rust nodig.',
+    'remind.restNowTitle': 'Dagelijkse rust vereist',
+    'remind.restNowBody': 'Uw rijdag is voorbij. U hebt minstens {hours} uur nodig voor de volgende.',
+    'location.use': 'Mijn locatie gebruiken',
+    'location.finding': 'Uw locatie zoeken…',
+    'location.denied': 'Locatie staat uit voor deze app. Zet het aan in Instellingen.',
+    'location.failed': 'Uw locatie kon niet worden bepaald.',
+    'location.purpose': 'Uw locatie wordt alleen gebruikt om het beginpunt van een route in te vullen. Ze wordt niet bewaard en gaat nergens heen, behalve naar de kaartendienst die er een adres van maakt.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

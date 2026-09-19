@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Vissza az alkalmazáshoz',
 
     'lang.notTranslated': 'Ez a rész még nincs lefordítva erre a nyelvre: {target}; a megjelenítés nyelve: {shown}.',
-    'lang.pickTitle': 'Nyelv'
+    'lang.pickTitle': 'Nyelv',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Szünet-emlékeztetők',
+    'remind.enable': 'Emlékeztessen a szüneteimre',
+    'remind.disable': 'Emlékeztetők kikapcsolása',
+    'remind.on': 'Az emlékeztetők be vannak kapcsolva ehhez az úthoz.',
+    'remind.off': 'Az emlékeztetők ki vannak kapcsolva.',
+    'remind.note': 'Az emlékeztetők a fent megadott indulási időt követik. Ha más időpontban indul, számítsa újra az útvonalat.',
+    'remind.unavailable': 'Az emlékeztetők az iPhone-alkalmazásban működnek. Böngészőben az oldalnak nyitva kellene maradnia, így nem érkeznének meg.',
+    'remind.denied': 'Az értesítések ki vannak kapcsolva ehhez az alkalmazáshoz. Kapcsolja be őket a Beállításokban.',
+    'remind.breakSoonTitle': 'Szünet {lead} perc múlva',
+    'remind.breakSoonBody': 'A {km}. kilométernél eléri a 4 óra 30 perc vezetési időt. Keressen helyet, ahol megállhat {minutes} percre.',
+    'remind.breakNowTitle': 'Ideje megállni',
+    'remind.breakNowBody': '{minutes} perc a törvényi minimum, mielőtt továbbhajt: 4 óra 30 percet vezetett.',
+    'remind.restSoonTitle': 'Napi pihenő {lead} perc múlva',
+    'remind.restSoonBody': 'A vezetési napja a {km}. kilométernél ér véget. {hours} óra pihenőre van szüksége.',
+    'remind.restNowTitle': 'Napi pihenő esedékes',
+    'remind.restNowBody': 'A vezetési napja véget ért. Legalább {hours} órára van szüksége a következő előtt.',
+    'location.use': 'Helyzetem használata',
+    'location.finding': 'Helyzet keresése…',
+    'location.denied': 'A helymeghatározás ki van kapcsolva ehhez az alkalmazáshoz. Kapcsolja be a Beállításokban.',
+    'location.failed': 'Nem sikerült meghatározni a helyzetét.',
+    'location.purpose': 'A helyzetét csak az útvonal kiindulópontjának kitöltésére használjuk. Nem tároljuk, és sehová nem kerül el azon a térképszolgáltatáson kívül, amely címmé alakítja.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

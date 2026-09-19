@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Înapoi la aplicație',
 
     'lang.notTranslated': 'Această secțiune nu este încă tradusă în {target}; este afișată în {shown}.',
-    'lang.pickTitle': 'Limbă'
+    'lang.pickTitle': 'Limbă',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Mementouri pentru pauze',
+    'remind.enable': 'Amintește-mi de pauze',
+    'remind.disable': 'Dezactivează mementourile',
+    'remind.on': 'Mementouri active pentru această călătorie.',
+    'remind.off': 'Mementouri dezactivate.',
+    'remind.note': 'Mementourile urmează ora de plecare indicată mai sus. Dacă plecați la altă oră, recalculați ruta.',
+    'remind.unavailable': 'Mementourile funcționează în aplicația pentru iPhone. În browser pagina ar trebui să rămână deschisă, deci nu ar ajunge.',
+    'remind.denied': 'Notificările sunt dezactivate pentru această aplicație. Activați-le în Setări.',
+    'remind.breakSoonTitle': 'Pauză peste {lead} minute',
+    'remind.breakSoonBody': 'Veți atinge 4 h 30 min de conducere la km {km}. Căutați unde să opriți {minutes} minute.',
+    'remind.breakNowTitle': 'E timpul să opriți',
+    'remind.breakNowBody': 'Ați condus 4 h 30 min. Legea cere cel puțin {minutes} minute înainte de a continua.',
+    'remind.restSoonTitle': 'Repaus zilnic peste {lead} minute',
+    'remind.restSoonBody': 'Ziua dumneavoastră de conducere se încheie la km {km}. Aveți nevoie de {hours} ore de repaus.',
+    'remind.restNowTitle': 'Repaus zilnic necesar',
+    'remind.restNowBody': 'Ziua dumneavoastră de conducere s-a încheiat. Aveți nevoie de cel puțin {hours} ore înainte de următoarea.',
+    'location.use': 'Folosește locația mea',
+    'location.finding': 'Se caută locația…',
+    'location.denied': 'Locația este dezactivată pentru această aplicație. Activați-o în Setări.',
+    'location.failed': 'Locația dumneavoastră nu a putut fi obținută.',
+    'location.purpose': 'Locația dumneavoastră este folosită doar pentru a completa punctul de plecare al unei rute. Nu este stocată și nu ajunge nicăieri, în afară de serviciul de hărți care o transformă într-o adresă.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

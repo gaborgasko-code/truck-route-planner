@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Takaisin sovellukseen',
 
     'lang.notTranslated': 'Tätä osiota ei ole vielä käännetty kielelle {target}; se näytetään kielellä {shown}.',
-    'lang.pickTitle': 'Kieli'
+    'lang.pickTitle': 'Kieli',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Taukomuistutukset',
+    'remind.enable': 'Muistuta minua tauoista',
+    'remind.disable': 'Poista muistutukset käytöstä',
+    'remind.on': 'Muistutukset ovat käytössä tällä matkalla.',
+    'remind.off': 'Muistutukset eivät ole käytössä.',
+    'remind.note': 'Muistutukset noudattavat yllä olevaa lähtöaikaa. Jos lähdet eri aikaan, laske reitti uudelleen.',
+    'remind.unavailable': 'Muistutukset toimivat iPhone-sovelluksessa. Selaimessa sivun pitäisi pysyä auki, joten ne eivät saapuisi.',
+    'remind.denied': 'Ilmoitukset on poistettu käytöstä tältä sovellukselta. Ota ne käyttöön Asetuksissa.',
+    'remind.breakSoonTitle': 'Tauko {lead} minuutin kuluttua',
+    'remind.breakSoonBody': 'Saavutat 4 h 30 min ajoajan kohdassa {km} km. Etsi paikka, jossa pysähtyä {minutes} minuutiksi.',
+    'remind.breakNowTitle': 'Aika pysähtyä',
+    'remind.breakNowBody': 'Olet ajanut 4 h 30 min. Laki vaatii vähintään {minutes} minuuttia ennen jatkamista.',
+    'remind.restSoonTitle': 'Vuorokausilepo {lead} minuutin kuluttua',
+    'remind.restSoonBody': 'Ajopäiväsi päättyy kohdassa {km} km. Tarvitset {hours} tuntia lepoa.',
+    'remind.restNowTitle': 'Vuorokausilepo vaaditaan',
+    'remind.restNowBody': 'Ajopäiväsi on päättynyt. Tarvitset vähintään {hours} tuntia ennen seuraavaa.',
+    'location.use': 'Käytä sijaintiani',
+    'location.finding': 'Haetaan sijaintiasi…',
+    'location.denied': 'Sijainti on poistettu käytöstä tältä sovellukselta. Ota se käyttöön Asetuksissa.',
+    'location.failed': 'Sijaintiasi ei saatu selville.',
+    'location.purpose': 'Sijaintiasi käytetään vain reitin lähtöpisteen täyttämiseen. Sitä ei tallenneta eikä lähetetä minnekään muualle kuin karttapalveluun, joka muuttaa sen osoitteeksi.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

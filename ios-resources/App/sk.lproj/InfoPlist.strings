@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Vaša poloha sa používa len na vyplnenie východiskového bodu trasy. Neukladá sa a nikam sa neodosiela okrem mapovej služby, ktorá ju prevedie na adresu.";

@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Twoja lokalizacja służy wyłącznie do wypełnienia punktu początkowego trasy. Nie jest zapisywana i nie trafia nigdzie poza serwis map, który zamienia ją na adres.";

@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Η τοποθεσία σας χρησιμοποιείται μόνο για τη συμπλήρωση του σημείου αφετηρίας μιας διαδρομής. Δεν αποθηκεύεται και δεν αποστέλλεται πουθενά, εκτός από την υπηρεσία χαρτών που τη μετατρέπει σε διεύθυνση.";

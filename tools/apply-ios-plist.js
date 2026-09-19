@@ -57,19 +57,29 @@ function removeKey(xml, key) {
  * @param {string[]} langs   language codes, in the order they should appear
  * @returns {string}
  */
-function applyKeys(xml, langs) {
+function applyKeys(xml, langs, purpose) {
   let out = xml;
-  ['CFBundleLocalizations', 'ITSAppUsesNonExemptEncryption', 'CFBundleDisplayName']
+  ['CFBundleLocalizations', 'ITSAppUsesNonExemptEncryption', 'CFBundleDisplayName',
+    'NSLocationWhenInUseUsageDescription']
     .forEach((key) => { out = removeKey(out, key); });
 
   const close = out.lastIndexOf('</dict>');
   if (close === -1) throw new Error('Info.plist has no closing <dict>');
+
+  /* XML, so the text has to survive an ampersand or an angle bracket. */
+  const esc = (v) => String(v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   const block = [
     '\t<key>CFBundleDisplayName</key>',
     '\t<string>' + DISPLAY_NAME + '</string>',
     '\t<key>ITSAppUsesNonExemptEncryption</key>',
     '\t<false/>',
+    /* The base value. Each <lang>.lproj overrides it, but a missing base key
+       means iOS shows no explanation at all in an unlisted language, and Apple
+       rejects a location request with no purpose string. */
+    '\t<key>NSLocationWhenInUseUsageDescription</key>',
+    '\t<string>' + esc(purpose || 'Used only to fill in the starting point of a route.') + '</string>',
     '\t<key>CFBundleLocalizations</key>',
     '\t<array>'
   ]
@@ -92,8 +102,10 @@ function main() {
   }
 
   const langs = JSON.parse(fs.readFileSync(LANGS, 'utf8'));
+  const i18n = require(path.join(root, 'js', 'core', 'i18n.js'));
+  const purpose = i18n.STRINGS['location.purpose'].en;
   const before = fs.readFileSync(PLIST, 'utf8');
-  const after = applyKeys(before, langs);
+  const after = applyKeys(before, langs, purpose);
   fs.writeFileSync(PLIST, after, 'utf8');
 
   process.stdout.write('Info.plist: display name, export-compliance flag and ' +

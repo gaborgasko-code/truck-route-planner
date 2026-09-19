@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Natrag na aplikaciju',
 
     'lang.notTranslated': 'Ovaj odjeljak još nije preveden na {target}; prikazuje se na {shown}.',
-    'lang.pickTitle': 'Jezik'
+    'lang.pickTitle': 'Jezik',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Podsjetnici na stanke',
+    'remind.enable': 'Podsjeti me na stanke',
+    'remind.disable': 'Isključi podsjetnike',
+    'remind.on': 'Podsjetnici su uključeni za ovo putovanje.',
+    'remind.off': 'Podsjetnici su isključeni.',
+    'remind.note': 'Podsjetnici prate vrijeme polaska navedeno gore. Ako krenete u drugo vrijeme, ponovno izračunajte rutu.',
+    'remind.unavailable': 'Podsjetnici rade u aplikaciji za iPhone. U pregledniku bi stranica morala ostati otvorena, pa ne bi stigli.',
+    'remind.denied': 'Obavijesti su isključene za ovu aplikaciju. Uključite ih u Postavkama.',
+    'remind.breakSoonTitle': 'Stanka za {lead} minuta',
+    'remind.breakSoonBody': 'Na {km} km dosegnut ćete 4 h 30 min vožnje. Potražite gdje stati na {minutes} minuta.',
+    'remind.breakNowTitle': 'Vrijeme je za stanku',
+    'remind.breakNowBody': 'Vozili ste 4 h 30 min. Zakon traži najmanje {minutes} minuta prije nastavka.',
+    'remind.restSoonTitle': 'Dnevni odmor za {lead} minuta',
+    'remind.restSoonBody': 'Vaš dan vožnje završava na {km} km. Treba vam {hours} sati odmora.',
+    'remind.restNowTitle': 'Potreban dnevni odmor',
+    'remind.restNowBody': 'Vaš dan vožnje je završio. Treba vam najmanje {hours} sati prije sljedećeg.',
+    'location.use': 'Upotrijebi moju lokaciju',
+    'location.finding': 'Traženje vaše lokacije…',
+    'location.denied': 'Lokacija je isključena za ovu aplikaciju. Uključite je u Postavkama.',
+    'location.failed': 'Vašu lokaciju nije bilo moguće utvrditi.',
+    'location.purpose': 'Vaša lokacija koristi se samo za ispunjavanje početne točke rute. Ne pohranjuje se i ne šalje se nikamo osim kartografskoj usluzi koja je pretvara u adresu.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -19,7 +19,9 @@
   "devDependencies": {
     "@capacitor/cli": "^7.0.0",
     "@capacitor/core": "^7.0.0",
+    "@capacitor/geolocation": "^7.0.0",
     "@capacitor/ios": "^7.0.0",
+    "@capacitor/local-notifications": "^7.0.0",
     "sharp": "^0.34.0"
   }
 }

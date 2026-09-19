@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Il-post tiegħek jintuża biss biex jimtela l-punt tat-tluq ta' rotta. Qatt ma jinħażen u ma jmur imkien ħlief għas-servizz tal-mapep li jibdlu f'indirizz.";

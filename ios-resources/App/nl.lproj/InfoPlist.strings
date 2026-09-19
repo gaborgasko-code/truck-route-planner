@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Uw locatie wordt alleen gebruikt om het beginpunt van een route in te vullen. Ze wordt niet bewaard en gaat nergens heen, behalve naar de kaartendienst die er een adres van maakt.";

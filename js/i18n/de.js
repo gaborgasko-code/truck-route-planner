@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Zurück zur Anwendung',
 
     'lang.notTranslated': 'Dieser Abschnitt ist noch nicht ins {target} übersetzt; er wird auf {shown} angezeigt.',
-    'lang.pickTitle': 'Sprache'
+    'lang.pickTitle': 'Sprache',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pausenerinnerungen',
+    'remind.enable': 'An meine Pausen erinnern',
+    'remind.disable': 'Erinnerungen ausschalten',
+    'remind.on': 'Erinnerungen für diese Fahrt aktiviert.',
+    'remind.off': 'Erinnerungen ausgeschaltet.',
+    'remind.note': 'Die Erinnerungen richten sich nach der oben angegebenen Abfahrtszeit. Fahren Sie zu einer anderen Zeit los, berechnen Sie die Route neu.',
+    'remind.unavailable': 'Erinnerungen funktionieren in der iPhone-App. Im Browser müsste die Seite geöffnet bleiben, daher kämen sie nicht an.',
+    'remind.denied': 'Mitteilungen sind für diese App ausgeschaltet. Aktivieren Sie sie in den Einstellungen.',
+    'remind.breakSoonTitle': 'Pause in {lead} Minuten',
+    'remind.breakSoonBody': 'Bei km {km} erreichen Sie 4 Std. 30 Min. Lenkzeit. Suchen Sie eine Stelle für {minutes} Minuten.',
+    'remind.breakNowTitle': 'Zeit anzuhalten',
+    'remind.breakNowBody': 'Sie haben 4 Std. 30 Min. gelenkt. Das Gesetz verlangt mindestens {minutes} Minuten, bevor Sie weiterfahren.',
+    'remind.restSoonTitle': 'Tagesruhezeit in {lead} Minuten',
+    'remind.restSoonBody': 'Ihr Lenktag endet bei km {km}. Sie brauchen {hours} Stunden Ruhezeit.',
+    'remind.restNowTitle': 'Tagesruhezeit fällig',
+    'remind.restNowBody': 'Ihr Lenktag ist zu Ende. Sie brauchen mindestens {hours} Stunden bis zum nächsten.',
+    'location.use': 'Meinen Standort verwenden',
+    'location.finding': 'Standort wird gesucht…',
+    'location.denied': 'Der Standort ist für diese App ausgeschaltet. Aktivieren Sie ihn in den Einstellungen.',
+    'location.failed': 'Ihr Standort konnte nicht ermittelt werden.',
+    'location.purpose': 'Ihr Standort wird nur verwendet, um den Startpunkt einer Route einzutragen. Er wird nicht gespeichert und nirgendwohin gesendet, außer an den Kartendienst, der ihn in eine Adresse umwandelt.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

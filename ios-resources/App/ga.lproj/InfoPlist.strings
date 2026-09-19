@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Ní úsáidtear do shuíomh ach chun pointe tosaigh bealaigh a líonadh isteach. Ní stóráiltear é riamh, agus ní théann sé áit ar bith seachas chuig an tseirbhís léarscáile a iompaíonn ina sheoladh é.";

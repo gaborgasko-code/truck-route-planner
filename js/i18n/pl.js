@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Powrót do aplikacji',
 
     'lang.notTranslated': 'Ta sekcja nie została jeszcze przetłumaczona na {target}; jest wyświetlana w {shown}.',
-    'lang.pickTitle': 'Język'
+    'lang.pickTitle': 'Język',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Przypomnienia o przerwach',
+    'remind.enable': 'Przypominaj mi o przerwach',
+    'remind.disable': 'Wyłącz przypomnienia',
+    'remind.on': 'Przypomnienia włączone dla tej trasy.',
+    'remind.off': 'Przypomnienia wyłączone.',
+    'remind.note': 'Przypomnienia są ustawiane według godziny wyjazdu podanej powyżej. Jeśli wyjeżdżasz o innej porze, przelicz trasę ponownie.',
+    'remind.unavailable': 'Przypomnienia działają w aplikacji na iPhone\'a. W przeglądarce strona musiałaby pozostać otwarta, więc nie dotarłyby.',
+    'remind.denied': 'Powiadomienia są wyłączone dla tej aplikacji. Włącz je w Ustawieniach.',
+    'remind.breakSoonTitle': 'Przerwa za {lead} minut',
+    'remind.breakSoonBody': 'Na {km} km osiągniesz 4 godz. 30 min jazdy. Znajdź miejsce na {minutes} minut postoju.',
+    'remind.breakNowTitle': 'Czas się zatrzymać',
+    'remind.breakNowBody': 'Przejechałeś 4 godz. 30 min. Prawo wymaga co najmniej {minutes} minut przerwy przed dalszą jazdą.',
+    'remind.restSoonTitle': 'Odpoczynek dzienny za {lead} minut',
+    'remind.restSoonBody': 'Twój dzień jazdy kończy się na {km} km. Potrzebujesz {hours} godzin odpoczynku.',
+    'remind.restNowTitle': 'Wymagany odpoczynek dzienny',
+    'remind.restNowBody': 'Twój dzień jazdy dobiegł końca. Potrzebujesz co najmniej {hours} godzin przed następnym.',
+    'location.use': 'Użyj mojej lokalizacji',
+    'location.finding': 'Szukanie lokalizacji…',
+    'location.denied': 'Lokalizacja jest wyłączona dla tej aplikacji. Włącz ją w Ustawieniach.',
+    'location.failed': 'Nie udało się ustalić Twojej lokalizacji.',
+    'location.purpose': 'Twoja lokalizacja służy wyłącznie do wypełnienia punktu początkowego trasy. Nie jest zapisywana i nie trafia nigdzie poza serwis map, który zamienia ją na adres.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

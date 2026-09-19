@@ -184,4 +184,39 @@
       assert.ok(threw, 'a malformed plist should fail here, not in Xcode');
     });
   });
+
+  describe('ios - the location permission text', function () {
+    test('every language gets its own purpose string', function () {
+      /* Apple rejects vague purpose strings, and an English one shown inside a
+         Greek interface reads as carelessness about the very thing being
+         asked for. */
+      const langs = iosRes.languages();
+      const en = langs.filter(function (l) { return l.code === 'en'; })[0].purpose;
+      const untranslated = langs.filter(function (l) {
+        return l.code !== 'en' && l.purpose === en;
+      }).map(function (l) { return l.code; });
+      assert.equal(untranslated.length, 0,
+        'falling back to English: ' + untranslated.join(', '));
+    });
+
+    test('the purpose string says what it is used for and what is not kept', function () {
+      const en = iosRes.languages().filter(function (l) { return l.code === 'en'; })[0];
+      assert.ok(/starting point/i.test(en.purpose), 'it names the actual use');
+      assert.ok(/never stored|not stored/i.test(en.purpose), 'and what happens to it');
+    });
+
+    test('the generated strings file declares the location key', function () {
+      const out = iosRes.infoPlistStrings({ code: 'de', name: 'Deutsch', purpose: 'Nur fuer den Start.' });
+      assert.ok(out.indexOf('NSLocationWhenInUseUsageDescription') !== -1);
+      assert.ok(out.indexOf('"Nur fuer den Start."') !== -1);
+    });
+
+    test('a quote in the text cannot break the strings file', function () {
+      /* .strings values are quote-delimited; an unescaped quote ends the value
+         early and Xcode refuses to compile the file. */
+      const out = iosRes.infoPlistStrings({ code: 'x', name: 'X', purpose: 'He said "no".' });
+      assert.ok(out.indexOf('\\"no\\"') !== -1, 'the quotes are escaped');
+    });
+  });
+
 })(typeof globalThis !== 'undefined' ? globalThis : this);

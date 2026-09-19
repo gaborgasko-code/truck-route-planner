@@ -36,6 +36,7 @@
       'viewPlan', 'viewResult', 'viewMap', 'viewRules', 'viewInfo',
       'm_summary', 'm_warnings', 'm_itinerary', 'm_tolls', 'm_stops',
       'm_legal', 'm_rules', 'm_report', 'm_mapCanvas', 'm_openMap', 'm_downloadMap',
+      'm_remindCard', 'm_remindState', 'm_remindBtn', 'm_locateBtn',
       'm_themeToggle', 'm_langSelect', 'm_copyReport', 'm_downloadGpx',
       'm_resultEmpty', 'm_resultBody', 'm_appVersion', 'm_dataSource'
     ].forEach(function (id) { el[id] = $(id); });
@@ -158,6 +159,7 @@
     el.m_tolls.innerHTML = TRP.render.tollsHtml(r);
     el.m_stops.innerHTML = TRP.render.stopsHtml(r);
     el.m_legal.innerHTML = TRP.render.legalHtml(r);
+    refreshReminders();
     el.m_rules.innerHTML = TRP.render.regulationsHtml(r);
     el.m_report.value = TRP.render.textReport(r);
 
@@ -331,11 +333,123 @@
 
   /* ----------------------------------------------------------------- init */
 
+  /* ------------------------------------------------------ native extras */
+
+  /*
+   * Break reminders and "use my location" exist only in the packaged app.
+   * A browser tab cannot fire a notification hours later while the phone is
+   * in a pocket, and the whole value of the reminder is that it arrives when
+   * nobody is looking at the screen - so on the web the controls stay hidden
+   * rather than being offered and quietly doing nothing.
+   */
+  var reminderState = { on: false };
+
+  function nativeAvailable() {
+    return !!(TRP.native && TRP.native.available());
+  }
+
+  function setReminderUi(on, message) {
+    reminderState.on = on;
+    if (el.m_remindBtn) {
+      el.m_remindBtn.textContent = app.t(on ? 'remind.disable' : 'remind.enable');
+    }
+    if (el.m_remindState) {
+      el.m_remindState.textContent = message || app.t(on ? 'remind.on' : 'remind.off');
+    }
+  }
+
+  /** Show the panel only when there is a plan worth reminding anyone about. */
+  function refreshReminders() {
+    if (!el.m_remindCard) return;
+    var plan = state.result && state.result.legal && state.result.legal.plan;
+    var worth = nativeAvailable() && plan && plan.length > 0;
+    el.m_remindCard.hidden = !worth;
+    if (!worth) return;
+
+    TRP.native.pendingReminders().then(function (pending) {
+      setReminderUi(pending > 0);
+    });
+  }
+
+  function toggleReminders() {
+    var plan = state.result && state.result.legal && state.result.legal.plan;
+    if (!plan || !plan.length) return;
+
+    if (reminderState.on) {
+      TRP.native.cancelReminders().then(function () {
+        setReminderUi(false);
+        app.toast(app.t('remind.off'));
+      });
+      return;
+    }
+
+    var list = TRP.reminders.schedule(plan);
+    if (!list.length) {
+      /* Everything is already in the past - scheduling would be a lie. */
+      app.toast(app.t('remind.off'));
+      return;
+    }
+
+    TRP.native.scheduleReminders(list, app.t).then(function (result) {
+      if (result.ok) {
+        setReminderUi(true);
+        app.toast(app.t('remind.on'));
+        return;
+      }
+      /* iOS never shows the permission sheet twice, so a refusal has to send
+         the user to Settings rather than silently failing again. */
+      setReminderUi(false, app.t(result.reason === 'denied'
+        ? 'remind.denied' : 'remind.unavailable'));
+    });
+  }
+
+  function useMyLocation() {
+    if (!el.m_locateBtn) return;
+    el.m_locateBtn.disabled = true;
+    el.m_locateBtn.textContent = app.t('location.finding');
+
+    TRP.native.currentPosition().then(function (pos) {
+      if (!pos.ok) {
+        app.toast(app.t(pos.reason === 'denied' ? 'location.denied' : 'location.failed'));
+        return null;
+      }
+      /* Turn the fix into something a human recognises, and something the
+         router can geocode again later. */
+      return TRP.api.reverseAddress(pos.lat, pos.lon).then(function (place) {
+        var label = (place && place.label) || (pos.lat.toFixed(5) + ', ' + pos.lon.toFixed(5));
+        el.m_origin.value = label;
+        state.picked.origin = { lat: pos.lat, lon: pos.lon, label: label };
+        return label;
+      }).catch(function () {
+        var label = pos.lat.toFixed(5) + ', ' + pos.lon.toFixed(5);
+        el.m_origin.value = label;
+        state.picked.origin = { lat: pos.lat, lon: pos.lon, label: label };
+        return label;
+      });
+    }).then(function () {
+      el.m_locateBtn.disabled = false;
+      el.m_locateBtn.textContent = app.t('location.use');
+    });
+  }
+
+  function initNative() {
+    if (!nativeAvailable()) return;
+    if (el.m_locateBtn) {
+      el.m_locateBtn.hidden = false;
+      el.m_locateBtn.addEventListener('click', useMyLocation);
+    }
+    if (el.m_remindBtn) {
+      el.m_remindBtn.addEventListener('click', toggleReminders);
+    }
+    setReminderUi(false);
+  }
+
   function init() {
     cacheElements();
     app.initLanguage(el.m_langSelect, onLanguageChange, true);
     app.initTheme(el.m_themeToggle);
     app.initPrivacy('mobile');
+    initNative();
     applyForm(app.loadForm());
     clearResults();
     bindEvents();

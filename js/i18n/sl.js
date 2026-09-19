@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Nazaj v aplikacijo',
 
     'lang.notTranslated': 'Ta razdelek še ni preveden v {target}; prikazan je v {shown}.',
-    'lang.pickTitle': 'Jezik'
+    'lang.pickTitle': 'Jezik',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Opomniki za odmore',
+    'remind.enable': 'Opomni me na odmore',
+    'remind.disable': 'Izklopi opomnike',
+    'remind.on': 'Opomniki so vklopljeni za to pot.',
+    'remind.off': 'Opomniki so izklopljeni.',
+    'remind.note': 'Opomniki sledijo času odhoda, navedenemu zgoraj. Če odidete ob drugem času, ponovno izračunajte pot.',
+    'remind.unavailable': 'Opomniki delujejo v aplikaciji za iPhone. V brskalniku bi morala stran ostati odprta, zato ne bi prispeli.',
+    'remind.denied': 'Obvestila so za to aplikacijo izklopljena. Vklopite jih v Nastavitvah.',
+    'remind.breakSoonTitle': 'Odmor čez {lead} minut',
+    'remind.breakSoonBody': 'Pri {km} km boste dosegli 4 h 30 min vožnje. Poiščite, kje se ustaviti za {minutes} minut.',
+    'remind.breakNowTitle': 'Čas je za postanek',
+    'remind.breakNowBody': 'Vozili ste 4 h 30 min. Zakon zahteva vsaj {minutes} minut, preden nadaljujete.',
+    'remind.restSoonTitle': 'Dnevni počitek čez {lead} minut',
+    'remind.restSoonBody': 'Vaš dan vožnje se konča pri {km} km. Potrebujete {hours} ur počitka.',
+    'remind.restNowTitle': 'Potreben dnevni počitek',
+    'remind.restNowBody': 'Vaš dan vožnje se je končal. Potrebujete vsaj {hours} ur pred naslednjim.',
+    'location.use': 'Uporabi mojo lokacijo',
+    'location.finding': 'Iskanje vaše lokacije…',
+    'location.denied': 'Lokacija je za to aplikacijo izklopljena. Vklopite jo v Nastavitvah.',
+    'location.failed': 'Vaše lokacije ni bilo mogoče ugotoviti.',
+    'location.purpose': 'Vaša lokacija se uporablja samo za izpolnitev izhodiščne točke poti. Ne shranjuje se in ne gre nikamor, razen h kartografski storitvi, ki jo pretvori v naslov.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

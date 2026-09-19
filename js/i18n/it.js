@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Torna all’applicazione',
 
     'lang.notTranslated': 'Questa sezione non è ancora tradotta in {target}; è mostrata in {shown}.',
-    'lang.pickTitle': 'Lingua'
+    'lang.pickTitle': 'Lingua',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Promemoria delle pause',
+    'remind.enable': 'Ricordami le pause',
+    'remind.disable': 'Disattiva i promemoria',
+    'remind.on': 'Promemoria attivi per questo viaggio.',
+    'remind.off': 'Promemoria disattivati.',
+    'remind.note': 'I promemoria seguono l\'orario di partenza indicato sopra. Se parte a un\'ora diversa, ricalcoli il percorso.',
+    'remind.unavailable': 'I promemoria funzionano nell\'app per iPhone. Nel browser la pagina dovrebbe restare aperta, quindi non arriverebbero.',
+    'remind.denied': 'Le notifiche sono disattivate per questa app. Le attivi in Impostazioni.',
+    'remind.breakSoonTitle': 'Pausa tra {lead} minuti',
+    'remind.breakSoonBody': 'Raggiungerà 4 h 30 min di guida al km {km}. Cerchi dove fermarsi per {minutes} minuti.',
+    'remind.breakNowTitle': 'È ora di fermarsi',
+    'remind.breakNowBody': 'Ha guidato 4 h 30 min. La legge richiede almeno {minutes} minuti prima di ripartire.',
+    'remind.restSoonTitle': 'Riposo giornaliero tra {lead} minuti',
+    'remind.restSoonBody': 'La sua giornata di guida finisce al km {km}. Le servono {hours} ore di riposo.',
+    'remind.restNowTitle': 'Riposo giornaliero dovuto',
+    'remind.restNowBody': 'La sua giornata di guida è finita. Le servono almeno {hours} ore prima della successiva.',
+    'location.use': 'Usa la mia posizione',
+    'location.finding': 'Ricerca della posizione…',
+    'location.denied': 'La posizione è disattivata per questa app. La attivi in Impostazioni.',
+    'location.failed': 'Non è stato possibile ottenere la sua posizione.',
+    'location.purpose': 'La sua posizione serve solo a compilare il punto di partenza di un percorso. Non viene conservata e non va da nessuna parte, tranne al servizio di mappe che la trasforma in un indirizzo.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

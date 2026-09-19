@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Grįžti į programą',
 
     'lang.notTranslated': 'Šis skyrius dar neišverstas į {target}; rodomas {shown} kalba.',
-    'lang.pickTitle': 'Kalba'
+    'lang.pickTitle': 'Kalba',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pertraukų priminimai',
+    'remind.enable': 'Priminti man apie pertraukas',
+    'remind.disable': 'Išjungti priminimus',
+    'remind.on': 'Priminimai šiai kelionei įjungti.',
+    'remind.off': 'Priminimai išjungti.',
+    'remind.note': 'Priminimai atitinka aukščiau nurodytą išvykimo laiką. Jei išvykstate kitu metu, perskaičiuokite maršrutą.',
+    'remind.unavailable': 'Priminimai veikia „iPhone“ programoje. Naršyklėje puslapis turėtų likti atidarytas, todėl jie nepasiektų.',
+    'remind.denied': 'Pranešimai šiai programai išjungti. Įjunkite juos Nustatymuose.',
+    'remind.breakSoonTitle': 'Pertrauka po {lead} minučių',
+    'remind.breakSoonBody': 'Ties {km} km pasieksite 4 val. 30 min. vairavimo. Raskite, kur sustoti {minutes} minučių.',
+    'remind.breakNowTitle': 'Laikas sustoti',
+    'remind.breakNowBody': 'Vairavote 4 val. 30 min. Įstatymas reikalauja bent {minutes} minučių prieš važiuojant toliau.',
+    'remind.restSoonTitle': 'Kasdienis poilsis po {lead} minučių',
+    'remind.restSoonBody': 'Jūsų vairavimo diena baigiasi ties {km} km. Jums reikia {hours} valandų poilsio.',
+    'remind.restNowTitle': 'Reikalingas kasdienis poilsis',
+    'remind.restNowBody': 'Jūsų vairavimo diena baigėsi. Prieš kitą jums reikia bent {hours} valandų.',
+    'location.use': 'Naudoti mano vietovę',
+    'location.finding': 'Ieškoma jūsų vietovės…',
+    'location.denied': 'Vietovė šiai programai išjungta. Įjunkite ją Nustatymuose.',
+    'location.failed': 'Nepavyko nustatyti jūsų vietovės.',
+    'location.purpose': 'Jūsų vietovė naudojama tik maršruto pradžios taškui užpildyti. Ji nesaugoma ir niekur nesiunčiama, išskyrus žemėlapių paslaugą, kuri ją paverčia adresu.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

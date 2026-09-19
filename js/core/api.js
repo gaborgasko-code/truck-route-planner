@@ -152,6 +152,31 @@
       .catch(function () { return null; });
   }
 
+  /**
+   * Reverse geocode a coordinate to a street address.
+   *
+   * Used by "start from my location": a GPS fix is correct but unreadable, and
+   * a driver needs to recognise the place before trusting the route that comes
+   * out of it. Zoom 18 is house-number level, where `reverseCountry` above
+   * deliberately stays at country level for the toll analysis.
+   *
+   * Resolves to `null` rather than rejecting, so the caller can fall back to
+   * showing the coordinates, which still route correctly.
+   *
+   * @returns {Promise<{label:string, lat:number, lon:number}|null>}
+   */
+  function reverseAddress(lat, lon) {
+    var url = CONFIG.NOMINATIM_BASE + '/reverse?format=jsonv2&zoom=18&addressdetails=1' +
+      '&accept-language=' + encodeURIComponent(acceptLanguage()) + '&lat=' +
+      encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lon);
+    return throttled(function () { return getJson(url, { retries: 0 }); })
+      .then(function (result) {
+        var label = result && result.display_name;
+        return label ? { label: String(label), lat: Number(lat), lon: Number(lon) } : null;
+      })
+      .catch(function () { return null; });
+  }
+
   /* -------------------------------------------------------------- Routing */
 
   /**
@@ -191,6 +216,7 @@
     geocode: geocode,
     geocodeOne: geocodeOne,
     reverseCountry: reverseCountry,
+    reverseAddress: reverseAddress,
     getRoute: getRoute
   };
 

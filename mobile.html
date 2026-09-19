@@ -50,6 +50,8 @@
           <input type="text" id="m_origin" autocomplete="off" spellcheck="false"
                  data-i18n-attr="placeholder:form.addressPlaceholder">
           <div class="suggest" id="m_originSuggest" role="listbox" hidden></div>
+          <button type="button" class="btn btn--ghost btn--sm locate" id="m_locateBtn" hidden
+                  data-i18n="location.use"></button>
         </div>
 
         <div class="swap-row">
@@ -214,6 +216,18 @@
     <!-- --------------------------------------------------------- rules -->
     <section class="view" id="viewRules" hidden>
       <div class="section-head"><h2 data-i18n="legal.title"></h2></div>
+
+      <!-- Only shown in the packaged app: a browser tab cannot fire a
+           notification hours later with the phone in a pocket. -->
+      <div class="card remind" id="m_remindCard" hidden>
+        <div class="remind__head">
+          <strong data-i18n="remind.title"></strong>
+          <span class="remind__state muted" id="m_remindState"></span>
+        </div>
+        <p class="muted" data-i18n="remind.note"></p>
+        <button type="button" class="btn btn--accent" id="m_remindBtn"></button>
+      </div>
+
       <div id="m_legal"></div>
 
       <div class="section-head"><h2 data-i18n="reg.title"></h2></div>
@@ -299,6 +313,7 @@
 <script src="js/core/api.js"></script>
 <script src="js/core/time-model.js"></script>
 <script src="js/core/eu-rules.js"></script>
+<script src="js/core/reminders.js"></script>
 <script src="js/core/tolls.js"></script>
 <script src="js/core/stops.js"></script>
 <script src="js/core/regulations.js"></script>
@@ -308,6 +323,7 @@
 
 <script src="js/ui/render.js"></script>
 <script src="js/ui/map-view.js"></script>
+<script src="js/ui/native.js"></script>
 <script src="js/ui/consent-ui.js"></script>
 <script src="js/ui/app-common.js"></script>
 <script src="js/ui/mobile-app.js"></script>

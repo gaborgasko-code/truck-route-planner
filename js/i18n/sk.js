@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Späť do aplikácie',
 
     'lang.notTranslated': 'Táto časť ešte nie je preložená do jazyka {target}; zobrazuje sa v jazyku {shown}.',
-    'lang.pickTitle': 'Jazyk'
+    'lang.pickTitle': 'Jazyk',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pripomienky prestávok',
+    'remind.enable': 'Pripomínať mi prestávky',
+    'remind.disable': 'Vypnúť pripomienky',
+    'remind.on': 'Pripomienky sú pre túto jazdu zapnuté.',
+    'remind.off': 'Pripomienky sú vypnuté.',
+    'remind.note': 'Pripomienky sa riadia časom odchodu uvedeným vyššie. Ak vyrazíte inokedy, prepočítajte trasu.',
+    'remind.unavailable': 'Pripomienky fungujú v aplikácii pre iPhone. V prehliadači by stránka musela zostať otvorená, takže by nedorazili.',
+    'remind.denied': 'Oznámenia sú pre túto aplikáciu vypnuté. Zapnite ich v Nastaveniach.',
+    'remind.breakSoonTitle': 'Prestávka o {lead} minút',
+    'remind.breakSoonBody': 'Na {km} km dosiahnete 4 h 30 min jazdy. Nájdite miesto, kde zastaviť na {minutes} minút.',
+    'remind.breakNowTitle': 'Čas zastaviť',
+    'remind.breakNowBody': 'Jazdili ste 4 h 30 min. Zákon vyžaduje najmenej {minutes} minút pred pokračovaním.',
+    'remind.restSoonTitle': 'Denný odpočinok o {lead} minút',
+    'remind.restSoonBody': 'Váš deň jazdy sa končí na {km} km. Potrebujete {hours} hodín odpočinku.',
+    'remind.restNowTitle': 'Vyžaduje sa denný odpočinok',
+    'remind.restNowBody': 'Váš deň jazdy sa skončil. Potrebujete najmenej {hours} hodín pred ďalším.',
+    'location.use': 'Použiť moju polohu',
+    'location.finding': 'Hľadá sa vaša poloha…',
+    'location.denied': 'Poloha je pre túto aplikáciu vypnutá. Zapnite ju v Nastaveniach.',
+    'location.failed': 'Vašu polohu sa nepodarilo zistiť.',
+    'location.purpose': 'Vaša poloha sa používa len na vyplnenie východiskového bodu trasy. Neukladá sa a nikam sa neodosiela okrem mapovej služby, ktorá ju prevedie na adresu.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

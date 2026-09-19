@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Lura għall-applikazzjoni',
 
     'lang.notTranslated': 'Din it-taqsima għadha ma ġietx tradotta għal {target}; qed tintwera bi {shown}.',
-    'lang.pickTitle': 'Lingwa'
+    'lang.pickTitle': 'Lingwa',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Tfakkiriet tal-waqfiet',
+    'remind.enable': 'Fakkarni fil-waqfiet tiegħi',
+    'remind.disable': 'Itfi t-tfakkiriet',
+    'remind.on': 'It-tfakkiriet huma mixgħula għal dan il-vjaġġ.',
+    'remind.off': 'It-tfakkiriet huma mitfija.',
+    'remind.note': 'It-tfakkiriet isegwu l-ħin tat-tluq imniżżel hawn fuq. Jekk titlaq f\'ħin ieħor, erġa\' kkalkula r-rotta.',
+    'remind.unavailable': 'It-tfakkiriet jaħdmu fl-applikazzjoni għall-iPhone. Fi brawżer il-paġna jkollha tibqa\' miftuħa, u għalhekk ma jaslux.',
+    'remind.denied': 'In-notifiki huma mitfija għal din l-applikazzjoni. Ixgħelhom fis-Settings.',
+    'remind.breakSoonTitle': 'Waqfa f\'{lead} minuti',
+    'remind.breakSoonBody': 'Fil-km {km} tilħaq 4 sigħat u 30 minuta sewqan. Fittex fejn tieqaf għal {minutes} minuti.',
+    'remind.breakNowTitle': 'Wasal il-ħin li tieqaf',
+    'remind.breakNowBody': 'Sqajt 4 sigħat u 30 minuta. Il-liġi teħtieġ mill-inqas {minutes} minuti qabel ma tkompli.',
+    'remind.restSoonTitle': 'Mistrieħ ta\' kuljum f\'{lead} minuti',
+    'remind.restSoonBody': 'Il-ġurnata tas-sewqan tiegħek tintemm fil-km {km}. Għandek bżonn {hours} sigħat ta\' mistrieħ.',
+    'remind.restNowTitle': 'Mistrieħ ta\' kuljum meħtieġ',
+    'remind.restNowBody': 'Il-ġurnata tas-sewqan tiegħek intemmet. Għandek bżonn mill-inqas {hours} sigħat qabel li jmiss.',
+    'location.use': 'Uża l-post tiegħi',
+    'location.finding': 'Qed infittex il-post tiegħek…',
+    'location.denied': 'Il-lokalizzazzjoni hija mitfija għal din l-applikazzjoni. Ixgħelha fis-Settings.',
+    'location.failed': 'Ma setax jinstab il-post tiegħek.',
+    'location.purpose': 'Il-post tiegħek jintuża biss biex jimtela l-punt tat-tluq ta\' rotta. Qatt ma jinħażen u ma jmur imkien ħlief għas-servizz tal-mapep li jibdlu f\'indirizz.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

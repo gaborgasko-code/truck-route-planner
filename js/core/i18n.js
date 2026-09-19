@@ -688,7 +688,29 @@
       es: 'Esta sección aún no está traducida al {target}; se muestra en {shown}.',
       en: 'This section is not translated into {target} yet; it is shown in {shown}.'
     },
-    'lang.pickTitle': { es: 'Idioma', en: 'Language' }
+    'lang.pickTitle': { es: 'Idioma', en: 'Language' },
+    /* ------------------------------------------- native app only */
+    'remind.title': { es: 'Avisos de pausa', en: 'Break reminders' },
+    'remind.enable': { es: 'Avisarme de las pausas', en: 'Remind me about my breaks' },
+    'remind.disable': { es: 'Desactivar los avisos', en: 'Turn reminders off' },
+    'remind.on': { es: 'Avisos activados para este viaje.', en: 'Reminders are on for this trip.' },
+    'remind.off': { es: 'Avisos desactivados.', en: 'Reminders are off.' },
+    'remind.note': { es: 'Los avisos siguen la hora de salida indicada arriba. Si sale a otra hora, vuelva a calcular la ruta.', en: 'Reminders follow the departure time above. Recalculate the route if you leave at a different time.' },
+    'remind.unavailable': { es: 'Los avisos funcionan en la aplicación para iPhone. En el navegador la página tendría que quedarse abierta, así que no llegarían.', en: 'Reminders work in the iPhone app. In a browser the page would have to stay open, so they would not arrive.' },
+    'remind.denied': { es: 'Las notificaciones están desactivadas para esta aplicación. Actívelas en Ajustes.', en: 'Notifications are switched off for this app. Turn them on in Settings.' },
+    'remind.breakSoonTitle': { es: 'Pausa dentro de {lead} minutos', en: 'Break due in {lead} minutes' },
+    'remind.breakSoonBody': { es: 'Alcanzará 4 h 30 min de conducción en el km {km}. Busque dónde parar {minutes} minutos.', en: 'You reach 4 h 30 min of driving at km {km}. Find somewhere to stop for {minutes} minutes.' },
+    'remind.breakNowTitle': { es: 'Hora de parar', en: 'Time to stop' },
+    'remind.breakNowBody': { es: 'Ha conducido 4 h 30 min. La ley exige al menos {minutes} minutos antes de continuar.', en: 'You have driven 4 h 30 min. The law requires at least {minutes} minutes before you drive on.' },
+    'remind.restSoonTitle': { es: 'Descanso diario dentro de {lead} minutos', en: 'Daily rest due in {lead} minutes' },
+    'remind.restSoonBody': { es: 'Su jornada de conducción termina en el km {km}. Necesita {hours} horas de descanso.', en: 'Your driving day ends at km {km}. You need {hours} hours of rest.' },
+    'remind.restNowTitle': { es: 'Descanso diario', en: 'Daily rest due' },
+    'remind.restNowBody': { es: 'Su jornada de conducción ha terminado. Necesita al menos {hours} horas antes de la siguiente.', en: 'Your driving day is over. You need at least {hours} hours before the next one.' },
+    'location.use': { es: 'Usar mi ubicación', en: 'Use my location' },
+    'location.finding': { es: 'Buscando su ubicación…', en: 'Finding your location…' },
+    'location.denied': { es: 'La ubicación está desactivada para esta aplicación. Actívela en Ajustes.', en: 'Location is switched off for this app. Turn it on in Settings.' },
+    'location.failed': { es: 'No se ha podido obtener su ubicación.', en: 'Could not get your location.' },
+    'location.purpose': { es: 'Su ubicación se usa solo para rellenar el punto de partida de una ruta. No se guarda ni se envía a ningún sitio, salvo al servicio de mapas que la convierte en una dirección.', en: 'Your location is used only to fill in the starting point of a route. It is never stored, and goes nowhere except the map service that turns it into an address.' },
   };
 
 

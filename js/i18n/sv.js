@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Tillbaka till appen',
 
     'lang.notTranslated': 'Det här avsnittet är ännu inte översatt till {target}; det visas på {shown}.',
-    'lang.pickTitle': 'Språk'
+    'lang.pickTitle': 'Språk',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Rastpåminnelser',
+    'remind.enable': 'Påminn mig om mina raster',
+    'remind.disable': 'Stäng av påminnelser',
+    'remind.on': 'Påminnelser är på för den här resan.',
+    'remind.off': 'Påminnelser är av.',
+    'remind.note': 'Påminnelserna följer avgångstiden ovan. Åker du vid en annan tid, räkna om rutten.',
+    'remind.unavailable': 'Påminnelser fungerar i iPhone-appen. I en webbläsare skulle sidan behöva vara öppen, så de skulle inte komma fram.',
+    'remind.denied': 'Aviseringar är avstängda för den här appen. Slå på dem i Inställningar.',
+    'remind.breakSoonTitle': 'Rast om {lead} minuter',
+    'remind.breakSoonBody': 'Vid km {km} når du 4 tim 30 min körtid. Leta upp ett ställe att stanna {minutes} minuter.',
+    'remind.breakNowTitle': 'Dags att stanna',
+    'remind.breakNowBody': 'Du har kört 4 tim 30 min. Lagen kräver minst {minutes} minuter innan du kör vidare.',
+    'remind.restSoonTitle': 'Dygnsvila om {lead} minuter',
+    'remind.restSoonBody': 'Din kördag slutar vid km {km}. Du behöver {hours} timmars vila.',
+    'remind.restNowTitle': 'Dygnsvila krävs',
+    'remind.restNowBody': 'Din kördag är slut. Du behöver minst {hours} timmar före nästa.',
+    'location.use': 'Använd min plats',
+    'location.finding': 'Söker din plats…',
+    'location.denied': 'Platstjänster är avstängda för den här appen. Slå på dem i Inställningar.',
+    'location.failed': 'Din plats kunde inte hämtas.',
+    'location.purpose': 'Din plats används bara för att fylla i startpunkten för en rutt. Den sparas aldrig och skickas ingen annanstans än till karttjänsten som gör om den till en adress.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

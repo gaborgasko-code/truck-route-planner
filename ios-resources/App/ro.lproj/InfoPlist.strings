@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Locația dumneavoastră este folosită doar pentru a completa punctul de plecare al unei rute. Nu este stocată și nu ajunge nicăieri, în afară de serviciul de hărți care o transformă într-o adresă.";

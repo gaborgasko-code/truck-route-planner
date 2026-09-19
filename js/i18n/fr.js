@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Retour à l’application',
 
     'lang.notTranslated': 'Cette section n’est pas encore traduite en {target} ; elle est affichée en {shown}.',
-    'lang.pickTitle': 'Langue'
+    'lang.pickTitle': 'Langue',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Rappels de pause',
+    'remind.enable': 'Me rappeler mes pauses',
+    'remind.disable': 'Désactiver les rappels',
+    'remind.on': 'Rappels activés pour ce trajet.',
+    'remind.off': 'Rappels désactivés.',
+    'remind.note': 'Les rappels suivent l\'heure de départ indiquée ci-dessus. Si vous partez à une autre heure, recalculez l\'itinéraire.',
+    'remind.unavailable': 'Les rappels fonctionnent dans l\'application iPhone. Dans un navigateur, la page devrait rester ouverte, ils n\'arriveraient donc pas.',
+    'remind.denied': 'Les notifications sont désactivées pour cette application. Activez-les dans les Réglages.',
+    'remind.breakSoonTitle': 'Pause dans {lead} minutes',
+    'remind.breakSoonBody': 'Vous atteindrez 4 h 30 de conduite au km {km}. Trouvez où vous arrêter {minutes} minutes.',
+    'remind.breakNowTitle': 'Il est temps de s\'arrêter',
+    'remind.breakNowBody': 'Vous avez conduit 4 h 30. La loi exige au moins {minutes} minutes avant de repartir.',
+    'remind.restSoonTitle': 'Repos journalier dans {lead} minutes',
+    'remind.restSoonBody': 'Votre journée de conduite se termine au km {km}. Il vous faut {hours} heures de repos.',
+    'remind.restNowTitle': 'Repos journalier dû',
+    'remind.restNowBody': 'Votre journée de conduite est terminée. Il vous faut au moins {hours} heures avant la suivante.',
+    'location.use': 'Utiliser ma position',
+    'location.finding': 'Recherche de votre position…',
+    'location.denied': 'La localisation est désactivée pour cette application. Activez-la dans les Réglages.',
+    'location.failed': 'Impossible d\'obtenir votre position.',
+    'location.purpose': 'Votre position sert uniquement à renseigner le point de départ d\'un itinéraire. Elle n\'est jamais conservée et n\'est transmise qu\'au service cartographique qui la convertit en adresse.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

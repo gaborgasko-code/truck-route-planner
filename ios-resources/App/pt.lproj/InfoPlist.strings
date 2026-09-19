@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "A sua localização é usada apenas para preencher o ponto de partida de um percurso. Nunca é guardada e não vai para lado nenhum, exceto para o serviço de mapas que a converte num endereço.";

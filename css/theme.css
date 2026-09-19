@@ -791,3 +791,18 @@ body.trp-mobile .consent,
   background: var(--surface); color: var(--ink); border-color: var(--line);
 }
 .lang-select--light option { color: var(--ink); background: var(--surface); }
+
+/* --------------------------------------------- native app only controls */
+
+/*
+ * Break reminders and "use my location". Both stay hidden in a browser, where
+ * they cannot work: a tab cannot fire a notification hours later with the
+ * phone in a pocket, which is the entire point of the reminder.
+ */
+.remind { display: grid; gap: 10px; }
+.remind__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.remind__state { font-size: 12.5px; }
+.remind .btn { justify-self: start; }
+
+.locate { margin-top: 6px; }
+.btn--sm { height: 34px; padding: 0 12px; font-size: 13px; }

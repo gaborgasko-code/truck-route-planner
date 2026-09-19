@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Tagasi rakendusse',
 
     'lang.notTranslated': 'Seda jaotist pole veel tõlgitud keelde {target}; kuvatakse keeles {shown}.',
-    'lang.pickTitle': 'Keel'
+    'lang.pickTitle': 'Keel',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pausimeeldetuletused',
+    'remind.enable': 'Tuleta mulle pause meelde',
+    'remind.disable': 'Lülita meeldetuletused välja',
+    'remind.on': 'Meeldetuletused on selle sõidu jaoks sees.',
+    'remind.off': 'Meeldetuletused on väljas.',
+    'remind.note': 'Meeldetuletused järgivad ülal märgitud väljumisaega. Kui väljute muul ajal, arvutage marsruut uuesti.',
+    'remind.unavailable': 'Meeldetuletused töötavad iPhone\'i rakenduses. Brauseris peaks leht jääma avatuks, seega need ei jõuaks kohale.',
+    'remind.denied': 'Teavitused on selle rakenduse jaoks välja lülitatud. Lülitage need sisse Seadetes.',
+    'remind.breakSoonTitle': 'Paus {lead} minuti pärast',
+    'remind.breakSoonBody': '{km}. kilomeetril saavutate 4 t 30 min sõiduaega. Otsige koht, kus {minutes} minutiks peatuda.',
+    'remind.breakNowTitle': 'Aeg peatuda',
+    'remind.breakNowBody': 'Olete sõitnud 4 t 30 min. Seadus nõuab enne edasisõitu vähemalt {minutes} minutit.',
+    'remind.restSoonTitle': 'Ööpäevane puhkeaeg {lead} minuti pärast',
+    'remind.restSoonBody': 'Teie sõidupäev lõpeb {km}. kilomeetril. Vajate {hours} tundi puhkust.',
+    'remind.restNowTitle': 'Nõutav ööpäevane puhkeaeg',
+    'remind.restNowBody': 'Teie sõidupäev on läbi. Vajate enne järgmist vähemalt {hours} tundi.',
+    'location.use': 'Kasuta minu asukohta',
+    'location.finding': 'Otsin teie asukohta…',
+    'location.denied': 'Asukoht on selle rakenduse jaoks välja lülitatud. Lülitage see sisse Seadetes.',
+    'location.failed': 'Teie asukohta ei õnnestunud tuvastada.',
+    'location.purpose': 'Teie asukohta kasutatakse ainult marsruudi lähtepunkti täitmiseks. Seda ei salvestata ega saadeta kuhugi mujale kui kaarditeenusesse, mis muudab selle aadressiks.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

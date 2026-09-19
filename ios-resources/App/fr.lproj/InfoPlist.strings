@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Votre position sert uniquement à renseigner le point de départ d'un itinéraire. Elle n'est jamais conservée et n'est transmise qu'au service cartographique qui la convertit en adresse.";

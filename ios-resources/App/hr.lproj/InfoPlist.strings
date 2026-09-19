@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Vaša lokacija koristi se samo za ispunjavanje početne točke rute. Ne pohranjuje se i ne šalje se nikamo osim kartografskoj usluzi koja je pretvara u adresu.";

@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Tilbage til appen',
 
     'lang.notTranslated': 'Dette afsnit er endnu ikke oversat til {target}; det vises på {shown}.',
-    'lang.pickTitle': 'Sprog'
+    'lang.pickTitle': 'Sprog',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pausepåmindelser',
+    'remind.enable': 'Mind mig om mine pauser',
+    'remind.disable': 'Slå påmindelser fra',
+    'remind.on': 'Påmindelser er slået til for denne tur.',
+    'remind.off': 'Påmindelser er slået fra.',
+    'remind.note': 'Påmindelserne følger afgangstidspunktet ovenfor. Kører du på et andet tidspunkt, så beregn ruten igen.',
+    'remind.unavailable': 'Påmindelser virker i iPhone-appen. I en browser skulle siden blive stående åben, så de ville ikke nå frem.',
+    'remind.denied': 'Notifikationer er slået fra for denne app. Slå dem til i Indstillinger.',
+    'remind.breakSoonTitle': 'Pause om {lead} minutter',
+    'remind.breakSoonBody': 'Ved km {km} når du 4 t 30 min køretid. Find et sted at holde {minutes} minutter.',
+    'remind.breakNowTitle': 'Tid til at holde ind',
+    'remind.breakNowBody': 'Du har kørt 4 t 30 min. Loven kræver mindst {minutes} minutter, før du kører videre.',
+    'remind.restSoonTitle': 'Daglig hviletid om {lead} minutter',
+    'remind.restSoonBody': 'Din køredag slutter ved km {km}. Du skal have {hours} timers hvil.',
+    'remind.restNowTitle': 'Daglig hviletid påkrævet',
+    'remind.restNowBody': 'Din køredag er slut. Du skal have mindst {hours} timer før den næste.',
+    'location.use': 'Brug min placering',
+    'location.finding': 'Finder din placering…',
+    'location.denied': 'Placering er slået fra for denne app. Slå det til i Indstillinger.',
+    'location.failed': 'Din placering kunne ikke findes.',
+    'location.purpose': 'Din placering bruges kun til at udfylde startpunktet for en rute. Den gemmes aldrig og sendes ingen andre steder end til korttjenesten, der laver den om til en adresse.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

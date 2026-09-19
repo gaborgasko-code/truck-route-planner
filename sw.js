@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var CACHE_VERSION = 'trp-shell-v2.4.1';
+var CACHE_VERSION = 'trp-shell-v2.5.0';
 
 /*
  * The 22 translation packs in js/i18n/ are deliberately NOT listed here.
@@ -50,6 +50,7 @@ var SHELL = [
   'js/core/api.js',
   'js/core/time-model.js',
   'js/core/eu-rules.js',
+  'js/core/reminders.js',
   'js/core/tolls.js',
   'js/core/stops.js',
   'js/core/regulations.js',
@@ -58,6 +59,7 @@ var SHELL = [
   'js/core/device.js',
   'js/ui/render.js',
   'js/ui/map-view.js',
+  'js/ui/native.js',
   'js/ui/consent-ui.js',
   'js/ui/app-common.js',
   'js/ui/desktop-app.js',

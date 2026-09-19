@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Ar ais chuig an bhfeidhmchlár',
 
     'lang.notTranslated': 'Níl an chuid seo aistrithe go {target} fós; taispeántar í i {shown}.',
-    'lang.pickTitle': 'Teanga'
+    'lang.pickTitle': 'Teanga',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Meabhrúcháin sosa',
+    'remind.enable': 'Cuir mo shosanna i gcuimhne dom',
+    'remind.disable': 'Múch na meabhrúcháin',
+    'remind.on': 'Tá na meabhrúcháin ar siúl don turas seo.',
+    'remind.off': 'Tá na meabhrúcháin múchta.',
+    'remind.note': 'Leanann na meabhrúcháin an t-am imeachta thuas. Má imíonn tú ag am eile, athríomh an bealach.',
+    'remind.unavailable': 'Oibríonn na meabhrúcháin san aip iPhone. I mbrabhsálaí bheadh ar an leathanach fanacht oscailte, mar sin ní thiocfaidís.',
+    'remind.denied': 'Tá fógraí múchta don aip seo. Cuir ar siúl iad sna Socruithe.',
+    'remind.breakSoonTitle': 'Sos i gceann {lead} nóiméad',
+    'remind.breakSoonBody': 'Ag km {km} sroichfidh tú 4 u 30 n de thiomáint. Aimsigh áit le stopadh ar feadh {minutes} nóiméad.',
+    'remind.breakNowTitle': 'Tá sé in am stopadh',
+    'remind.breakNowBody': 'Thiomáin tú 4 u 30 n. Éilíonn an dlí {minutes} nóiméad ar a laghad sula leanann tú ort.',
+    'remind.restSoonTitle': 'Sos laethúil i gceann {lead} nóiméad',
+    'remind.restSoonBody': 'Críochnaíonn do lá tiomána ag km {km}. Teastaíonn {hours} uair an chloig scíthe uait.',
+    'remind.restNowTitle': 'Sos laethúil dlite',
+    'remind.restNowBody': 'Tá do lá tiomána thart. Teastaíonn {hours} uair an chloig ar a laghad uait roimh an gcéad cheann eile.',
+    'location.use': 'Úsáid mo shuíomh',
+    'location.finding': 'Do shuíomh á aimsiú…',
+    'location.denied': 'Tá an suíomh múchta don aip seo. Cuir ar siúl é sna Socruithe.',
+    'location.failed': 'Níorbh fhéidir do shuíomh a fháil.',
+    'location.purpose': 'Ní úsáidtear do shuíomh ach chun pointe tosaigh bealaigh a líonadh isteach. Ní stóráiltear é riamh, agus ní théann sé áit ar bith seachas chuig an tseirbhís léarscáile a iompaíonn ina sheoladh é.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

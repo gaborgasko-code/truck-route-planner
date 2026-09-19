@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Voltar à aplicação',
 
     'lang.notTranslated': 'Esta secção ainda não está traduzida para {target}; é apresentada em {shown}.',
-    'lang.pickTitle': 'Idioma'
+    'lang.pickTitle': 'Idioma',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Avisos de pausa',
+    'remind.enable': 'Avisar-me das pausas',
+    'remind.disable': 'Desativar os avisos',
+    'remind.on': 'Avisos ativados para esta viagem.',
+    'remind.off': 'Avisos desativados.',
+    'remind.note': 'Os avisos seguem a hora de partida indicada acima. Se sair a outra hora, volte a calcular o percurso.',
+    'remind.unavailable': 'Os avisos funcionam na aplicação para iPhone. No navegador a página teria de ficar aberta, por isso não chegariam.',
+    'remind.denied': 'As notificações estão desativadas para esta aplicação. Ative-as nas Definições.',
+    'remind.breakSoonTitle': 'Pausa dentro de {lead} minutos',
+    'remind.breakSoonBody': 'Vai atingir 4 h 30 min de condução ao km {km}. Procure onde parar {minutes} minutos.',
+    'remind.breakNowTitle': 'Está na hora de parar',
+    'remind.breakNowBody': 'Conduziu 4 h 30 min. A lei exige pelo menos {minutes} minutos antes de continuar.',
+    'remind.restSoonTitle': 'Descanso diário dentro de {lead} minutos',
+    'remind.restSoonBody': 'O seu dia de condução termina ao km {km}. Precisa de {hours} horas de descanso.',
+    'remind.restNowTitle': 'Descanso diário devido',
+    'remind.restNowBody': 'O seu dia de condução terminou. Precisa de pelo menos {hours} horas antes do seguinte.',
+    'location.use': 'Usar a minha localização',
+    'location.finding': 'A procurar a sua localização…',
+    'location.denied': 'A localização está desativada para esta aplicação. Ative-a nas Definições.',
+    'location.failed': 'Não foi possível obter a sua localização.',
+    'location.purpose': 'A sua localização é usada apenas para preencher o ponto de partida de um percurso. Nunca é guardada e não vai para lado nenhum, exceto para o serviço de mapas que a converte num endereço.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

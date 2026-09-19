@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "A helyzetét csak az útvonal kiindulópontjának kitöltésére használjuk. Nem tároljuk, és sehová nem kerül el azon a térképszolgáltatáson kívül, amely címmé alakítja.";

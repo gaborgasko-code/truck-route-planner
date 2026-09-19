@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Jūsu atrašanās vieta tiek izmantota tikai maršruta sākumpunkta aizpildīšanai. Tā netiek saglabāta un nenonāk nekur citur, kā vien karšu pakalpojumā, kas to pārvērš adresē.";

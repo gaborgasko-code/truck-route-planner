@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Atpakaļ uz lietotni',
 
     'lang.notTranslated': 'Šī sadaļa vēl nav pārtulkota valodā {target}; tā tiek rādīta valodā {shown}.',
-    'lang.pickTitle': 'Valoda'
+    'lang.pickTitle': 'Valoda',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Pārtraukumu atgādinājumi',
+    'remind.enable': 'Atgādināt man par pārtraukumiem',
+    'remind.disable': 'Izslēgt atgādinājumus',
+    'remind.on': 'Atgādinājumi šim braucienam ir ieslēgti.',
+    'remind.off': 'Atgādinājumi ir izslēgti.',
+    'remind.note': 'Atgādinājumi seko iepriekš norādītajam izbraukšanas laikam. Ja izbraucat citā laikā, pārrēķiniet maršrutu.',
+    'remind.unavailable': 'Atgādinājumi darbojas iPhone lietotnē. Pārlūkā lapai būtu jāpaliek atvērtai, tāpēc tie nepienāktu.',
+    'remind.denied': 'Paziņojumi šai lietotnei ir izslēgti. Ieslēdziet tos Iestatījumos.',
+    'remind.breakSoonTitle': 'Pārtraukums pēc {lead} minūtēm',
+    'remind.breakSoonBody': '{km}. kilometrā sasniegsiet 4 h 30 min braukšanas. Atrodiet, kur apstāties uz {minutes} minūtēm.',
+    'remind.breakNowTitle': 'Laiks apstāties',
+    'remind.breakNowBody': 'Esat braucis 4 h 30 min. Likums prasa vismaz {minutes} minūtes pirms braukšanas turpināšanas.',
+    'remind.restSoonTitle': 'Ikdienas atpūta pēc {lead} minūtēm',
+    'remind.restSoonBody': 'Jūsu braukšanas diena beidzas {km}. kilometrā. Jums nepieciešamas {hours} stundas atpūtas.',
+    'remind.restNowTitle': 'Nepieciešama ikdienas atpūta',
+    'remind.restNowBody': 'Jūsu braukšanas diena ir beigusies. Pirms nākamās jums nepieciešamas vismaz {hours} stundas.',
+    'location.use': 'Izmantot manu atrašanās vietu',
+    'location.finding': 'Meklē jūsu atrašanās vietu…',
+    'location.denied': 'Atrašanās vieta šai lietotnei ir izslēgta. Ieslēdziet to Iestatījumos.',
+    'location.failed': 'Neizdevās noteikt jūsu atrašanās vietu.',
+    'location.purpose': 'Jūsu atrašanās vieta tiek izmantota tikai maršruta sākumpunkta aizpildīšanai. Tā netiek saglabāta un nenonāk nekur citur, kā vien karšu pakalpojumā, kas to pārvērš adresē.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

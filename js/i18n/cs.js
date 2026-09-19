@@ -426,6 +426,28 @@
     'privacy.backToApp': 'Zpět do aplikace',
 
     'lang.notTranslated': 'Tato část ještě není přeložena do jazyka {target}; zobrazuje se v jazyce {shown}.',
-    'lang.pickTitle': 'Jazyk'
+    'lang.pickTitle': 'Jazyk',
+    /* --------------------------------------------- native app only */
+    'remind.title': 'Připomenutí přestávek',
+    'remind.enable': 'Připomínat mi přestávky',
+    'remind.disable': 'Vypnout připomenutí',
+    'remind.on': 'Připomenutí jsou pro tuto jízdu zapnutá.',
+    'remind.off': 'Připomenutí jsou vypnutá.',
+    'remind.note': 'Připomenutí se řídí časem odjezdu uvedeným výše. Pokud vyjedete jindy, přepočítejte trasu.',
+    'remind.unavailable': 'Připomenutí fungují v aplikaci pro iPhone. V prohlížeči by stránka musela zůstat otevřená, takže by nedorazila.',
+    'remind.denied': 'Oznámení jsou pro tuto aplikaci vypnutá. Zapněte je v Nastavení.',
+    'remind.breakSoonTitle': 'Přestávka za {lead} minut',
+    'remind.breakSoonBody': 'Na {km} km dosáhnete 4 h 30 min řízení. Najděte místo, kde zastavit na {minutes} minut.',
+    'remind.breakNowTitle': 'Čas zastavit',
+    'remind.breakNowBody': 'Řídil jste 4 h 30 min. Zákon vyžaduje nejméně {minutes} minut, než budete pokračovat.',
+    'remind.restSoonTitle': 'Denní odpočinek za {lead} minut',
+    'remind.restSoonBody': 'Váš den řízení končí na {km} km. Potřebujete {hours} hodin odpočinku.',
+    'remind.restNowTitle': 'Vyžadován denní odpočinek',
+    'remind.restNowBody': 'Váš den řízení skončil. Potřebujete nejméně {hours} hodin před dalším.',
+    'location.use': 'Použít moji polohu',
+    'location.finding': 'Hledání polohy…',
+    'location.denied': 'Poloha je pro tuto aplikaci vypnutá. Zapněte ji v Nastavení.',
+    'location.failed': 'Vaši polohu se nepodařilo zjistit.',
+    'location.purpose': 'Vaše poloha se používá pouze k vyplnění výchozího bodu trasy. Neukládá se a nikam se neodesílá kromě mapové služby, která ji převede na adresu.',
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -117,12 +117,38 @@ allowlist is the live example: until `capacitor://localhost` is added to
 reports nothing. Google Analytics is unaffected — it does not check origins.
 
 **Guideline 4.2, Minimum Functionality.** Apple rejects apps that are a website
-in a box. This one has a real defence — the EU compliance rules, the datasets
-and the whole planner work with no connection — but the case is much stronger
-with something a browser cannot do. The obvious candidate is also the most
-useful feature for a driver: **local notifications for break and daily-rest
-reminders**, driven by the 561/2006 model that already exists. Worth adding
-before submission rather than after a rejection.
+in a box. Two native features now answer that, and both are things a browser
+genuinely cannot do:
+
+| Feature | Why a browser cannot | Files |
+|---|---|---|
+| **Break reminders** | A tab cannot fire a notification hours later with the phone in a pocket — which is the entire point | `js/core/reminders.js`, `js/ui/native.js` |
+| **Use my location** | Needs the system permission sheet and a real GPS fix | `js/ui/native.js`, `api.reverseAddress` |
+
+The reminders are driven by the 561/2006 stop plan the compliance view already
+computes. Each mandatory break and daily rest produces two notifications: a
+warning 15 minutes ahead, and one at the deadline.
+
+Fifteen minutes is roughly 17 km at motorway speed — far enough to reach the
+next services, close enough that the driver has not already passed them. A
+reminder timed to arrive exactly when the break falls due would be useless,
+because by then stopping legally is no longer possible. The second one exists
+because a driver who was not looking at the phone needs to know the clock has
+actually run out rather than assuming the warning was the deadline.
+
+Both controls are hidden on the web rather than offered and quietly doing
+nothing. `js/core/reminders.js` is pure — it takes a plan and a clock and
+returns what should fire and when — so the timing is tested on Windows without
+a device.
+
+Two iOS details worth knowing:
+
+- **iOS keeps at most 64 pending notifications** and silently drops the rest,
+  so the list is capped at 48. A long trip loses its furthest reminders rather
+  than failing invisibly.
+- **The permission sheet is shown once.** After a refusal iOS never shows it
+  again, so the app sends the user to Settings instead of asking again and
+  appearing broken.
 
 ### B.5 Permissions
 

@@ -3,3 +3,5 @@
 
 "CFBundleDisplayName" = "Planificador";
 "CFBundleName" = "Planificador";
+
+"NSLocationWhenInUseUsageDescription" = "Teie asukohta kasutatakse ainult marsruudi lähtepunkti täitmiseks. Seda ei salvestata ega saadeta kuhugi mujale kui kaarditeenusesse, mis muudab selle aadressiks.";
