@@ -150,6 +150,37 @@ Two iOS details worth knowing:
   again, so the app sends the user to Settings instead of asking again and
   appearing broken.
 
+### B.4b Code signing from Windows
+
+Signing normally starts in Keychain Access on a Mac. `tools/ios-signing.sh`
+does the same job with OpenSSL, which Git Bash already ships, so no Mac is
+needed at any point:
+
+```bash
+bash tools/ios-signing.sh csr        # private key + signing request
+# ... upload the request at developer.apple.com, download the .cer and profile
+bash tools/ios-signing.sh secrets    # build the .p12, push the four secrets
+```
+
+The private key is created under `.signing/`, which is gitignored, and is never
+printed. The password is read without echo and the base64 copies are deleted
+straight after upload.
+
+One trap the script works around: Git Bash rewrites any argument that looks
+like a Unix path, so OpenSSL's `/CN=...` subject arrives as
+`C:/Program Files/Git/CN=...` and the request fails with a confusing message
+about the name format. `MSYS_NO_PATHCONV=1` is what stops that.
+
+| Secret | Where it comes from |
+|---|---|
+| `APPLE_CERTIFICATE_P12` | built by the script from your key + Apple's .cer |
+| `APPLE_CERTIFICATE_PASSWORD` | the password you choose when it builds |
+| `APPLE_PROVISIONING_PROFILE` | downloaded from the Apple developer portal |
+| `APPLE_TEAM_ID` | read out of the profile automatically |
+
+Losing `.signing/ios_distribution.key` means revoking the certificate at
+Apple and starting again, so keep it somewhere safe.
+
 ### B.5 Permissions
 
 **Android** — `android/app/src/main/AndroidManifest.xml`, inside `<manifest>`:
