@@ -156,11 +156,16 @@ Signing normally starts in Keychain Access on a Mac. `tools/ios-signing.sh`
 does the same job with OpenSSL, which Git Bash already ships, so no Mac is
 needed at any point:
 
-```bash
-bash tools/ios-signing.sh csr        # private key + signing request
+```powershell
+.	oolsios-signing.ps1 csr        # private key + signing request
 # ... upload the request at developer.apple.com, download the .cer and profile
-bash tools/ios-signing.sh secrets    # build the .p12, push the four secrets
+.	oolsios-signing.ps1 secrets    # build the .p12, push the four secrets
 ```
+
+The `.ps1` is a wrapper: the work is in `tools/ios-signing.sh`, because it needs
+OpenSSL and that ships with Git rather than with Windows. The wrapper finds
+Git's `bash.exe` rather than expecting `bash` on PATH, and runs from the
+repository root wherever you happen to be. In Git Bash, call the `.sh` directly.
 
 The private key is created under `.signing/`, which is gitignored, and is never
 printed. The password is read without echo and the base64 copies are deleted

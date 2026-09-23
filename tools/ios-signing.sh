@@ -74,7 +74,8 @@ Next, in a browser:
      Download and save it as:
        $PROFILE
 
-Then run:  bash tools/ios-signing.sh secrets
+Then run:  .\tools\ios-signing.ps1 secrets      (PowerShell)
+           bash tools/ios-signing.sh secrets  (Git Bash)
 EOF
 }
 
@@ -82,7 +83,7 @@ step_secrets() {
   have openssl || die "openssl not found"
   have gh || die "the GitHub CLI is not on PATH"
 
-  [ -f "$KEY" ] || die "no private key - run 'bash tools/ios-signing.sh csr' first"
+  [ -f "$KEY" ] || die "no private key - run the csr step first (PowerShell: .\tools\ios-signing.ps1 csr)"
   [ -f "$CER" ] || die "missing $CER - download it from the Apple developer portal"
   [ -f "$PROFILE" ] || die "missing $PROFILE - download it from the Apple developer portal"
 
@@ -167,8 +168,10 @@ case "${1:-}" in
     cat <<EOF
 Truck Route Planner - iOS signing setup
 
-  bash tools/ios-signing.sh csr        create a key and signing request
-  bash tools/ios-signing.sh secrets    build the .p12 and set the GitHub secrets
+  .\tools\ios-signing.ps1 csr        create a key and signing request
+  .\tools\ios-signing.ps1 secrets    build the .p12 and set the GitHub secrets
+
+(Git Bash: bash tools/ios-signing.sh csr | secrets)
 
 Run these yourself. The private key and its password stay on this machine.
 EOF
