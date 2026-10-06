@@ -31,6 +31,10 @@ on:
       - 'package.json'
       - 'tools/build-app*.js'
       - 'tools/build-ios-resources.js'
+      - 'tools/apply-ios-plist.js'
+      - 'tools/verify-ios-bundle.js'
+      - 'tools/*.rb'
+      - 'ios-resources/**'
       - '.github/workflows/ios.yml'
   workflow_dispatch:
     inputs:
@@ -93,6 +97,16 @@ jobs:
       - name: Sync
         run: npx cap sync ios
 
+      # Copying the files into the folder (above) is not enough: Xcode bundles
+      # only what project.pbxproj references and skips everything else without
+      # a word. A green build once shipped with neither the privacy manifest
+      # nor any of the 24 localisations because of exactly that.
+      - name: Register the resources in the Xcode project
+        run: |
+          ruby -e "require 'xcodeproj'" 2>/dev/null || sudo gem install xcodeproj --no-document
+          ruby tools/register-ios-resources.rb
+          ruby tools/configure-ios-signing.rb --check
+
       # ---------------------------------------------------------------- unsigned
 
       - name: Build (unsigned)
@@ -108,6 +122,12 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             build
+
+      # The build succeeding says nothing about what is inside it. Open the
+      # finished bundle and fail if anything we put in is missing.
+      - name: Verify the app bundle
+        if: ${{ github.event.inputs.signed != 'true' }}
+        run: node tools/verify-ios-bundle.js build/Build/Products/Release-iphoneos/App.app
 
       - name: Package the unsigned app
         if: ${{ github.event.inputs.signed != 'true' }}
@@ -153,30 +173,59 @@ jobs:
             -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
           rm -f certificate.p12
 
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$PROFILE" | base64 --decode > \
-            ~/Library/MobileDevice/Provisioning\ Profiles/build.mobileprovision
+          # Xcode finds a profile by its UUID file name, and Xcode 16 moved the
+          # folder it looks in, so install under the UUID in both places.
+          echo "$PROFILE" | base64 --decode > build.mobileprovision
+          security cms -D -i build.mobileprovision > profile.plist
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' profile.plist)
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' profile.plist)
+          for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" \
+                     "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$dir"
+            cp build.mobileprovision "$dir/$PROFILE_UUID.mobileprovision"
+          done
+          rm -f build.mobileprovision profile.plist
+          echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
+          echo "Installed profile \"$PROFILE_NAME\" ($PROFILE_UUID)"
 
       - name: Build and export the .ipa
         if: ${{ github.event.inputs.signed == 'true' }}
         env:
           TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          BUNDLE_ID=$(node -p "require('./capacitor.config.json').appId")
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Manual signing on the App target only - see the script for why it
+          # cannot simply be passed on the xcodebuild command line.
+          ruby tools/configure-ios-signing.rb "$TEAM_ID" "$PROFILE_NAME"
+
           cat > ExportOptions.plist <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0"><dict>
             <key>method</key><string>app-store-connect</string>
             <key>teamID</key><string>${TEAM_ID}</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key><dict>
+              <key>${BUNDLE_ID}</key><string>${PROFILE_UUID}</string>
+            </dict>
             <key>uploadSymbols</key><true/>
           </dict></plist>
           PLIST
 
+          # Every upload to App Store Connect needs a build number higher than
+          # the last, so it follows the run number rather than staying at 1.
           xcodebuild -workspace ios/App/App.xcworkspace -scheme App \
             -configuration Release -sdk iphoneos \
             -archivePath build/App.xcarchive \
-            DEVELOPMENT_TEAM="$TEAM_ID" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
             archive
+
+          node tools/verify-ios-bundle.js build/App.xcarchive/Products/Applications/App.app
 
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \

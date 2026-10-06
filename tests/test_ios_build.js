@@ -299,4 +299,83 @@
     });
   });
 
+
+  describe('ios - what reaches the built app', function () {
+    const verify = require('../tools/verify-ios-bundle.js');
+    const os = require('os');
+    const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'ios.yml'), 'utf8');
+
+    /* A throwaway App.app on disk, shaped like the real thing. */
+    function fakeApp(opts) {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-app-'));
+      const app = path.join(dir, 'App.app');
+      fs.mkdirSync(app);
+      const expected = verify.expectations();
+      fs.writeFileSync(path.join(app, 'Info.plist'),
+        'bplist00 CFBundleIdentifier ' + (opts.bundleId || expected.bundleId) +
+        ' NSLocationWhenInUseUsageDescription x');
+      if (opts.manifest !== false) fs.writeFileSync(path.join(app, 'PrivacyInfo.xcprivacy'), 'x');
+      (opts.langs || expected.langs).forEach(function (code) {
+        fs.mkdirSync(path.join(app, code + '.lproj'));
+        fs.writeFileSync(path.join(app, code + '.lproj', 'InfoPlist.strings'), 'x');
+      });
+      return { app: app, expected: expected };
+    }
+
+    test('a complete bundle passes', function () {
+      const f = fakeApp({});
+      assert.equal(verify.problems(f.app, f.expected).length, 0,
+        verify.problems(f.app, f.expected).join('; '));
+    });
+
+    test('the failure that actually shipped is caught', function () {
+      /* Files copied into the Xcode folder but never registered in the
+         project: no manifest and no .lproj, while the build said success. */
+      const f = fakeApp({ manifest: false, langs: [] });
+      const found = verify.problems(f.app, f.expected).join(' | ');
+      assert.ok(/PrivacyInfo/.test(found), 'the missing manifest is reported');
+      assert.ok(/24 of 24 localisations missing/.test(found), 'all missing languages are reported');
+    });
+
+    test('a single missing language is named', function () {
+      const all = verify.expectations().langs;
+      const f = fakeApp({ langs: all.filter(function (l) { return l !== 'mt'; }) });
+      const found = verify.problems(f.app, f.expected).join(' | ');
+      assert.ok(/1 of 24/.test(found) && / mt\b/.test(found), found);
+    });
+
+    test('a bundle built with the wrong id is caught', function () {
+      const f = fakeApp({ bundleId: 'online.ggabor.planificador' });
+      const found = verify.problems(f.app, f.expected).join(' | ');
+      assert.ok(/bundle id/.test(found), 'the old id is rejected: ' + found);
+    });
+
+    test('the workflow registers the resources and then verifies them', function () {
+      const reg = workflow.indexOf('register-ios-resources.rb');
+      const build = workflow.indexOf('name: Build (unsigned)');
+      const check = workflow.indexOf('verify-ios-bundle.js build/Build/Products');
+      assert.ok(reg !== -1, 'the resources are registered in the Xcode project');
+      assert.ok(reg < build, 'and before the build, not after');
+      assert.ok(check > build, 'the unsigned bundle is verified after building');
+      assert.ok(workflow.indexOf('verify-ios-bundle.js build/App.xcarchive') !== -1,
+        'and so is the signed archive');
+    });
+
+    test('signing is configured on the App target, not the command line', function () {
+      /* On the command line CODE_SIGN_STYLE and PROVISIONING_PROFILE_SPECIFIER
+         reach the Capacitor pod targets too, which refuse a profile. */
+      assert.ok(workflow.indexOf('configure-ios-signing.rb "$TEAM_ID"') !== -1,
+        'manual signing is applied to the App target');
+      assert.equal(/xcodebuild[^\n]*\n?[^\n]*PROVISIONING_PROFILE_SPECIFIER=/.test(workflow), false,
+        'no profile is passed globally to xcodebuild');
+      assert.ok(workflow.indexOf('configure-ios-signing.rb --check') !== -1,
+        'the unsigned build exercises the signing script every time');
+    });
+
+    test('every upload gets a new build number', function () {
+      /* App Store Connect rejects a second upload with the same build number. */
+      assert.ok(/CURRENT_PROJECT_VERSION="\$GITHUB_RUN_NUMBER"/.test(workflow));
+    });
+  });
+
 })(typeof globalThis !== 'undefined' ? globalThis : this);
