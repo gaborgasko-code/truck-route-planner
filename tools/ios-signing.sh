@@ -50,6 +50,21 @@ PROFILE="$DIR/profile.mobileprovision"
 die() { printf '\nerror: %s\n' "$1" >&2; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# Check GitHub access before asking for anything. gh may hold several accounts
+# and the active one need not be the repository owner - setting a secret then
+# fails with a 403 as the very last step, after all the Apple work is done.
+# The owner's token is used for these commands only, through GH_TOKEN, so the
+# globally active account is left exactly as it was.
+github_access() {
+  have gh || die "the GitHub CLI is not on PATH"
+  printf 'Checking GitHub access to %s\n' "$REPO"
+  GHTOKEN="$(gh auth token --user "$OWNER" 2>/dev/null || true)"
+  [ -n "$GHTOKEN" ] || die "gh is not signed in as $OWNER. Run: gh auth login   (and choose $OWNER)"
+  ADMIN="$(GH_TOKEN="$GHTOKEN" gh api "repos/$REPO" --jq '.permissions.admin' 2>/dev/null || true)"
+  [ "$ADMIN" = "true" ] || die "$OWNER cannot manage secrets on $REPO"
+  printf '  ok - using %s for this step; your active gh account is unchanged\n\n' "$OWNER"
+}
+
 step_csr() {
   have openssl || die "openssl not found (it ships with Git Bash)"
   [ -n "$BUNDLE_ID" ] || die "could not read appId from $CONFIG"
@@ -115,19 +130,7 @@ step_secrets() {
   [ -f "$CER" ] || die "missing $CER - download it from the Apple developer portal"
   [ -f "$PROFILE" ] || die "missing $PROFILE - download it from the Apple developer portal"
 
-  # Check GitHub access now, before asking for anything. gh may hold several
-  # accounts and the active one need not be the repository owner - setting a
-  # secret then fails with a 403 as the very last step, after all the Apple
-  # work is done. Use the owner's token for these commands only, so the
-  # globally active account is left exactly as it was.
-  printf 'Checking GitHub access to %s\n' "$REPO"
-  GHTOKEN="$(gh auth token --user "$OWNER" 2>/dev/null || true)"
-  if [ -z "$GHTOKEN" ]; then
-    die "gh is not signed in as $OWNER. Run: gh auth login   (and choose $OWNER)"
-  fi
-  ADMIN="$(GH_TOKEN="$GHTOKEN" gh api "repos/$REPO" --jq '.permissions.admin' 2>/dev/null || true)"
-  [ "$ADMIN" = "true" ] || die "$OWNER cannot manage secrets on $REPO"
-  printf '  ok - using %s for this step; your active gh account is unchanged\n\n' "$OWNER"
+  github_access
 
   printf 'Building the .p12 bundle.\n'
   printf 'Choose a password for it. You will not see it as you type.\n\n'
@@ -227,17 +230,73 @@ losing the key means revoking the certificate and starting this again.
 EOF
 }
 
+step_appstore() {
+  github_access
+
+  cat <<EOF
+The App Store Connect API key lets CI upload the build to TestFlight.
+Signed in as $PUBLISHER, in a browser:
+
+  1. https://appstoreconnect.apple.com/access/integrations/api
+     Generate a Team key with the "App Manager" role.
+  2. Download the .p8 straight away - Apple offers it only once - and save
+     it in $DIR
+  3. Note the Issuer ID (top of that page) and the Key ID (in the key's row).
+
+EOF
+
+  read -r -p "Issuer ID: " ISSUER
+  ISSUER="$(printf '%s' "$ISSUER" | tr -d '[:space:]')"
+  printf '%s' "$ISSUER" | grep -qE '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' \
+    || die "an Issuer ID looks like 69a6de70-...-....-............, got '$ISSUER'"
+
+  read -r -p "Key ID: " KEYID
+  KEYID="$(printf '%s' "$KEYID" | tr -d '[:space:]')"
+  printf '%s' "$KEYID" | grep -qE '^[A-Z0-9]{10}$' \
+    || die "a Key ID is ten characters, got '$KEYID'"
+
+  # Apple names the download AuthKey_<KEYID>.p8; accept it wherever in .signing.
+  P8="$DIR/AuthKey_$KEYID.p8"
+  [ -f "$P8" ] || P8="$(ls "$DIR"/AuthKey_*.p8 2>/dev/null | head -1 || true)"
+  [ -n "$P8" ] && [ -f "$P8" ] || die "no AuthKey_$KEYID.p8 in $DIR - download it from App Store Connect"
+  grep -q 'BEGIN PRIVATE KEY' "$P8" || die "$P8 does not look like an App Store Connect key"
+  case "$P8" in
+    *"AuthKey_$KEYID.p8") ;;
+    *) die "$P8 belongs to a different key than $KEYID" ;;
+  esac
+
+  printf '\nPushing three secrets to %s\n' "$REPO"
+  base64 -w0 "$P8" 2>/dev/null > "$DIR/.p8.b64" || base64 -i "$P8" > "$DIR/.p8.b64"
+  GH_TOKEN="$GHTOKEN" gh secret set APPSTORE_PRIVATE_KEY --repo "$REPO" < "$DIR/.p8.b64"
+  printf '%s' "$ISSUER" | GH_TOKEN="$GHTOKEN" gh secret set APPSTORE_ISSUER_ID --repo "$REPO"
+  printf '%s' "$KEYID"  | GH_TOKEN="$GHTOKEN" gh secret set APPSTORE_KEY_ID    --repo "$REPO"
+  rm -f "$DIR/.p8.b64"
+  unset GHTOKEN
+
+  cat <<EOF
+
+The TestFlight upload secrets are set. Tell Claude, and the signed build will
+be started and uploaded.
+
+Before the first upload, the app record has to exist in App Store Connect
+(My Apps -> + -> New App) with bundle id $BUNDLE_ID, or the upload is refused
+with "no suitable application records were found".
+EOF
+}
+
 case "${1:-}" in
-  csr)     step_csr ;;
-  secrets) step_secrets ;;
+  csr)      step_csr ;;
+  secrets)  step_secrets ;;
+  appstore) step_appstore ;;
   *)
     cat <<EOF
 Truck Route Planner - iOS signing setup
 
   .\tools\ios-signing.ps1 csr        create a key and signing request
   .\tools\ios-signing.ps1 secrets    build the .p12 and set the GitHub secrets
+  .\tools\ios-signing.ps1 appstore   set the App Store Connect key for TestFlight
 
-(Git Bash: bash tools/ios-signing.sh csr | secrets)
+(Git Bash: bash tools/ios-signing.sh csr | secrets | appstore)
 
 Run these yourself. The private key and its password stay on this machine.
 EOF

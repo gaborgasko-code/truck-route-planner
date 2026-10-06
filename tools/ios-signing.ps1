@@ -19,7 +19,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('csr', 'secrets', 'help')]
+    [ValidateSet('csr', 'secrets', 'appstore', 'help')]
     [string]$Step = 'help'
 )
 
@@ -68,6 +68,7 @@ if ($Step -eq 'help') {
     Write-Host ""
     Write-Host "  .\tools\ios-signing.ps1 csr        create a key and signing request"
     Write-Host "  .\tools\ios-signing.ps1 secrets    build the .p12 and set the GitHub secrets"
+    Write-Host "  .\tools\ios-signing.ps1 appstore   set the App Store Connect key for TestFlight"
     Write-Host ""
     Write-Host "Run these yourself. The private key and its password stay on this machine."
     Write-Host ""
