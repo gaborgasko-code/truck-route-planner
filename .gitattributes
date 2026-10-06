@@ -1,0 +1,5 @@
+# Shell scripts must keep LF line endings on Windows too: with core.autocrlf
+# on, a checkout would otherwise give tools/ios-signing.sh CRLF endings, and
+# bash then fails on every line with "$'\r': command not found".
+*.sh text eol=lf
+*.rb text eol=lf
