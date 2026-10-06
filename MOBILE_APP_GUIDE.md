@@ -100,7 +100,7 @@ the build fails late.
 
 | | |
 |---|---|
-| Bundle id | `online.ggabor.planificador` — **permanent once published** |
+| Bundle id | `com.aissaapps.planificador` (Aissa Apps) — **permanent once published** |
 | Display name | `Planificador` — kept under 12 characters or iOS truncates it |
 | Languages | all 24, via the `.lproj` folders and `CFBundleLocalizations` |
 

@@ -136,7 +136,7 @@
       '<plist version="1.0">',
       '<dict>',
       '\t<key>CFBundleIdentifier</key>',
-      '\t<string>online.ggabor.planificador</string>',
+      '\t<string>com.aissaapps.planificador</string>',
       '</dict>',
       '</plist>',
       ''
@@ -260,6 +260,42 @@
         assert.ok(declared[known[name]], name + ' is used but ' + known[name] + ' is not declared');
       });
       assert.ok(used.length >= 2, 'found ' + used.length + ' plugin call sites');
+    });
+  });
+
+
+  describe('ios - the bundle id', function () {
+    const config = JSON.parse(fs.readFileSync(path.join(root, 'capacitor.config.json'), 'utf8'));
+    const signing = fs.readFileSync(path.join(root, 'tools', 'ios-signing.sh'), 'utf8');
+
+    test('the app is published under the Aissa Apps namespace', function () {
+      /* A bundle id is permanent once an app is published. Changing it later
+         does not rename the app - it creates a different one, with no
+         reviews, no ratings and none of the existing installs. */
+      assert.equal(config.appId, 'com.aissaapps.planificador');
+    });
+
+    test('it is a valid bundle id', function () {
+      /* Reverse-DNS, letters, digits and dots. Hyphens are legal on iOS but
+         not in an Android package name, so they are avoided here too. */
+      assert.ok(/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/.test(config.appId),
+        config.appId + ' is not a clean reverse-DNS id');
+    });
+
+    test('the signing script reads it from the config, not from a copy', function () {
+      /* If the id registered at Apple and the id the app is built with ever
+         differ, Xcode refuses to sign - but only in CI, after the secrets
+         are set. One source of truth makes that drift impossible. */
+      assert.ok(signing.indexOf('capacitor.config.json') !== -1,
+        'the script reads capacitor.config.json');
+      const hardcoded = signing.match(/\b(?:com|online|io)\.[a-z0-9]+\.[a-z0-9.]+/g) || [];
+      assert.equal(hardcoded.length, 0,
+        'hard-coded bundle id(s) in ios-signing.sh: ' + hardcoded.join(', '));
+    });
+
+    test('the signing script checks the profile against it', function () {
+      assert.ok(signing.indexOf('application-identifier') !== -1,
+        'a profile for the wrong App ID is caught before upload');
     });
   });
 

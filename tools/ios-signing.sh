@@ -34,6 +34,13 @@ OWNER="${REPO%%/*}"
 EXPECTED_TEAM="${EXPECTED_TEAM:-3Q72J6XQYL}"
 PUBLISHER="Aissa (aissa.b.code@gmail.com)"
 
+# The bundle id is read from capacitor.config.json rather than written here,
+# so the id registered at Apple and the id the app is built with cannot drift
+# apart. A profile made for any other id makes the signed build fail in CI.
+CONFIG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/capacitor.config.json"
+BUNDLE_ID="$(grep -o '"appId"[[:space:]]*:[[:space:]]*"[^"]*"' "$CONFIG" 2>/dev/null \
+  | sed 's/.*"\([^"]*\)"$/\1/' || true)"
+
 KEY="$DIR/ios_distribution.key"
 CSR="$DIR/ios_distribution.certSigningRequest"
 CER="$DIR/ios_distribution.cer"
@@ -45,6 +52,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 step_csr() {
   have openssl || die "openssl not found (it ships with Git Bash)"
+  [ -n "$BUNDLE_ID" ] || die "could not read appId from $CONFIG"
   mkdir -p "$DIR"
 
   if [ -f "$KEY" ]; then
@@ -83,9 +91,14 @@ Next, in a browser - and FIRST check you are signed in as the right account:
   3. Download the .cer and save it as:
        $CER
 
-  4. https://developer.apple.com/account/resources/profiles/add
-     Choose "App Store Connect" distribution, app id online.ggabor.planificador
-     (create the App ID first if it does not exist yet).
+  4. https://developer.apple.com/account/resources/identifiers/add/bundleId
+     Register an App ID, explicit, with bundle id exactly:
+       $BUNDLE_ID
+     Leave the capabilities as they are: the break reminders are local
+     notifications, which need no Push Notifications capability.
+
+  5. https://developer.apple.com/account/resources/profiles/add
+     Choose "App Store Connect" distribution, pick the App ID above.
      Download and save it as:
        $PROFILE
 
@@ -157,6 +170,27 @@ step_secrets() {
     [A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]) ;;
     *) die "a team id is ten characters, got '$TEAM'" ;;
   esac
+
+  # The profile names exactly one App ID, as TEAMID.bundle.id. If it is not
+  # ours, Xcode refuses to sign - but only in CI, after the secrets are set.
+  [ -n "$BUNDLE_ID" ] || die "could not read appId from $CONFIG"
+  APP_ID=""
+  if [ -n "$PLIST" ]; then
+    APP_ID=$(printf '%s' "$PLIST" \
+      | grep -A1 '<key>application-identifier</key>' \
+      | grep -oE '<string>[^<]+</string>' | head -1 \
+      | sed 's/<string>//; s/<\/string>//' || true)
+  fi
+  if [ -n "$APP_ID" ]; then
+    printf '  profile is for:  %s\n' "$APP_ID"
+    case "$APP_ID" in
+      *".$BUNDLE_ID") ;;
+      *) die "this profile is for '$APP_ID', but the app is built as '$BUNDLE_ID'.
+       Create the profile for the App ID $BUNDLE_ID and download it again." ;;
+    esac
+  else
+    printf '  could not read the App ID from the profile - check it is for %s\n' "$BUNDLE_ID"
+  fi
 
   if [ "$TEAM" != "$EXPECTED_TEAM" ]; then
     printf '\n  WARNING: this profile belongs to team %s, not %s (%s).\n' \
