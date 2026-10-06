@@ -24,6 +24,15 @@ export MSYS2_ARG_CONV_EXCL='*'
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/.signing"
 REPO="gaborgasko-code/truck-route-planner"
+OWNER="${REPO%%/*}"
+
+# The app is published from Aissa's Apple developer team. A certificate or
+# profile made while the browser was signed into a different Apple ID lands on
+# that other team, and nothing complains until the signed build fails in CI -
+# so the team id in the profile is checked against this before uploading.
+# Override with EXPECTED_TEAM=XXXXXXXXXX if the app ever moves.
+EXPECTED_TEAM="${EXPECTED_TEAM:-3Q72J6XQYL}"
+PUBLISHER="Aissa (aissa.b.code@gmail.com)"
 
 KEY="$DIR/ios_distribution.key"
 CSR="$DIR/ios_distribution.certSigningRequest"
@@ -44,9 +53,10 @@ step_csr() {
     exit 1
   fi
 
-  printf 'Creating a private key and a certificate signing request.\n\n'
-  read -r -p "Your Apple ID email: " EMAIL
-  [ -n "$EMAIL" ] || die "an email is required"
+  printf 'Creating a private key and a certificate signing request.\n'
+  printf 'This app is published from %s, team %s.\n\n' "$PUBLISHER" "$EXPECTED_TEAM"
+  read -r -p "Apple ID email of the publishing account [aissa.b.code@gmail.com]: " EMAIL
+  EMAIL="${EMAIL:-aissa.b.code@gmail.com}"
 
   openssl genrsa -out "$KEY" 2048 2>/dev/null
   openssl req -new -key "$KEY" -out "$CSR" \
@@ -61,7 +71,12 @@ Done. Two files in $DIR
   ios_distribution.key   your private key - keep it, never share it
   ios_distribution.certSigningRequest
 
-Next, in a browser:
+Next, in a browser - and FIRST check you are signed in as the right account:
+
+  developer.apple.com must show team $EXPECTED_TEAM in the top-right corner.
+  If the browser remembers a different Apple ID, everything below is created
+  on that other team and the signed build fails much later. Sign out and back
+  in as $EMAIL, or use a private window.
 
   1. https://developer.apple.com/account/resources/certificates/add
   2. Choose "Apple Distribution", upload the .certSigningRequest above.
@@ -86,6 +101,20 @@ step_secrets() {
   [ -f "$KEY" ] || die "no private key - run the csr step first (PowerShell: .\tools\ios-signing.ps1 csr)"
   [ -f "$CER" ] || die "missing $CER - download it from the Apple developer portal"
   [ -f "$PROFILE" ] || die "missing $PROFILE - download it from the Apple developer portal"
+
+  # Check GitHub access now, before asking for anything. gh may hold several
+  # accounts and the active one need not be the repository owner - setting a
+  # secret then fails with a 403 as the very last step, after all the Apple
+  # work is done. Use the owner's token for these commands only, so the
+  # globally active account is left exactly as it was.
+  printf 'Checking GitHub access to %s\n' "$REPO"
+  GHTOKEN="$(gh auth token --user "$OWNER" 2>/dev/null || true)"
+  if [ -z "$GHTOKEN" ]; then
+    die "gh is not signed in as $OWNER. Run: gh auth login   (and choose $OWNER)"
+  fi
+  ADMIN="$(GH_TOKEN="$GHTOKEN" gh api "repos/$REPO" --jq '.permissions.admin' 2>/dev/null || true)"
+  [ "$ADMIN" = "true" ] || die "$OWNER cannot manage secrets on $REPO"
+  printf '  ok - using %s for this step; your active gh account is unchanged\n\n' "$OWNER"
 
   printf 'Building the .p12 bundle.\n'
   printf 'Choose a password for it. You will not see it as you type.\n\n'
@@ -129,32 +158,35 @@ step_secrets() {
     *) die "a team id is ten characters, got '$TEAM'" ;;
   esac
 
+  if [ "$TEAM" != "$EXPECTED_TEAM" ]; then
+    printf '\n  WARNING: this profile belongs to team %s, not %s (%s).\n' \
+      "$TEAM" "$EXPECTED_TEAM" "$PUBLISHER"
+    printf '  The usual cause is a browser still signed into another Apple ID when\n'
+    printf '  the certificate or profile was made. Signing would then fail in CI.\n\n'
+    read -r -p "  Continue with team $TEAM anyway? [y/N] " GO
+    case "$GO" in y|Y|yes|YES) ;; *) die "stopped - re-create the profile on team $EXPECTED_TEAM" ;; esac
+  fi
+
   printf '\nPushing four secrets to %s\n' "$REPO"
 
   base64 -w0 "$P12" 2>/dev/null > "$DIR/.p12.b64" || base64 -i "$P12" > "$DIR/.p12.b64"
   base64 -w0 "$PROFILE" 2>/dev/null > "$DIR/.profile.b64" || base64 -i "$PROFILE" > "$DIR/.profile.b64"
 
-  gh secret set APPLE_CERTIFICATE_P12      --repo "$REPO" < "$DIR/.p12.b64"
-  gh secret set APPLE_PROVISIONING_PROFILE --repo "$REPO" < "$DIR/.profile.b64"
-  printf '%s' "$P12PASS" | gh secret set APPLE_CERTIFICATE_PASSWORD --repo "$REPO"
-  printf '%s' "$TEAM"    | gh secret set APPLE_TEAM_ID              --repo "$REPO"
+  GH_TOKEN="$GHTOKEN" gh secret set APPLE_CERTIFICATE_P12      --repo "$REPO" < "$DIR/.p12.b64"
+  GH_TOKEN="$GHTOKEN" gh secret set APPLE_PROVISIONING_PROFILE --repo "$REPO" < "$DIR/.profile.b64"
+  printf '%s' "$P12PASS" | GH_TOKEN="$GHTOKEN" gh secret set APPLE_CERTIFICATE_PASSWORD --repo "$REPO"
+  printf '%s' "$TEAM"    | GH_TOKEN="$GHTOKEN" gh secret set APPLE_TEAM_ID              --repo "$REPO"
+  unset GHTOKEN
 
   # The base64 copies are the credential in plain text; do not leave them lying about.
   rm -f "$DIR/.p12.b64" "$DIR/.profile.b64"
 
   cat <<EOF
 
-All four secrets are set. Check with:
+All four secrets are set on $REPO, for team $TEAM.
 
-  gh secret list --repo $REPO
-
-Then run the signed build:
-
-  gh workflow run ios.yml --repo $REPO -f signed=true
-
-or, to push it to TestFlight as well:
-
-  gh workflow run ios.yml --repo $REPO -f signed=true -f testflight=true
+Tell Claude, and the signed build will be started and watched from there.
+(This step used $OWNER's GitHub token; your active gh account was not changed.)
 
 $DIR is gitignored. Keep ios_distribution.key and the .p12 somewhere safe -
 losing the key means revoking the certificate and starting this again.

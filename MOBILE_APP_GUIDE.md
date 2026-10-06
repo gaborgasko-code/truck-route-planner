@@ -150,6 +150,24 @@ Two iOS details worth knowing:
   again, so the app sends the user to Settings instead of asking again and
   appearing broken.
 
+### B.4a Publisher
+
+The iOS app is published from **Aissa's Apple developer team, `3Q72J6XQYL`**
+(aissa.b.code@gmail.com), not from the account that owns this repository. The
+App Store will therefore name Aissa as the seller, while the app itself keeps
+its "created by Gabor Gasko" credit.
+
+Two consequences worth knowing:
+
+- **Create everything in the portal while signed in as Aissa.** A browser that
+  still remembers another Apple ID will silently put the certificate and
+  profile on that team. `ios-signing.sh` checks the team id inside the
+  profile against `3Q72J6XQYL` and stops if they differ.
+- **The repository and the Apple team have different owners.** `gh` may be
+  signed in as both, with the Apple-side account active. The script borrows
+  the repository owner's token for the secrets step only, so the globally
+  active account is left alone.
+
 ### B.4b Code signing from Windows
 
 Signing normally starts in Keychain Access on a Mac. `tools/ios-signing.sh`
