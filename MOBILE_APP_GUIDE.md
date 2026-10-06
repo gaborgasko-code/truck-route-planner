@@ -175,9 +175,11 @@ does the same job with OpenSSL, which Git Bash already ships, so no Mac is
 needed at any point:
 
 ```powershell
-.	oolsios-signing.ps1 csr        # private key + signing request
+.\tools\ios-signing.ps1 csr        # private key + signing request
 # ... upload the request at developer.apple.com, download the .cer and profile
-.	oolsios-signing.ps1 secrets    # build the .p12, push the four secrets
+.\tools\ios-signing.ps1 secrets    # check the downloads, build the .p12, push four secrets
+# ... create an App Store Connect API key, download the .p8
+.\tools\ios-signing.ps1 appstore   # push the three TestFlight upload secrets
 ```
 
 The `.ps1` is a wrapper: the work is in `tools/ios-signing.sh`, because it needs
@@ -185,14 +187,33 @@ OpenSSL and that ships with Git rather than with Windows. The wrapper finds
 Git's `bash.exe` rather than expecting `bash` on PATH, and runs from the
 repository root wherever you happen to be. In Git Bash, call the `.sh` directly.
 
-The private key is created under `.signing/`, which is gitignored, and is never
-printed. The password is read without echo and the base64 copies are deleted
-straight after upload.
+**The wrapper asks every question itself** (`Read-Host`, the password hidden)
+and hands the answers to the script in `TRP_*` environment variables, which it
+removes again however the step ends. A Git Bash prompt started from
+PowerShell does not reliably receive keystrokes. It just sits there, which
+is exactly how the first attempt at step 1 got stuck. Under the wrapper the
+script never prompts: a missing answer is an error that names the switch to
+pass (`-TeamId`, `-AllowOtherTeam`, `-IssuerId`, `-KeyId`).
 
-One trap the script works around: Git Bash rewrites any argument that looks
-like a Unix path, so OpenSSL's `/CN=...` subject arrives as
-`C:/Program Files/Git/CN=...` and the request fails with a confusing message
-about the name format. `MSYS_NO_PATHCONV=1` is what stops that.
+Each step checks before it asks. `secrets` first confirms that the
+certificate is an Apple Distribution one, was issued for *this* private key,
+is from the same team as the profile, and that the profile is for
+`com.aissaapps.planificador` on team `3Q72J6XQYL`. Only then does it ask for
+a password. `appstore` reads the Key ID from Apple's `AuthKey_<KeyID>.p8` file
+name, so only the Issuer ID is asked for. Running `csr` again is harmless: the
+existing key is kept and the browser steps are shown again.
+
+The private key is created under `.signing/`, which is gitignored, and is never
+printed. The .p12 password reaches OpenSSL through the environment, not its
+command line. The base64 copies are deleted straight after upload, or on any
+error.
+
+Two Git Bash traps the script works around. It rewrites any argument that
+looks like a Unix path, so OpenSSL's `/CN=...` subject arrives as
+`C:/Program Files/Git/CN=...`; `MSYS_NO_PATHCONV=1` stops that. With that off,
+though, a `/c/Users/...` path reaches OpenSSL, a Windows program, unconverted,
+and it cannot open the file. The script therefore works with `C:/Users/...`
+paths (`pwd -W`), which OpenSSL and Git Bash both understand.
 
 | Secret | Where it comes from |
 |---|---|

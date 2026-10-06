@@ -300,6 +300,82 @@
   });
 
 
+  describe('ios - signing from Windows', function () {
+    const sh = fs.readFileSync(path.join(root, 'tools', 'ios-signing.sh'), 'utf8');
+    const ps = fs.readFileSync(path.join(root, 'tools', 'ios-signing.ps1'), 'utf8');
+    const guide = fs.readFileSync(path.join(root, 'MOBILE_APP_GUIDE.md'), 'utf8');
+
+    test('bash never prompts when PowerShell is driving it', function () {
+      /* A Git Bash prompt started from PowerShell does not reliably receive
+         keystrokes; step 1 sat at its email prompt until it was killed. */
+      assert.ok(/\$env:TRP_NO_PROMPT = '1'/.test(ps), 'the wrapper switches prompting off');
+      const reads = sh.match(/^\s*read\s/gm) || [];
+      assert.equal(reads.length, 2, 'only the two reads inside ask(), found ' + reads.length);
+      const ask = sh.slice(sh.indexOf('ask() {'), sh.indexOf('\n}', sh.indexOf('ask() {')));
+      assert.ok(ask.indexOf('TRP_NO_PROMPT') !== -1 && (ask.match(/read\s/g) || []).length === 2,
+        'every read is behind the no-prompt switch');
+    });
+
+    test('step 1 asks nothing at all', function () {
+      const csr = sh.slice(sh.indexOf('step_csr() {'), sh.indexOf('\n}', sh.indexOf('step_csr() {')));
+      assert.equal(/^\s*(ask|read)\s/m.test(csr), false, 'csr has a prompt');
+      assert.ok(csr.indexOf('Step 1 was already done') !== -1, 'running it twice keeps the key');
+    });
+
+    test('the wrapper asks for the password hidden, case-sensitively', function () {
+      assert.ok(/Read-Host -Prompt \$Prompt -AsSecureString/.test(ps));
+      /* -ne on strings ignores case: 'Abc' -ne 'abc' is false. */
+      assert.ok(ps.indexOf('$first -cne $again') !== -1, 'passwords compared with -cne');
+    });
+
+    test('every answer handed over is removed afterwards', function () {
+      const set = {};
+      (ps.match(/\$env:(TRP_[A-Z_]+)\s*=/g) || []).forEach(function (m) {
+        set[m.replace(/\$env:|\s*=/g, '')] = true;
+      });
+      const list = (ps.match(/\$handover = ([\s\S]*?)\n\n/) || [, ''])[1];
+      Object.keys(set).forEach(function (name) {
+        assert.ok(list.indexOf("'" + name + "'") !== -1, name + ' is set but never removed');
+      });
+      assert.ok(Object.keys(set).length >= 7, 'found ' + Object.keys(set).length);
+      assert.ok(/finally \{\s*foreach \(\$name in \$handover\)/.test(ps), 'removed in finally');
+    });
+
+    test('the script output is shown, not swallowed into the exit code', function () {
+      /* Whatever a PowerShell function prints becomes its return value. */
+      assert.ok(/& \$bash 'tools\/ios-signing.sh' @args \| Out-Host/.test(ps));
+    });
+
+    test('OpenSSL gets paths it can open', function () {
+      /* With path conversion off, /c/Users/... reaches OpenSSL unconverted. */
+      assert.ok(sh.indexOf('export MSYS_NO_PATHCONV=1') !== -1);
+      assert.ok(/pwd -W 2>\/dev\/null \|\| pwd/.test(sh), 'paths in the C:/ form');
+    });
+
+    test('the .p12 password never goes on a command line', function () {
+      assert.equal(/pass:\$/.test(sh), false, 'pass:$VAR exposes it to other processes');
+      assert.ok(sh.indexOf('-passout env:TRP_P12_PASS') !== -1);
+    });
+
+    test('the certificate is checked against the key and the team', function () {
+      assert.ok(sh.indexOf('-pubkey') !== -1 && sh.indexOf('-pubout') !== -1, 'key match');
+      assert.ok(sh.indexOf('CERT_TEAM') !== -1, 'certificate team vs profile team');
+      assert.ok(sh.indexOf('-checkend 0') !== -1, 'expiry');
+    });
+
+    test('errors are not shown above the lines that explain them', function () {
+      assert.ok(/\[ -z "\$\{TRP_NO_PROMPT:-\}" \] \|\| exec 2>&1/.test(sh));
+    });
+
+    test('the guide shows the commands as they are typed', function () {
+      ['csr', 'secrets', 'appstore'].forEach(function (step) {
+        assert.ok(guide.indexOf('.\\tools\\ios-signing.ps1 ' + step) !== -1, step);
+      });
+      assert.equal(/\toolsios-signing/.test(guide), false, 'a mangled \\t in the guide');
+    });
+  });
+
+
   describe('ios - what reaches the built app', function () {
     const verify = require('../tools/verify-ios-bundle.js');
     const os = require('os');
