@@ -271,7 +271,7 @@
     }).join('\n');
 
     return '<?xml version="1.0" encoding="UTF-8"?>\n' +
-      '<gpx version="1.1" creator="' + esc(CONFIG.APP_NAME + ' ' + CONFIG.APP_VERSION + ' - ' + CONFIG.AUTHOR) + '" ' +
+      '<gpx version="1.1" creator="' + esc(CONFIG.APP_NAME + ' ' + CONFIG.APP_VERSION + (CONFIG.AUTHOR ? ' - ' + CONFIG.AUTHOR : '')) + '" ' +
       'xmlns="http://www.topografix.com/GPX/1/1">\n' +
       ' <metadata><name>' + esc(r.origin.label + ' to ' + r.destination.label) + '</name>' +
       '<time>' + r.createdAt + '</time></metadata>\n' +

@@ -376,6 +376,107 @@
   });
 
 
+  describe('ios - the app names no developer', function () {
+    const flavourMod = require('../tools/app-flavour.js');
+    const vm = require('vm');
+    const os = require('os');
+    const NAME = /gabor/i;
+
+    /* Exactly the files build-app.js copies, with their paths inside www/. */
+    function shipped() {
+      const list = [];
+      buildApp.COPY_DIRS.forEach(function (dir) {
+        (function walk(rel) {
+          const abs = path.join(root, rel);
+          if (!fs.existsSync(abs)) return;
+          fs.readdirSync(abs, { withFileTypes: true }).forEach(function (e) {
+            const r = rel + '/' + e.name;
+            if (e.isDirectory()) walk(r);
+            else if (flavourMod.TEXT.test(e.name)) list.push(r);
+          });
+        })(dir);
+      });
+      buildApp.COPY_FILES.forEach(function (f) {
+        if (fs.existsSync(path.join(root, f))) list.push(f);
+      });
+      return list.map(function (rel) {
+        return { rel: rel, out: flavourMod.flavour(fs.readFileSync(path.join(root, rel), 'utf8'), rel) };
+      });
+    }
+    const files = shipped();
+
+    test('no shipped file mentions the developer', function () {
+      const hits = [];
+      files.forEach(function (f) {
+        f.out.split(/\r?\n/).forEach(function (line, i) {
+          if (NAME.test(line)) hits.push(f.rel + ':' + (i + 1) + ' ' + line.trim().slice(0, 80));
+        });
+      });
+      assert.equal(hits.length, 0, hits.slice(0, 5).join(' | '));
+      assert.equal(NAME.test(buildApp.nativeIndex()), false, 'the generated index.html');
+      assert.ok(files.length > 50, 'checked ' + files.length + ' files');
+    });
+
+    test('the rewritten code still runs and the data still parses', function () {
+      files.forEach(function (f) {
+        if (/\.js$/.test(f.rel)) new vm.Script(f.out, { filename: f.rel });
+        if (/\.(json|webmanifest)$/.test(f.rel)) JSON.parse(f.out);
+      });
+    });
+
+    test('every language names the publisher and a contact', function () {
+      const codes = ['es', 'en'].concat(fs.readdirSync(path.join(root, 'js', 'i18n'))
+        .map(function (n) { return n.replace(/\.js$/, ''); }));
+      assert.equal(codes.length, 24);
+      codes.forEach(function (code) {
+        const text = flavourMod.PUBLISHER_TEXT[code];
+        assert.ok(text && text.indexOf(flavourMod.PUBLISHER) !== -1 &&
+          text.indexOf(flavourMod.CONTACT) !== -1, code);
+      });
+      files.filter(function (f) { return /^js\/i18n\/|^js\/core\/i18n\.js$/.test(f.rel); })
+        .forEach(function (f) {
+          assert.ok(f.out.indexOf(flavourMod.CONTACT) !== -1, f.rel + ' privacy contact');
+        });
+    });
+
+    test('the name loses its suffix and nothing else', function () {
+      const pack = files.filter(function (f) { return f.rel === 'js/i18n/de.js'; })[0].out;
+      assert.ok(pack.indexOf("'app.name': 'Routenplaner',") !== -1);
+      const mobile = files.filter(function (f) { return f.rel === 'mobile.html'; })[0].out;
+      assert.ok(mobile.indexOf('data-i18n="app.name">Planificador de ruta</h1>') !== -1);
+      assert.equal(/<footer class="view-footer">\s*<\/footer>/.test(mobile), false, 'no empty footer box');
+    });
+
+    test('exports leave the credit out when it is empty', function () {
+      const render = fs.readFileSync(path.join(root, 'js', 'ui', 'render.js'), 'utf8');
+      assert.equal((render.match(/if \(CONFIG\.AUTHOR\) L\.push\(CONFIG\.AUTHOR\)/g) || []).length, 2);
+      const exp = fs.readFileSync(path.join(root, 'js', 'core', 'map-export.js'), 'utf8');
+      const uses = (exp.match(/esc\(D\.author\)/g) || []).length;
+      const guarded = (exp.match(/D\.author\?"<div class=foot>"\+esc\(D\.author\)\+"<\/div>":""/g) || []).length;
+      assert.ok(uses === 2 && guarded === uses, 'every footer is conditional: ' + guarded + '/' + uses);
+      assert.ok(exp.indexOf("(CONFIG.AUTHOR ? '<a class=\"by\"") !== -1, 'the header link too');
+      const common = fs.readFileSync(path.join(root, 'js', 'ui', 'app-common.js'), 'utf8');
+      assert.ok(common.indexOf("(CONFIG.AUTHOR ? ' - ' + CONFIG.AUTHOR : '')") !== -1, 'GPX creator');
+    });
+
+    test('a mention that slips through fails the build', function () {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-www-'));
+      fs.mkdirSync(path.join(dir, 'js'));
+      fs.writeFileSync(path.join(dir, 'js', 'new.js'), 'var a = 1;\n// thanks, GABOR\n');
+      const found = flavourMod.leftovers(dir);
+      assert.equal(found.length, 1);
+      assert.ok(/js\/new\.js:2/.test(found[0]), found[0]);
+    });
+
+    test('the website keeps its credit', function () {
+      /* Only the app drops it; the web pages are unchanged. */
+      ['mobile.html', 'desktop.html', 'USER_GUIDE.html'].forEach(function (f) {
+        assert.ok(fs.readFileSync(path.join(root, f), 'utf8').indexOf('created by Gabor Gasko') !== -1, f);
+      });
+    });
+  });
+
+
   describe('ios - what reaches the built app', function () {
     const verify = require('../tools/verify-ios-bundle.js');
     const os = require('os');

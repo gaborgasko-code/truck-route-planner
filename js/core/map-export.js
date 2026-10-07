@@ -221,7 +221,7 @@
     '  "<div class=kv><span>"+esc(LB.fuel)+"</span><b>"+n(S.fuelCost,2)+" "+D.currency+"</b></div>"+',
     '  "<div class=\'kv tot\'><span>"+esc(LB.totalCost)+"</span><b>"+n(S.totalCost,2)+" "+D.currency+"</b></div>"+',
     '  (rows?"<table><thead><tr><th>"+esc(LB.ctry)+"</th><th class=num>km</th><th class=num>"+D.currency+"</th></tr></thead><tbody>"+rows+"</tbody></table>":"")+',
-    '  "<div class=foot>"+esc(D.author)+"</div>";',
+    '  (D.author?"<div class=foot>"+esc(D.author)+"</div>":"");',
     ' d.innerHTML = panel(COMPACT?LB.summaryShort:LB.summary, body, COMPACT, false);',
     ' wire(d);',
     ' L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d;};',
@@ -233,7 +233,7 @@
     ' var ls = (D.legalStops||[]).map(function(x){ return "<li><b>"+esc(x.type)+"</b> - "+esc(x.at)+", km "+n(x.km,0)+", "+esc(LB.minDuration)+" "+esc(x.minutes)+" ["+esc(x.article)+"]</li>"; }).join("");',
     ' if (ls) body = "<h4>"+esc(LB.legalStops)+"</h4><ul>"+ls+"</ul>"+body;',
     ' body = (body||"<p>"+esc(LB.noRegulations)+"</p>")+',
-    '  "<div class=warn>"+esc(D.disclaimer)+"</div><div class=foot>"+esc(D.author)+"</div>";',
+    '  "<div class=warn>"+esc(D.disclaimer)+"</div>"+(D.author?"<div class=foot>"+esc(D.author)+"</div>":"");',
     ' d.innerHTML = panel(COMPACT?LB.regulationsShort:LB.regulations, body, true, !COMPACT);',
     ' wire(d);',
     ' L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d;};',
@@ -259,8 +259,8 @@
       '<style>' + STYLE + '</style></head><body>',
       '<div class="hdr"><b>' + util.escapeHtml(CONFIG.APP_NAME) + '</b>',
       '<span>' + util.escapeHtml(title) + '</span>',
-      '<a class="by" href="' + util.escapeHtml(CONFIG.AUTHOR_URL) + '" target="_blank" rel="noopener noreferrer">' +
-        util.escapeHtml(CONFIG.AUTHOR) + '</a></div>',
+      (CONFIG.AUTHOR ? '<a class="by" href="' + util.escapeHtml(CONFIG.AUTHOR_URL) + '" target="_blank" rel="noopener noreferrer">' +
+        util.escapeHtml(CONFIG.AUTHOR) + '</a>' : '') + '</div>',
       '<div id="map"></div>',
       '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><\/script>',
       '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"><\/script>',

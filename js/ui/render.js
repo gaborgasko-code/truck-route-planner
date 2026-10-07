@@ -339,7 +339,7 @@
     var m = r.time;
     var cur = CONFIG.CURRENCY;
     L.push(CONFIG.APP_NAME + ' v' + CONFIG.APP_VERSION + ' - ' + t('report.header'));
-    L.push(CONFIG.AUTHOR);
+    if (CONFIG.AUTHOR) L.push(CONFIG.AUTHOR);
     L.push(line('='));
     L.push(pad(t('report.generated'), 22) + ': ' + util.formatDateTime(r.createdAt));
     L.push(pad(t('report.origin'), 22) + ': ' + r.origin.label);
@@ -436,7 +436,7 @@
     L.push('');
     L.push(line('='));
     L.push(t('app.footerDisclaimer').replace(/<[^>]+>/g, ''));
-    L.push(CONFIG.AUTHOR);
+    if (CONFIG.AUTHOR) L.push(CONFIG.AUTHOR);
     return L.join('\n');
   }
 

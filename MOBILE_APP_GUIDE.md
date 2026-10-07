@@ -154,8 +154,17 @@ Two iOS details worth knowing:
 
 The iOS app is published from **Aissa's Apple developer team, `3Q72J6XQYL`**
 (aissa.b.code@gmail.com), not from the account that owns this repository. The
-App Store will therefore name Aissa as the seller, while the app itself keeps
-its "created by Gabor Gasko" credit.
+App Store names Aissa as the seller, and the app itself names nobody else: no
+developer credit, no "- Gabor" in the name, no mention in any language, data
+file, export or source comment that ships in the bundle. Its privacy section
+names Aissa Bamogo Redondo as publisher, with aissa.b.code@gmail.com as the
+contact.
+
+The website is unchanged and keeps its credit. The difference is made at
+build time by `tools/app-flavour.js`, which `tools/build-app.js` runs on every
+text file it copies into `www/`. The build then searches all of `www/` and
+**fails if the name survives anywhere**, so a new mention added to the web
+code later cannot reach the app unnoticed.
 
 Two consequences worth knowing:
 

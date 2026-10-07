@@ -55,7 +55,7 @@
       kv(t('map.total'), util.formatNumber(r.costs.total, 2) + ' ' + CONFIG.CURRENCY, ' mapx__kv--total') +
       (rows ? '<table class="mapx__table"><thead><tr><th>' + esc(t('map.ctry')) + '</th><th class="num">km</th><th class="num">' +
         CONFIG.CURRENCY + '</th></tr></thead><tbody>' + rows + '</tbody></table>' : '') +
-      '<div class="mapx__foot">' + esc(CONFIG.AUTHOR) + '</div>';
+      (CONFIG.AUTHOR ? '<div class="mapx__foot">' + esc(CONFIG.AUTHOR) + '</div>' : '');
   }
 
   function regulationsBody(r) {

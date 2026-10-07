@@ -30,6 +30,7 @@ on:
       - 'capacitor.config.json'
       - 'package.json'
       - 'tools/build-app*.js'
+      - 'tools/app-flavour.js'
       - 'tools/build-ios-resources.js'
       - 'tools/apply-ios-plist.js'
       - 'tools/verify-ios-bundle.js'
