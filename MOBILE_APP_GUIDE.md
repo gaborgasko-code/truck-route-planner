@@ -172,10 +172,26 @@ Two consequences worth knowing:
   still remembers another Apple ID will silently put the certificate and
   profile on that team. `ios-signing.sh` checks the team id inside the
   profile against `3Q72J6XQYL` and stops if they differ.
-- **The repository and the Apple team have different owners.** `gh` may be
-  signed in as both, with the Apple-side account active. The script borrows
-  the repository owner's token for the secrets step only, so the globally
-  active account is left alone.
+- **The app is built in Aissa's own repository, `aissab-code/planificador`
+  (private).** The signing certificate, profile and App Store Connect key are
+  secrets there and nowhere else. The same code is also pushed to the public
+  website repository `gaborgasko-code/truck-route-planner`, which serves the
+  site and checks each push with a free unsigned build. It holds no Apple
+  secrets.
+
+  ```bash
+  git push origin main      # website repository
+  git push aissa main       # the app's repository
+  ```
+
+  The iOS workflow runs on Aissa's repository only when started by hand
+  (Actions → iOS → Run workflow, with *signed* and *testflight* ticked).
+  macOS minutes on a private repository come out of a monthly allowance, so
+  routine pushes are checked on the public repository instead.
+
+  `gh` may be signed in to both accounts. The script uses the repository
+  owner's token for its own commands only, so the active account is left
+  alone.
 
 ### B.4b Code signing from Windows
 

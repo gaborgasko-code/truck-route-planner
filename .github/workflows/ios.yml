@@ -50,6 +50,12 @@ on:
 
 jobs:
   build:
+    # The same code is pushed to two repositories. The public website
+    # repository checks every push with an unsigned build, which costs nothing
+    # there. The app is published from Aissa's private repository, which holds
+    # the Apple signing secrets and runs only when started by hand - macOS
+    # minutes on a private repository come out of a monthly allowance.
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'gaborgasko-code/truck-route-planner'
     # macos-latest is Apple silicon and ships a current Xcode.
     runs-on: macos-latest
     timeout-minutes: 30

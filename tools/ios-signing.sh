@@ -47,7 +47,9 @@ export MSYS2_ARG_CONV_EXCL='*'
 # Elsewhere -W does not exist and plain pwd is right anyway.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && { pwd -W 2>/dev/null || pwd; })"
 DIR="$ROOT/.signing"
-REPO="gaborgasko-code/truck-route-planner"
+# The app is built and signed in Aissa's private repository, next to her
+# Apple account - not in the public website repository the code also lives in.
+REPO="aissab-code/planificador"
 OWNER="${REPO%%/*}"
 
 # The app is published from Aissa's Apple developer team. A certificate or
