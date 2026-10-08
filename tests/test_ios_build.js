@@ -549,6 +549,34 @@
         'the unsigned build exercises the signing script every time');
     });
 
+    test('the app is built for iOS 15 and iPhone, from one setting', function () {
+      const platform = JSON.parse(fs.readFileSync(path.join(root, 'tools', 'ios-platform.json'), 'utf8'));
+      assert.equal(platform.deploymentTarget, '15.0', 'App Store Connect refuses iOS 14 from April 2027');
+      assert.equal(platform.deviceFamily, '1', 'iPhone only');
+      /* The Podfile is patched before Sync, the project after it. */
+      const pod = workflow.indexOf('Set the minimum iOS version in the Podfile');
+      const sync = workflow.indexOf('name: Sync');
+      assert.ok(pod !== -1 && pod < sync, 'the Podfile is patched before pod install');
+      assert.ok(workflow.indexOf("require('./tools/ios-platform.json').deploymentTarget") !== -1,
+        'the Podfile value comes from ios-platform.json');
+      const conf = workflow.indexOf('ruby tools/configure-ios-platform.rb');
+      assert.ok(conf > sync && conf < workflow.indexOf('name: Build (unsigned)'), 'project set before building');
+      const rb = fs.readFileSync(path.join(root, 'tools', 'configure-ios-platform.rb'), 'utf8');
+      assert.ok(/IPHONEOS_DEPLOYMENT_TARGET/.test(rb) && /TARGETED_DEVICE_FAMILY/.test(rb));
+      assert.ok(rb.indexOf('ios-platform.json') !== -1, 'no second copy of the values');
+    });
+
+    test('the bundle check rejects the wrong iOS version or devices', function () {
+      const e = verify.expectations();
+      const good = { CFBundleIdentifier: e.bundleId, NSLocationWhenInUseUsageDescription: 'x',
+        MinimumOSVersion: '15.0', UIDeviceFamily: [1] };
+      assert.equal(verify.infoProblems(good, e).length, 0, verify.infoProblems(good, e).join('; '));
+      const old = Object.assign({}, good, { MinimumOSVersion: '14.0' });
+      assert.ok(/minimum iOS is 14\.0/.test(verify.infoProblems(old, e).join(' ')));
+      const ipad = Object.assign({}, good, { UIDeviceFamily: [1, 2] });
+      assert.ok(/device family is \[1,2\]/.test(verify.infoProblems(ipad, e).join(' ')));
+    });
+
     test('every upload gets a new build number', function () {
       /* App Store Connect rejects a second upload with the same build number. */
       assert.ok(/CURRENT_PROJECT_VERSION="\$GITHUB_RUN_NUMBER"/.test(workflow));

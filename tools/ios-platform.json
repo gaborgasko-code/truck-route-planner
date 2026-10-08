@@ -1,0 +1,5 @@
+{
+  "_comment": "The iOS platform the app is built for. Read by the Podfile patch in .github/workflows/ios.yml, by tools/configure-ios-platform.rb and by tools/verify-ios-bundle.js, so the three cannot disagree. App Store Connect refuses uploads below iOS 15.0 from April 2027. Device family 1 is iPhone only: the app runs on an iPad in compatibility mode, and needs no iPad screenshots or iPad review.",
+  "deploymentTarget": "15.0",
+  "deviceFamily": "1"
+}

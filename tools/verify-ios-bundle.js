@@ -35,7 +35,37 @@ function expectations() {
   const langs = fs.existsSync(langsFile)
     ? JSON.parse(fs.readFileSync(langsFile, 'utf8'))
     : require(path.join(root, 'tools', 'build-ios-resources.js')).languages().map((l) => l.code);
-  return { bundleId: config.appId, langs };
+  const platform = JSON.parse(fs.readFileSync(path.join(root, 'tools', 'ios-platform.json'), 'utf8'));
+  return {
+    bundleId: config.appId,
+    langs,
+    minimumOS: platform.deploymentTarget,
+    deviceFamily: platform.deviceFamily.split(',').map(Number)
+  };
+}
+
+/**
+ * What a properly parsed Info.plist must say. Separate from problems() so it
+ * can be tested without plutil, which exists only on macOS.
+ */
+function infoProblems(data, expected) {
+  const out = [];
+  if (data.CFBundleIdentifier !== expected.bundleId) {
+    out.push('bundle id is ' + data.CFBundleIdentifier + ', expected ' + expected.bundleId);
+  }
+  if (!data.NSLocationWhenInUseUsageDescription) {
+    out.push('Info.plist has no NSLocationWhenInUseUsageDescription');
+  }
+  if (expected.minimumOS && data.MinimumOSVersion !== expected.minimumOS) {
+    out.push('minimum iOS is ' + data.MinimumOSVersion + ', expected ' + expected.minimumOS);
+  }
+  if (expected.deviceFamily) {
+    const family = (data.UIDeviceFamily || []).slice().sort().join(',');
+    if (family !== expected.deviceFamily.slice().sort().join(',')) {
+      out.push('device family is [' + family + '], expected [' + expected.deviceFamily.join(',') + ']');
+    }
+  }
+  return out;
 }
 
 /**
@@ -78,12 +108,7 @@ function problems(app, expected) {
   if (!info.text) {
     out.push('Info.plist is missing');
   } else if (info.exact) {
-    if (info.data.CFBundleIdentifier !== expected.bundleId) {
-      out.push('bundle id is ' + info.data.CFBundleIdentifier + ', expected ' + expected.bundleId);
-    }
-    if (!info.data.NSLocationWhenInUseUsageDescription) {
-      out.push('Info.plist has no NSLocationWhenInUseUsageDescription');
-    }
+    infoProblems(info.data, expected).forEach((p) => out.push(p));
   } else {
     if (info.text.indexOf(expected.bundleId) === -1) {
       out.push('bundle id ' + expected.bundleId + ' not found in Info.plist');
@@ -111,9 +136,10 @@ function main() {
     process.exit(1);
   }
   process.stdout.write('App bundle verified: ' + expected.bundleId + ', privacy manifest, ' +
-    expected.langs.length + ' localisations\n');
+    expected.langs.length + ' localisations, iOS ' + expected.minimumOS + '+, iPhone' +
+    (expected.deviceFamily.indexOf(2) !== -1 ? ' and iPad' : ' only') + '\n');
 }
 
 if (require.main === module) main();
 
-module.exports = { problems, expectations, readInfoPlist };
+module.exports = { problems, infoProblems, expectations, readInfoPlist };

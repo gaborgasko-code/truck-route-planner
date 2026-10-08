@@ -31,6 +31,7 @@ on:
       - 'package.json'
       - 'tools/build-app*.js'
       - 'tools/app-flavour.js'
+      - 'tools/ios-platform.json'
       - 'tools/build-ios-resources.js'
       - 'tools/apply-ios-plist.js'
       - 'tools/verify-ios-bundle.js'
@@ -101,6 +102,16 @@ jobs:
           cp -R ios-resources/App/*.lproj ios/App/App/
           node tools/apply-ios-plist.js
 
+      # CocoaPods reads the deployment target from the Podfile during the
+      # install that `cap sync` runs next, so it is set here, before Sync.
+      - name: Set the minimum iOS version in the Podfile
+        run: |
+          TARGET=$(node -p "require('./tools/ios-platform.json').deploymentTarget")
+          sed -i '' -E "s/^platform :ios, '[0-9.]+'/platform :ios, '$TARGET'/" ios/App/Podfile
+          grep -q "^platform :ios, '$TARGET'" ios/App/Podfile \
+            || { echo "::error::could not set platform :ios, '$TARGET' in ios/App/Podfile"; exit 1; }
+          echo "Podfile: platform :ios, '$TARGET'"
+
       - name: Sync
         run: npx cap sync ios
 
@@ -112,6 +123,7 @@ jobs:
         run: |
           ruby -e "require 'xcodeproj'" 2>/dev/null || sudo gem install xcodeproj --no-document
           ruby tools/register-ios-resources.rb
+          ruby tools/configure-ios-platform.rb
           ruby tools/configure-ios-signing.rb --check
 
       # ---------------------------------------------------------------- unsigned
