@@ -14,7 +14,7 @@
  *
  * The output is plain HTML with inline styles: no scripts, no analytics, no
  * external requests. It is published from Aissa's GitHub (GitHub Pages);
- * MOBILE_APP_GUIDE.md B.6 has the steps.
+ * MOBILE_APP_GUIDE.md B.9 has the steps.
  */
 'use strict';
 
