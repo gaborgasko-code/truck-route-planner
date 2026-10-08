@@ -8,6 +8,12 @@
  * created by Gabor Gasko
  */
 
+/* The hidden attribute must always win. Any component that sets display
+   (.remind is a grid, .btn is inline-flex) otherwise overrides it, which put
+   the iPhone-only reminder card - with an empty button - and the "use my
+   location" button on the website, where neither can work. */
+[hidden] { display: none !important; }
+
 :root {
   /* Brand blues: the header, the splash and the primary actions. */
   --brand-900: #0b1e45;

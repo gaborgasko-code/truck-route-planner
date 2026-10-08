@@ -4,8 +4,8 @@
     {
       "name": "truck-route-planner",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/serve.js", "8080"],
-      "port": 8080
+      "runtimeArgs": ["tools/serve.js", "8091"],
+      "port": 8091
     }
   ]
 }
