@@ -2,7 +2,7 @@
 /**
  * Truck Route Planner - App Store screenshots of the iPhone app.
  *
- *     node tools/store-screenshots.js        -> build/screenshots/*.png
+ *     node tools/store-screenshots.js        -> store/screenshots/es-ES/*.png
  *
  * App Store Connect wants 6.9-inch iPhone screenshots, 1290 x 2796. These are
  * taken from the app bundle itself (www/, built by build-app.js, so they show
@@ -26,7 +26,7 @@ const buildApp = require('./build-app.js');
 
 const root = path.resolve(__dirname, '..');
 const WWW = path.join(root, 'www');
-const OUT = path.join(root, 'build', 'screenshots');
+const OUT = path.join(root, 'store', 'screenshots', 'es-ES');
 const EDGE = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'

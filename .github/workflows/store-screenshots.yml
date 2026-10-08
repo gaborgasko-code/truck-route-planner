@@ -1,0 +1,30 @@
+# Upload the App Store screenshots in store/screenshots/<locale>/ to the
+# editable App Store version, with the App Store Connect API key held in this
+# repository's secrets. Started by hand: Actions -> Store screenshots -> Run.
+#
+# Runs only on Aissa's repository, which is the one with the key. Linux, so it
+# costs a tenth of a macOS run.
+
+name: Store screenshots
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    if: github.repository == 'aissab-code/planificador'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check the screenshots
+        run: node tools/asc-upload-screenshots.js --dry-run
+      - name: Upload
+        env:
+          ASC_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          ASC_PRIVATE_KEY_B64: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+        run: node tools/asc-upload-screenshots.js

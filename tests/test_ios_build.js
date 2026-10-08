@@ -527,6 +527,65 @@
   });
 
 
+  describe('ios - the App Store listing', function () {
+    const listing = JSON.parse(fs.readFileSync(path.join(root, 'store', 'listing-es-ES.json'), 'utf8'));
+    const upload = require('../tools/asc-upload-screenshots.js');
+    const crypto = require('crypto');
+
+    test('every text fits Apple\'s limits', function () {
+      const limits = { name: 30, subtitle: 30, promotionalText: 170, description: 4000,
+        keywords: 100, copyright: 200, reviewNotes: 4000 };
+      Object.keys(limits).forEach(function (k) {
+        const n = Array.from(listing[k] || '').length;
+        assert.ok(n > 0 && n <= limits[k], k + ' is ' + n + ' of ' + limits[k]);
+      });
+    });
+
+    test('it names nobody but the publisher, and links the published pages', function () {
+      assert.equal(/gabor/i.test(JSON.stringify(listing)), false);
+      assert.ok(/^https:\/\/aissab-code\.github\.io\/planificador-legal\/privacy\.html$/.test(listing.privacyPolicyUrl));
+      assert.ok(/^https:\/\/aissab-code\.github\.io\/planificador-legal\/support\.html$/.test(listing.supportUrl));
+      assert.ok(listing.copyright.indexOf('Aissa Bamogo Redondo') !== -1);
+    });
+
+    test('keywords do not repeat the name, which Apple already indexes', function () {
+      const name = listing.name.toLowerCase();
+      listing.keywords.split(',').forEach(function (k) {
+        assert.equal(name.indexOf(k.trim().toLowerCase()), -1, k);
+      });
+    });
+
+    test('the screenshots are the size App Store Connect takes', function () {
+      const sets = upload.collect();
+      const es = sets.filter(function (s) { return s.locale === 'es-ES'; })[0];
+      assert.ok(es && es.files.length >= 3 && es.files.length <= 10, 'es-ES screenshots');
+      es.files.forEach(function (f) { assert.equal(f.size, '1290x2796', f.name); });
+    });
+
+    test('the API token is an ES256 JWT Apple can verify', function () {
+      const pair = crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' });
+      const saved = [process.env.ASC_KEY_ID, process.env.ASC_ISSUER_ID, process.env.ASC_PRIVATE_KEY_B64];
+      process.env.ASC_KEY_ID = 'TESTKEY123';
+      process.env.ASC_ISSUER_ID = '00000000-0000-0000-0000-000000000000';
+      process.env.ASC_PRIVATE_KEY_B64 = Buffer.from(pair.privateKey.export({ type: 'pkcs8', format: 'pem' })).toString('base64');
+      try {
+        const parts = upload.token().split('.');
+        const dec = function (x) { return Buffer.from(x.replace(/-/g, '+').replace(/_/g, '/'), 'base64'); };
+        assert.deepEqual(JSON.parse(dec(parts[0])), { alg: 'ES256', kid: 'TESTKEY123', typ: 'JWT' });
+        const body = JSON.parse(dec(parts[1]));
+        assert.equal(body.aud, 'appstoreconnect-v1');
+        assert.ok(body.exp - body.iat <= 1200, 'Apple refuses tokens valid for more than 20 minutes');
+        assert.ok(crypto.verify('sha256', Buffer.from(parts[0] + '.' + parts[1]),
+          { key: pair.publicKey, dsaEncoding: 'ieee-p1363' }, dec(parts[2])));
+      } finally {
+        ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_PRIVATE_KEY_B64'].forEach(function (k, i) {
+          if (saved[i] === undefined) delete process.env[k]; else process.env[k] = saved[i];
+        });
+      }
+    });
+  });
+
+
   describe('ios - what reaches the built app', function () {
     const verify = require('../tools/verify-ios-bundle.js');
     const os = require('os');
