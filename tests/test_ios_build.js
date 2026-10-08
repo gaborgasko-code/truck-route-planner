@@ -477,6 +477,56 @@
   });
 
 
+  describe('ios - the store pages', function () {
+    const legal = require('../tools/build-legal-pages.js');
+    const flav = require('../tools/app-flavour.js');
+    const os = require('os');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-legal-'));
+    const result = legal.build(dir);
+    const read = function (f) { return fs.readFileSync(path.join(dir, f), 'utf8'); };
+
+    test('a privacy policy in every language, a support page and an index', function () {
+      assert.equal(result.languages.length, 24);
+      result.languages.forEach(function (code) {
+        assert.ok(fs.existsSync(path.join(dir, legal.pageFile(code))), code);
+      });
+      ['privacy.html', 'privacy-en.html', 'support.html', 'index.html', '.nojekyll'].forEach(function (f) {
+        assert.ok(fs.existsSync(path.join(dir, f)), f);
+      });
+    });
+
+    test('they name the publisher, a contact, and nobody else', function () {
+      assert.equal(flav.leftovers(dir).length, 0);
+      result.languages.forEach(function (code) {
+        const page = read(legal.pageFile(code));
+        assert.ok(page.indexOf(flav.PUBLISHER) !== -1 && page.indexOf(flav.CONTACT) !== -1, code);
+        assert.ok(page.indexOf('lang="' + code + '"') !== -1, code + ' declares its language');
+      });
+    });
+
+    test('the policy covers the location button, in the words iOS shows', function () {
+      const es = read('privacy.html');
+      assert.ok(es.indexOf('Su ubicación se usa solo para rellenar el punto de partida') !== -1);
+      const inApp = flav.flavour(fs.readFileSync(path.join(root, 'PRIVACY.html'), 'utf8'), 'PRIVACY.html');
+      assert.ok(/data-i18n="privacy\.s3body"><\/p>\s*<p data-i18n="location\.purpose">/.test(inApp),
+        'the in-app policy says it too');
+    });
+
+    test('the services listed are the ones the app lists', function () {
+      const page = fs.readFileSync(path.join(root, 'PRIVACY.html'), 'utf8');
+      const inApp = (page.match(/host: '([^']+)'/g) || []).map(function (m) { return m.slice(7, -1); });
+      assert.deepEqual(legal.THIRD_PARTIES.map(function (p) { return p.host; }), inApp);
+    });
+
+    test('the pages load nothing from anywhere else', function () {
+      fs.readdirSync(dir).filter(function (f) { return /\.html$/.test(f); }).forEach(function (f) {
+        const html = read(f);
+        assert.equal(/<script|<link|<img|<iframe/i.test(html), false, f + ' has an external resource');
+      });
+    });
+  });
+
+
   describe('ios - what reaches the built app', function () {
     const verify = require('../tools/verify-ios-bundle.js');
     const os = require('os');

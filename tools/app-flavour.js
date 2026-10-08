@@ -104,6 +104,14 @@ function flavour(text, relPath) {
       function (m, a) { return a + jsString(PUBLISHER_TEXT[code]); });
   }
 
+  /* The app has a "use my location" button the website does not, so its
+     privacy page says what happens to the location - in the words iOS
+     already shows when asking for permission, which exist in every language. */
+  if (file === 'PRIVACY.html') {
+    s = s.replace(/([ \t]*)(<p data-i18n="privacy\.s3body"><\/p>)/,
+      '$1$2\n$1<p data-i18n="location.purpose"></p>');
+  }
+
   /* Whatever is left of the credit in descriptions and metadata. */
   s = s.replace(/[ \t]*created by Gabor Gasko/g, '');
 
