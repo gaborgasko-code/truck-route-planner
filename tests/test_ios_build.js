@@ -73,6 +73,50 @@
       });
     });
 
+    test('website-only pages stay on the website', function () {
+      /* A desktop layout and browser installation instructions inside an
+         iPhone app read as a repackaged website to App Review (4.2). */
+      buildApp.WEB_ONLY.forEach(function (file) {
+        assert.equal(buildApp.COPY_FILES.indexOf(file), -1, file + ' must not ship');
+      });
+      const flav = require('../tools/app-flavour.js');
+      const mobile = flav.flavour(fs.readFileSync(path.join(root, 'mobile.html'), 'utf8'), 'mobile.html');
+      assert.equal(/desktop\.html|USER_GUIDE\.html/.test(mobile), false, 'no link to them in the app');
+      assert.equal(/m_dataSource|info\.aboutText/.test(mobile), false, 'no developer notes in the Info tab');
+      assert.ok(/href="PRIVACY\.html"/.test(mobile), 'the privacy policy is still linked');
+      const site = fs.readFileSync(path.join(root, 'mobile.html'), 'utf8');
+      assert.ok(/desktop\.html/.test(site) && /USER_GUIDE\.html/.test(site), 'the website keeps both');
+    });
+
+    test('the Normas tab renders before the first route', function () {
+      /* legalHtml(null, rules) runs at start-up to show the reference rules;
+         it used to read r.time on the missing route and throw, leaving the
+         tab empty on the website and in the app. */
+      const vm = require('vm');
+      const ctx = { console: console, navigator: { language: 'es', languages: ['es'] } };
+      ctx.window = ctx; ctx.globalThis = ctx;
+      vm.createContext(ctx);
+      ['js/core/config.js', 'js/core/util.js', 'js/core/i18n.js', 'js/core/icons.js',
+        'js/core/eu-rules.js', 'js/ui/render.js'].forEach(function (f) {
+        vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
+      });
+      const rules = JSON.parse(fs.readFileSync(path.join(root, 'data', 'eu_driving_rules.json'), 'utf8'));
+      const html = ctx.TRP.render.legalHtml(null, rules);
+      assert.ok(html.length > 1000, 'the reference rules are there');
+    });
+
+    test('a link to a file that does not ship fails the build', function () {
+      const os = require('os');
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-links-'));
+      fs.writeFileSync(path.join(dir, 'a.html'),
+        '<a href="b.html?x=1">b</a><a href="gone.html">x</a><script src="js/x.js"></script>' +
+        '<a href="https://example.com/">e</a><a href="#top">t</a>');
+      fs.writeFileSync(path.join(dir, 'b.html'), '');
+      fs.mkdirSync(path.join(dir, 'js'));
+      fs.writeFileSync(path.join(dir, 'js', 'x.js'), '');
+      assert.deepEqual(buildApp.brokenLinks(dir), ['a.html -> gone.html']);
+    });
+
     test('a built bundle really contains the language packs and data', function () {
       const www = path.join(root, 'www');
       if (!fs.existsSync(www)) return;   /* not built in this checkout */

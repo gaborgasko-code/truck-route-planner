@@ -104,6 +104,19 @@ function flavour(text, relPath) {
       function (m, a) { return a + jsString(PUBLISHER_TEXT[code]); });
   }
 
+  /* The Info tab, as an app shows it. The website's links to its desktop
+     version and its user guide (written for browsers: installing, the
+     desktop layout, data files) do not belong in an iPhone app, and App
+     Review reads them as a repackaged website. Nor do the developer notes:
+     "data source: data/*.json" and the paragraph on the OSRM demo server and
+     editable datasets. Those two pages are not shipped either (build-app.js). */
+  if (file === 'mobile.html') {
+    s = s.replace(/[ \t]*<p><a href="USER_GUIDE\.html"[^>]*><\/a><\/p>\r?\n/, '');
+    s = s.replace(/[ \t]*<p><a href="desktop\.html[^"]*"[^>]*><\/a><\/p>\r?\n/, '');
+    s = s.replace(/[ \t]*&middot;\s*<span data-i18n="info\.dataSource"><\/span>:\s*<span id="m_dataSource">[^<]*<\/span>/, '');
+    s = s.replace(/[ \t]*<p class="small muted" data-i18n-html="info\.aboutText"><\/p>\r?\n/, '');
+  }
+
   /* The app has a "use my location" button the website does not, so its
      privacy page says what happens to the location - in the words iOS
      already shows when asking for permission, which exist in every language. */

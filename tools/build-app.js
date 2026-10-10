@@ -19,6 +19,9 @@
  *   4. Every text file goes through tools/app-flavour.js: the app is
  *      published by Aissa Bamogo Redondo and names nobody else, and the
  *      build fails if any mention of the developer survives.
+ *   5. Only the pages an iPhone app shows are shipped: the desktop layout
+ *      and the browser-oriented user guide stay on the website. The build
+ *      fails if any shipped page links to a file that is not in www/.
  *
  * created by Gabor Gasko
  */
@@ -31,15 +34,37 @@ const appFlavour = require('./app-flavour.js');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, 'www');
 
-/* Everything the app needs at runtime, and nothing else. */
+/* Everything the app needs at runtime, and nothing else. desktop.html and
+   USER_GUIDE.html are website pages: App Review treats a desktop layout and
+   browser installation instructions inside an iPhone app as a sign of a
+   repackaged website (Guideline 4.2). */
 const COPY_DIRS = ['css', 'js', 'data', 'assets'];
 const COPY_FILES = [
   'mobile.html',
-  'desktop.html',
-  'USER_GUIDE.html',
   'PRIVACY.html',
   'manifest.webmanifest'
 ];
+const WEB_ONLY = ['desktop.html', 'USER_GUIDE.html'];
+
+/**
+ * Local links (href, src) in the shipped pages that point at nothing.
+ * External URLs, in-page anchors and javascript: are not checked.
+ */
+function brokenLinks(dir) {
+  const found = [];
+  fs.readdirSync(dir).filter((f) => /\.html$/.test(f)).forEach((page) => {
+    const html = fs.readFileSync(path.join(dir, page), 'utf8');
+    const re = /\b(?:href|src)="([^"]+)"/g;
+    let m;
+    while ((m = re.exec(html))) {
+      const url = m[1];
+      if (/^(?:[a-z]+:|\/\/|#)/i.test(url)) continue;
+      const target = url.split(/[?#]/)[0];
+      if (target && !fs.existsSync(path.join(dir, target))) found.push(page + ' -> ' + url);
+    }
+  });
+  return found;
+}
 
 /* Never shipped: server code, tests, build tooling, local state. */
 const EXCLUDE_DIRS = new Set(['node_modules', '.git', '.wrangler', 'ios', 'android', 'www']);
@@ -135,6 +160,11 @@ function build() {
   const leftover = fs.existsSync(path.join(out, 'sw.js'));
   if (leftover) throw new Error('sw.js reached www/ - it must not be packaged');
 
+  const broken = brokenLinks(out);
+  if (broken.length) {
+    throw new Error('the app links to files it does not ship:\n  ' + broken.join('\n  '));
+  }
+
   const named = appFlavour.leftovers(out);
   if (named.length) {
     throw new Error('the app must not name its developer, but www/ still does:\n  ' +
@@ -146,4 +176,4 @@ function build() {
 
 if (require.main === module) build();
 
-module.exports = { build, stripServiceWorker, nativeIndex, COPY_DIRS, COPY_FILES };
+module.exports = { build, stripServiceWorker, nativeIndex, brokenLinks, COPY_DIRS, COPY_FILES, WEB_ONLY };

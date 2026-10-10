@@ -301,7 +301,8 @@
     var hasPlan = r && r.legal;
     return '<div class="card"><div class="card__title">' + esc(t('legal.planTitle')) + '</div>' +
       (hasPlan ? legalPlanHtml(r) : '<p class="muted">' + esc(t('legal.empty')) + '</p>') +
-      '<p class="warn-box">' + t(r.time && r.time.multiManning ? 'legal.disclaimerTeam' : 'legal.disclaimer') + '</p></div>' +
+      /* r is null before the first route, when only the reference rules show. */
+      '<p class="warn-box">' + t(r && r.time && r.time.multiManning ? 'legal.disclaimerTeam' : 'legal.disclaimer') + '</p></div>' +
       (hasPlan
         ? '<div class="card"><div class="card__title">' + esc(t('legal.checksTitle')) + '</div>' +
           legalChecksHtml(r) + '</div>'
