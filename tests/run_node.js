@@ -47,6 +47,7 @@ const root = path.resolve(__dirname, '..');
   'tests/test_d1_store.js',
   'tests/test_reminders.js',
   'tests/test_ios_build.js',
+  'tests/test_android_build.js',
   'tests/test_ga.js'
 ].forEach((file) => require(path.join(root, file)));
 

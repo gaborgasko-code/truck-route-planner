@@ -1,0 +1,156 @@
+# Truck Route Planner - build the Android app (Google Play).
+#
+# Like the iOS workflow, the same code runs in two repositories. The public
+# website repository checks every relevant push with an unsigned build. The
+# app is published from Aissa's private repository, which holds the upload
+# key, and builds signed only when started by hand:
+#
+#   Actions -> Android -> Run workflow, with "signed" ticked
+#
+# Output: the signed .aab for Google Play, plus a universal .apk signed with
+# the same key, which installs directly on a phone for testing.
+#
+# Secrets (set by tools/android-signing.ps1):
+#   ANDROID_KEYSTORE_B64       base64 of the upload keystore
+#   ANDROID_KEYSTORE_PASSWORD  its password
+#   ANDROID_KEY_ALIAS          the key alias
+
+name: Android
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'css/**'
+      - 'data/**'
+      - 'assets/**'
+      - '*.html'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - 'tools/build-app*.js'
+      - 'tools/app-flavour.js'
+      - 'tools/build-android-resources.js'
+      - 'tools/verify-android-bundle.js'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+    inputs:
+      signed:
+        description: 'Sign with the upload key (needs the Android secrets)'
+        type: boolean
+        default: false
+
+env:
+  BUNDLETOOL_VERSION: '1.17.2'
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'gaborgasko-code/truck-route-planner'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Capacitor 8 builds with Android Gradle Plugin 8.13, which needs JDK 17+.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Android SDK platform 36
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-36" "build-tools;36.0.0" >/dev/null
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test
+        run: npm test
+
+      - name: Assemble the web bundle
+        run: npm run build:app
+
+      - name: Render the icon and splash sources
+        run: npm run build:icons
+
+      # android/ is generated, never committed - like ios/.
+      - name: Create the Android project
+        run: npx cap add android
+
+      - name: Generate the launcher icons and splash screens
+        run: npx @capacitor/assets generate --android --assetPath assets/generated
+
+      - name: Permissions, version, signing config and notification icon
+        run: node tools/build-android-resources.js
+
+      - name: Sync
+        run: npx cap sync android
+
+      - name: Install the upload key
+        if: ${{ github.event.inputs.signed == 'true' }}
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          if [ -z "$KEYSTORE" ]; then
+            echo "::error::signed build requested but ANDROID_KEYSTORE_B64 is not set"
+            exit 1
+          fi
+          echo "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/upload.keystore"
+          {
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/upload.keystore"
+            echo "ANDROID_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$KEYSTORE_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Build the App Bundle
+        working-directory: android
+        run: ./gradlew --no-daemon bundleRelease
+
+      # The build succeeding says nothing about what is inside it.
+      - name: Verify the bundle
+        run: |
+          curl -sSL -o "$RUNNER_TEMP/bundletool.jar" \
+            "https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar"
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          java -jar "$RUNNER_TEMP/bundletool.jar" dump manifest --bundle "$AAB" > "$RUNNER_TEMP/manifest.xml"
+          mkdir -p "$RUNNER_TEMP/aab"
+          unzip -q -o "$AAB" 'base/assets/public/*' -d "$RUNNER_TEMP/aab"
+          node tools/verify-android-bundle.js "$RUNNER_TEMP/manifest.xml" "$RUNNER_TEMP/aab/base/assets/public"
+
+      - name: Package
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          mkdir -p artifacts
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          if [ -n "$ANDROID_KEYSTORE_PATH" ]; then
+            jarsigner -verify "$AAB" >/dev/null && echo "bundle signature verified"
+            cp "$AAB" "artifacts/planificador-$VERSION-$GITHUB_RUN_NUMBER.aab"
+            # One APK for every phone, signed with the same key: installs
+            # directly for testing, outside Google Play.
+            java -jar "$RUNNER_TEMP/bundletool.jar" build-apks --mode=universal \
+              --bundle "$AAB" --output "$RUNNER_TEMP/universal.apks" \
+              --ks "$ANDROID_KEYSTORE_PATH" --ks-pass "pass:$ANDROID_KEYSTORE_PASSWORD" \
+              --ks-key-alias "$ANDROID_KEY_ALIAS" --key-pass "pass:$ANDROID_KEY_PASSWORD"
+            unzip -q -o "$RUNNER_TEMP/universal.apks" universal.apk -d "$RUNNER_TEMP"
+            cp "$RUNNER_TEMP/universal.apk" "artifacts/planificador-$VERSION-$GITHUB_RUN_NUMBER.apk"
+          else
+            cp "$AAB" "artifacts/planificador-$VERSION-unsigned.aab"
+          fi
+          ls -lh artifacts
+
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: planificador-android
+          path: artifacts/*
+          if-no-files-found: error
+          retention-days: 30

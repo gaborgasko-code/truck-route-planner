@@ -110,6 +110,62 @@ async function renderSplash(background, name) {
   return file;
 }
 
+/* Android adaptive icon. Launchers mask the icon to a circle, squircle or
+   square, and only a circle of 66/72 of the visible size is guaranteed to
+   show. @capacitor/assets treats both images as that visible area (it insets
+   them 16.7% into Android's 108 dp layer), so the foreground is the artwork
+   alone at three quarters of the image - inside the guaranteed circle - and
+   the background is the blue plate alone. */
+const ADAPTIVE_ART_SHARE = 0.75;
+
+function plateOnlySvg() {
+  const svg = fs.readFileSync(path.join(root, 'assets', 'icon.svg'), 'utf8');
+  const plate = svg.match(/<rect width="512" height="512"[^>]*\/>/);
+  if (!plate) throw new Error('icon.svg no longer has the expected background rect');
+  const end = svg.indexOf(plate[0]) + plate[0].length;
+  return svg.slice(0, end).replace(/ rx="\d+"/, '') + '</svg>';
+}
+
+async function renderAdaptive() {
+  const size = Math.round(ICON * ADAPTIVE_ART_SHARE);
+  const art = await sharp(Buffer.from(logoOnlySvg()))
+    .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
+  const fg = path.join(outDir, 'icon-foreground.png');
+  await sharp({ create: { width: ICON, height: ICON, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: art, gravity: 'centre' }])
+    .png()
+    .toFile(fg);
+  const bg = path.join(outDir, 'icon-background.png');
+  await sharp(Buffer.from(plateOnlySvg())).resize(ICON, ICON).png().toFile(bg);
+  return [fg, bg];
+}
+
+/* Android notification icon: Android draws only the alpha channel, tinted,
+   so it is the artwork as a white silhouette. A full-colour icon would show
+   as a white square. tools/build-android-resources.js scales it per density. */
+const NOTIFICATION = 192;
+
+async function renderNotificationIcon() {
+  const inner = Math.round(NOTIFICATION * 0.84);
+  const alpha = await sharp(Buffer.from(logoOnlySvg()))
+    .resize(inner, inner, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .ensureAlpha()
+    .extractChannel('alpha')
+    .toBuffer();
+  const white = await sharp({ create: { width: inner, height: inner, channels: 3, background: '#ffffff' } })
+    .joinChannel(alpha)
+    .png()
+    .toBuffer();
+  const file = path.join(outDir, 'notification-icon.png');
+  await sharp({ create: { width: NOTIFICATION, height: NOTIFICATION, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: white, gravity: 'centre' }])
+    .png()
+    .toFile(file);
+  return file;
+}
+
 async function build() {
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -117,6 +173,8 @@ async function build() {
   made.push(await renderIcon());
   made.push(await renderSplash(LIGHT_BG, 'splash.png'));
   made.push(await renderSplash(DARK_BG, 'splash-dark.png'));
+  (await renderAdaptive()).forEach((f) => made.push(f));
+  made.push(await renderNotificationIcon());
 
   made.forEach((file) => {
     const size = fs.statSync(file).size;
