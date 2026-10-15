@@ -151,8 +151,8 @@ function supportPage() {
     '<h2>Preguntas frecuentes</h2>',
     '<p><strong>¿Qué hace la app?</strong> Calcula rutas por carretera para vehículos pesados en Europa: tiempos de conducción y pausas según el Reglamento (CE) n.º 561/2006, paradas obligatorias, peajes estimados y aparcamientos seguros cercanos. Funciona en los 24 idiomas oficiales de la UE.</p>',
     '<p><strong>¿Los resultados son oficiales?</strong> No. Distancias, tiempos, peajes y normas nacionales son ayudas para planificar y no son jurídicamente vinculantes. Compruebe siempre las restricciones, tarifas y señales vigentes.</p>',
-    '<p><strong>«Usar mi ubicación» no funciona.</strong> Abra Ajustes → Planificador → Ubicación y elija «Mientras se usa la app». La ubicación solo se usa para rellenar el punto de partida.</p>',
-    '<p><strong>No recibo los avisos de pausa.</strong> Abra Ajustes → Planificador → Notificaciones y active «Permitir notificaciones». Los avisos se programan en el propio iPhone para cada viaje.</p>',
+    '<p><strong>«Usar mi ubicación» no funciona.</strong> En el iPhone, abra Ajustes → Planificador → Ubicación y elija «Mientras se usa la app». En Android, abra Ajustes → Aplicaciones → Planificador → Permisos → Ubicación y elija «Permitir solo mientras se usa la aplicación». La ubicación solo se usa para rellenar el punto de partida.</p>',
+    '<p><strong>No recibo los avisos de pausa.</strong> En el iPhone, abra Ajustes → Planificador → Notificaciones y active «Permitir notificaciones». En Android, abra Ajustes → Aplicaciones → Planificador → Notificaciones y actívelas. Los avisos se programan en el propio teléfono para cada viaje.</p>',
     '<p><strong>¿Qué datos se recogen?</strong> No hay cuentas ni publicidad. Consulte la <a href="privacy.html">política de privacidad</a>.</p>',
     '</section>',
     '<section lang="en"><h2>Contact</h2>',
@@ -160,8 +160,8 @@ function supportPage() {
     '<h2>Frequently asked questions</h2>',
     '<p><strong>What does the app do?</strong> It plans road routes for heavy goods vehicles in Europe: driving and rest times under Regulation (EC) No 561/2006, mandatory stops, estimated tolls and nearby secure parking. It works in all 24 official EU languages.</p>',
     '<p><strong>Are the results official?</strong> No. Distances, times, tolls and national rules are planning aids and are not legally binding. Always check the restrictions, rates and signs in force.</p>',
-    '<p><strong>“Use my location” does not work.</strong> Open Settings → Planificador → Location and choose “While Using the App”. Your location is only used to fill in the starting point.</p>',
-    '<p><strong>I do not get the break reminders.</strong> Open Settings → Planificador → Notifications and turn on “Allow Notifications”. Reminders are scheduled on the iPhone itself, for each trip.</p>',
+    '<p><strong>“Use my location” does not work.</strong> On iPhone, open Settings → Planificador → Location and choose “While Using the App”. On Android, open Settings → Apps → Planificador → Permissions → Location and choose “Allow only while using the app”. Your location is only used to fill in the starting point.</p>',
+    '<p><strong>I do not get the break reminders.</strong> On iPhone, open Settings → Planificador → Notifications and turn on “Allow Notifications”. On Android, open Settings → Apps → Planificador → Notifications and turn them on. Reminders are scheduled on the phone itself, for each trip.</p>',
     '<p><strong>What data is collected?</strong> There are no accounts and no advertising. See the <a href="privacy-en.html">privacy policy</a>.</p>',
     '</section>'
   ].join('\n');

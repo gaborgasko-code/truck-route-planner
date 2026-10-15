@@ -102,6 +102,43 @@
     });
   });
 
+  describe('android - the Google Play listing', function () {
+    const listing = JSON.parse(fs.readFileSync(path.join(root, 'store', 'google-play', 'listing-es-ES.json'), 'utf8'));
+
+    function pngSize(file) {
+      const b = fs.readFileSync(file);
+      return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+    }
+
+    test('the texts fit Google Play\'s limits and name nobody but the publisher', function () {
+      const lim = { title: 30, shortDescription: 80, fullDescription: 4000, releaseNotes: 500 };
+      Object.keys(lim).forEach(function (k) {
+        const n = Array.from(listing[k] || '').length;
+        assert.ok(n > 0 && n <= lim[k], k + ' is ' + n + ' of ' + lim[k]);
+      });
+      assert.equal(/gabor/i.test(JSON.stringify(listing)), false);
+      assert.equal(/iphone/i.test(listing.fullDescription), false, 'no iPhone wording on Google Play');
+    });
+
+    test('icon and feature graphic have the required sizes', function () {
+      const icon = pngSize(path.join(root, 'store', 'google-play', 'icon-512.png'));
+      assert.ok(icon.w === 512 && icon.h === 512, 'icon ' + icon.w + 'x' + icon.h);
+      const fg = pngSize(path.join(root, 'store', 'google-play', 'feature-graphic.png'));
+      assert.ok(fg.w === 1024 && fg.h === 500, 'feature graphic ' + fg.w + 'x' + fg.h);
+    });
+
+    test('phone screenshots: 2 to 8, no longer than 2:1', function () {
+      const dir = path.join(root, 'store', 'google-play', 'screenshots', 'es-ES');
+      const shots = fs.readdirSync(dir).filter(function (f) { return /\.png$/.test(f); });
+      assert.ok(shots.length >= 2 && shots.length <= 8, shots.length + ' screenshots');
+      shots.forEach(function (f) {
+        const s = pngSize(path.join(dir, f));
+        assert.ok(Math.max(s.w, s.h) <= 2 * Math.min(s.w, s.h), f + ' is ' + s.w + 'x' + s.h);
+        assert.ok(Math.min(s.w, s.h) >= 320 && Math.max(s.w, s.h) <= 3840, f + ' size');
+      });
+    });
+  });
+
   describe('android - what reaches the bundle', function () {
     const e = verify.expectations();
     const good = [

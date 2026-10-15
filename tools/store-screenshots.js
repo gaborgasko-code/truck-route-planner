@@ -26,15 +26,36 @@ const buildApp = require('./build-app.js');
 
 const root = path.resolve(__dirname, '..');
 const WWW = path.join(root, 'www');
-const OUT = path.join(root, 'store', 'screenshots', 'es-ES');
+/*
+ * Two stores, two shapes. App Store Connect wants 6.9-inch iPhone shots
+ * (1290 x 2796). Google Play refuses anything longer than 2:1, so Android
+ * shots are 1080 x 1920 (9:16) from a 360 x 640 phone at 3x.
+ *     node tools/store-screenshots.js            -> App Store
+ *     node tools/store-screenshots.js --android  -> Google Play
+ */
+const ANDROID = process.argv.indexOf('--android') !== -1;
+const PROFILE = ANDROID ? {
+  out: path.join(root, 'store', 'google-play', 'screenshots', 'es-ES'),
+  device: { width: 360, height: 640, deviceScaleFactor: 3, mobile: true },
+  size: { width: 1080, height: 1920 },
+  ua: 'Mozilla/5.0 (Linux; Android 16; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36',
+  platform: 'android'
+} : {
+  out: path.join(root, 'store', 'screenshots', 'es-ES'),
+  device: { width: 430, height: 932, deviceScaleFactor: 3, mobile: true },
+  size: { width: 1290, height: 2796 },
+  ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+  platform: 'ios'
+};
+const OUT = PROFILE.out;
 const EDGE = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'
 ].find(function (p) { return fs.existsSync(p); });
 
-const DEVICE = { width: 430, height: 932, deviceScaleFactor: 3, mobile: true };
-const SIZE = { width: 1290, height: 2796 };
-const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+const DEVICE = PROFILE.device;
+const SIZE = PROFILE.size;
+const UA = PROFILE.ua;
 const ROUTE = { origin: 'Valencia, España', dest: 'Lyon, Francia', departure: '2026-10-12T06:00' };
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -52,7 +73,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const NATIVE_STAND_IN = [
   'window.Capacitor = {',
   '  isNativePlatform: function () { return true; },',
-  '  getPlatform: function () { return "ios"; },',
+  '  getPlatform: function () { return "' + PROFILE.platform + '"; },',
   '  Plugins: {',
   '    LocalNotifications: {',
   '      checkPermissions: function () { return Promise.resolve({ display: "granted" }); },',
@@ -254,3 +275,5 @@ async function main() {
 if (require.main === module) {
   main().catch(function (err) { process.stderr.write(String(err && err.stack || err) + '\n'); process.exit(1); });
 }
+
+module.exports = { connect, EDGE };

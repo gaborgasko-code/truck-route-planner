@@ -1,0 +1,11 @@
+{
+  "_comment": "Google Play listing, default language es-ES. Limits: title 30, short description 80, full description 4000. Tests check the limits and that it names nobody but the publisher.",
+  "title": "Planificador de ruta camión",
+  "shortDescription": "Pausas obligatorias UE, peajes y normativa por país para tus viajes en camión.",
+  "fullDescription": "Planificador de ruta camión convierte dos direcciones en un plan de viaje completo para vehículos pesados en Europa.\n\n• Tiempos de conducción y descansos: calcula las pausas de 45 minutos y los descansos diarios según el Reglamento (CE) n.º 561/2006, con las alternativas permitidas, como la pausa fraccionada o el descanso diario reducido.\n• Plan de paradas: hora y kilómetro de cada pausa y descanso obligatorio.\n• Conducción en equipo: planificación para uno o dos conductores.\n• Peajes estimados por país, según el peso, los ejes y la clase EURO del vehículo.\n• Combustible y coste total del viaje, también por kilómetro.\n• Normativa nacional de cada país de la ruta: prohibiciones de circulación, zonas de bajas emisiones y equipamiento de invierno.\n• Mapa de la ruta con las paradas, para consultar o guardar.\n• Avisos de pausa: el teléfono le avisa antes de cada pausa obligatoria del viaje.\n• Usar mi ubicación como punto de partida.\n• Informe de texto y exportación GPX.\n• Disponible en los 24 idiomas oficiales de la UE.\n\nSin cuentas, sin publicidad y sin venta de datos.\n\nImportante: los resultados son estimaciones para planificar y no son jurídicamente vinculantes. Compruebe siempre las restricciones de circulación, las tarifas de peaje y las limitaciones del vehículo vigentes, así como los registros reales de su tacógrafo.",
+  "category": "Mapas y navegación",
+  "contactEmail": "aissa.b.code@gmail.com",
+  "website": "https://aissab-code.github.io/planificador-legal/support.html",
+  "privacyPolicyUrl": "https://aissab-code.github.io/planificador-legal/privacy.html",
+  "releaseNotes": "Primera versión: rutas para camión con pausas y descansos según el Reglamento (CE) 561/2006, peajes estimados por país, normativa nacional, mapa, avisos de pausa y 24 idiomas."
+}
