@@ -87,8 +87,11 @@ jobs:
 
       # ios/ is deliberately not committed: it is generated, and a checked-in
       # Xcode project is a merge-conflict machine that drifts from the config.
+      # Capacitor 8 defaults to Swift Package Manager; this pipeline (Podfile
+      # patch, App.xcworkspace, pod targets in the signing script) is built
+      # on CocoaPods, so ask for it explicitly.
       - name: Create the Xcode project
-        run: npx cap add ios
+        run: npx cap add ios --packagemanager CocoaPods
 
       # Reads icon.png, splash.png and splash-dark.png from --assetPath and
       # writes every size Xcode wants into ios/App, which is where `cap add`

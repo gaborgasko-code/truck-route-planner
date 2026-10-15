@@ -12,16 +12,19 @@
     "build:backends": "node tools/build-backends.js",
     "build:app": "node tools/build-app.js",
     "build:icons": "node tools/build-app-icons.js",
-    "ios:add": "npm run build:app && npx cap add ios",
+    "ios:add": "npm run build:app && npx cap add ios --packagemanager CocoaPods",
     "ios:sync": "npm run build:app && npx cap sync ios",
-    "ios:open": "npm run ios:sync && npx cap open ios"
+    "ios:open": "npm run ios:sync && npx cap open ios",
+    "android:add": "npm run build:app && npx cap add android",
+    "android:sync": "npm run build:app && npx cap sync android"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.0.0",
-    "@capacitor/core": "^7.0.0",
-    "@capacitor/geolocation": "^7.0.0",
-    "@capacitor/ios": "^7.0.0",
-    "@capacitor/local-notifications": "^7.0.0",
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/geolocation": "^8.2.3",
+    "@capacitor/ios": "^8.5.3",
+    "@capacitor/local-notifications": "^8.3.1",
     "sharp": "^0.34.0"
   }
 }

@@ -11,5 +11,10 @@
   },
   "server": {
     "iosScheme": "capacitor"
+  },
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK"
+    }
   }
 }
