@@ -32,16 +32,26 @@ const WWW = path.join(root, 'www');
  * shots are 1080 x 1920 (9:16) from a 360 x 640 phone at 3x.
  *     node tools/store-screenshots.js            -> App Store
  *     node tools/store-screenshots.js --android  -> Google Play
+ * Add --lang en for the English set (the app in English, an English route);
+ * Spanish is the default.
  */
 const ANDROID = process.argv.indexOf('--android') !== -1;
+const LANGS = {
+  es: { locale: 'es-ES', route: { origin: 'Valencia, España', dest: 'Lyon, Francia' } },
+  en: { locale: 'en-US', route: { origin: 'Valencia, Spain', dest: 'Lyon, France' } }
+};
+const LANG_ARG = process.argv.indexOf('--lang');
+const LANG = LANG_ARG !== -1 ? process.argv[LANG_ARG + 1] : 'es';
+if (!LANGS[LANG]) throw new Error('--lang must be one of ' + Object.keys(LANGS).join(', '));
+const LOCALE = LANGS[LANG].locale;
 const PROFILE = ANDROID ? {
-  out: path.join(root, 'store', 'google-play', 'screenshots', 'es-ES'),
+  out: path.join(root, 'store', 'google-play', 'screenshots', LOCALE),
   device: { width: 360, height: 640, deviceScaleFactor: 3, mobile: true },
   size: { width: 1080, height: 1920 },
   ua: 'Mozilla/5.0 (Linux; Android 16; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36',
   platform: 'android'
 } : {
-  out: path.join(root, 'store', 'screenshots', 'es-ES'),
+  out: path.join(root, 'store', 'screenshots', LOCALE),
   device: { width: 430, height: 932, deviceScaleFactor: 3, mobile: true },
   size: { width: 1290, height: 2796 },
   ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
@@ -56,7 +66,7 @@ const EDGE = [
 const DEVICE = PROFILE.device;
 const SIZE = PROFILE.size;
 const UA = PROFILE.ua;
-const ROUTE = { origin: 'Valencia, España', dest: 'Lyon, Francia', departure: '2026-10-12T06:00' };
+const ROUTE = Object.assign({ departure: '2026-10-12T06:00' }, LANGS[LANG].route);
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.png': 'image/png',
@@ -152,7 +162,7 @@ async function main() {
   const port = 9300 + Math.floor(Math.random() * 500);
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-edge-'));
   const edge = spawn(EDGE, ['--headless=new', '--remote-debugging-port=' + port, '--user-data-dir=' + profile,
-    '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', '--lang=es-ES', 'about:blank'],
+    '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', '--lang=' + LOCALE, 'about:blank'],
     { stdio: 'ignore' });
 
   const cdp = await connect(port);
@@ -197,7 +207,7 @@ async function main() {
     await cdp.send('Page.navigate', { url: base + 'mobile.html?view=mobile' });
     await loaded;
     await waitFor('!!(window.TRP && TRP.consent)', 10000, 'the app');
-    await evaluate('TRP.consent.rejectAll(), localStorage.setItem("trp.lang", JSON.stringify("es")), true');
+    await evaluate('TRP.consent.rejectAll(), localStorage.setItem("trp.lang", JSON.stringify(' + JSON.stringify(LANG) + ')), true');
     loaded = cdp.once('Page.loadEventFired');
     await cdp.send('Page.reload', {});
     await loaded;

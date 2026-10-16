@@ -102,8 +102,31 @@
     });
   });
 
+  describe('app - the language it opens in', function () {
+    const flavourMod = require('../tools/app-flavour.js');
+    const read = function (rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); };
+
+    test('the app follows the phone and falls back to English', function () {
+      const config = flavourMod.flavour(read('js/core/config.js'), 'js/core/config.js');
+      const i18n = flavourMod.flavour(read('js/core/i18n.js'), 'js/core/i18n.js');
+      assert.ok(/LANG_AUTODETECT\s*:\s*true/.test(config), 'autodetect on in the app');
+      assert.ok(/var DEFAULT_LANG\s*=\s*'en'/.test(i18n), 'English when the phone language is not one of the 24');
+    });
+
+    test('the website keeps Spanish as its default', function () {
+      assert.ok(/LANG_AUTODETECT\s*:\s*false/.test(read('js/core/config.js')));
+      assert.ok(/var DEFAULT_LANG\s*=\s*'es'/.test(read('js/core/i18n.js')));
+    });
+  });
+
   describe('android - the Google Play listing', function () {
-    const listing = JSON.parse(fs.readFileSync(path.join(root, 'store', 'google-play', 'listing-es-ES.json'), 'utf8'));
+    /* English is the default listing; Spanish is its translation. */
+    const LOCALES = ['en-US', 'es-ES'];
+    const gp = path.join(root, 'store', 'google-play');
+    const listings = {};
+    LOCALES.forEach(function (l) {
+      listings[l] = JSON.parse(fs.readFileSync(path.join(gp, 'listing-' + l + '.json'), 'utf8'));
+    });
 
     function pngSize(file) {
       const b = fs.readFileSync(file);
@@ -112,29 +135,36 @@
 
     test('the texts fit Google Play\'s limits and name nobody but the publisher', function () {
       const lim = { title: 30, shortDescription: 80, fullDescription: 4000, releaseNotes: 500 };
-      Object.keys(lim).forEach(function (k) {
-        const n = Array.from(listing[k] || '').length;
-        assert.ok(n > 0 && n <= lim[k], k + ' is ' + n + ' of ' + lim[k]);
+      LOCALES.forEach(function (l) {
+        Object.keys(lim).forEach(function (k) {
+          const n = Array.from(listings[l][k] || '').length;
+          assert.ok(n > 0 && n <= lim[k], l + ' ' + k + ' is ' + n + ' of ' + lim[k]);
+        });
+        assert.equal(/gabor/i.test(JSON.stringify(listings[l])), false, l);
+        assert.equal(/iphone/i.test(listings[l].fullDescription), false, l + ': no iPhone wording on Google Play');
       });
-      assert.equal(/gabor/i.test(JSON.stringify(listing)), false);
-      assert.equal(/iphone/i.test(listing.fullDescription), false, 'no iPhone wording on Google Play');
+      assert.equal(listings['en-US'].privacyPolicyUrl, listings['es-ES'].privacyPolicyUrl);
     });
 
-    test('icon and feature graphic have the required sizes', function () {
-      const icon = pngSize(path.join(root, 'store', 'google-play', 'icon-512.png'));
+    test('icon and one feature graphic per language have the required sizes', function () {
+      const icon = pngSize(path.join(gp, 'icon-512.png'));
       assert.ok(icon.w === 512 && icon.h === 512, 'icon ' + icon.w + 'x' + icon.h);
-      const fg = pngSize(path.join(root, 'store', 'google-play', 'feature-graphic.png'));
-      assert.ok(fg.w === 1024 && fg.h === 500, 'feature graphic ' + fg.w + 'x' + fg.h);
+      LOCALES.forEach(function (l) {
+        const fg = pngSize(path.join(gp, 'feature-graphic-' + l + '.png'));
+        assert.ok(fg.w === 1024 && fg.h === 500, l + ' feature graphic ' + fg.w + 'x' + fg.h);
+      });
     });
 
-    test('phone screenshots: 2 to 8, no longer than 2:1', function () {
-      const dir = path.join(root, 'store', 'google-play', 'screenshots', 'es-ES');
-      const shots = fs.readdirSync(dir).filter(function (f) { return /\.png$/.test(f); });
-      assert.ok(shots.length >= 2 && shots.length <= 8, shots.length + ' screenshots');
-      shots.forEach(function (f) {
-        const s = pngSize(path.join(dir, f));
-        assert.ok(Math.max(s.w, s.h) <= 2 * Math.min(s.w, s.h), f + ' is ' + s.w + 'x' + s.h);
-        assert.ok(Math.min(s.w, s.h) >= 320 && Math.max(s.w, s.h) <= 3840, f + ' size');
+    test('phone screenshots in each language: 2 to 8, no longer than 2:1', function () {
+      LOCALES.forEach(function (l) {
+        const dir = path.join(gp, 'screenshots', l);
+        const shots = fs.readdirSync(dir).filter(function (f) { return /\.png$/.test(f); });
+        assert.ok(shots.length >= 2 && shots.length <= 8, l + ': ' + shots.length + ' screenshots');
+        shots.forEach(function (f) {
+          const s = pngSize(path.join(dir, f));
+          assert.ok(Math.max(s.w, s.h) <= 2 * Math.min(s.w, s.h), l + '/' + f + ' is ' + s.w + 'x' + s.h);
+          assert.ok(Math.min(s.w, s.h) >= 320 && Math.max(s.w, s.h) <= 3840, l + '/' + f + ' size');
+        });
       });
     });
   });

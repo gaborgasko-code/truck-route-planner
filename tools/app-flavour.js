@@ -87,10 +87,15 @@ function flavour(text, relPath) {
   if (file === 'js/core/config.js') {
     s = s.replace(/(AUTHOR\s*:\s*)'[^']*'/, "$1''");
     s = s.replace(/(AUTHOR_URL\s*:\s*)'[^']*'/, "$1''");
+    /* The stores sell the app across Europe and beyond, so it opens in the
+       phone's language when that is one of the 24, and in English otherwise.
+       The website keeps Spanish as its default. */
+    s = s.replace(/(LANG_AUTODETECT\s*:\s*)false/, '$1true');
   }
 
   /* Translations: the credit, and who the app is published by. */
   if (file === 'js/core/i18n.js') {
+    s = s.replace(/(var DEFAULT_LANG\s*=\s*)'es'/, "$1'en'");
     s = s.replace(/('app\.author'\s*:\s*)\{[^}]*\}/, "$1{ es: '', en: '' }");
     s = s.replace(/('privacy\.s8body'\s*:\s*\{\s*es:\s*)'(?:[^'\\]|\\.)*'(\s*,\s*en:\s*)'(?:[^'\\]|\\.)*'/,
       function (m, a, b) { return a + jsString(PUBLISHER_TEXT.es) + b + jsString(PUBLISHER_TEXT.en); });

@@ -11,13 +11,15 @@ account, so no 12-tester closed test is required before production).
 | Build | Aissa's repo → Actions → **Android** → Run workflow with **signed** ticked |
 | Output | `planificador-<version>-<run>.aab` for Play, `.apk` (same key) to install directly for testing |
 | Signing | upload key from `tools/android-signing.ps1` (in `.signing/`, secrets on `aissab-code/planificador`); Google holds the app signing key (Play App Signing) |
-| Listing texts | `store/google-play/listing-es-ES.json` |
-| Graphics | `store/google-play/icon-512.png`, `feature-graphic.png`, `screenshots/es-ES/*.png` (1080 × 1920) |
+| Listing texts | `store/google-play/listing-en-US.json` (default language, English) and `listing-es-ES.json` (Spanish translation) |
+| Graphics | `store/google-play/icon-512.png`, `feature-graphic-<locale>.png`, `screenshots/<locale>/*.png` (1080 × 1920), for en-US and es-ES |
+| App language | the phone's language when it is one of the 24 EU languages, otherwise English (the website keeps Spanish) |
 | Privacy policy | https://aissab-code.github.io/planificador-legal/privacy.html |
 
 Regenerate the graphics with:
 
 ```bash
+node tools/store-screenshots.js --android --lang en
 node tools/store-screenshots.js --android
 node tools/store-graphics.js
 ```
@@ -26,8 +28,8 @@ node tools/store-graphics.js
 
 Play Console → **Create app**
 
-- App name: **Planificador de ruta camión**
-- Default language: **Español (España) – es-ES**
+- App name: **Truck Route Planner EU** (Spanish listing: Planificador de ruta camión)
+- Default language: **English (United States) – en-US**, with **Spanish (Spain) – es-ES** as a translation
 - App or game: **App** · Free or paid: **Free**
 - Declarations: Developer Program Policies, US export laws.
 
@@ -67,16 +69,17 @@ These match the App Store privacy answers (MOBILE_APP_GUIDE.md B.9).
 
 ## 3. Store listing (Grow users → Store presence → Main store listing)
 
-From `store/google-play/listing-es-ES.json`: app name, short description,
-full description. Graphics: app icon `icon-512.png`, feature graphic
-`feature-graphic.png`, phone screenshots `screenshots/es-ES/1-plan.png` …
-`6-rules.png` (in that order).
+Default language English: from `store/google-play/listing-en-US.json`, with
+feature graphic `feature-graphic-en-US.png` and phone screenshots
+`screenshots/en-US/1-plan.png` … `6-rules.png` (in that order). The Spanish
+translation takes `listing-es-ES.json`, `feature-graphic-es-ES.png` and
+`screenshots/es-ES/`. The app icon `icon-512.png` is shared.
 
 ## 4. Release
 
 1. **Testing → Internal testing → Create new release.** Upload the signed
    `.aab` from the Android workflow's artifact, release notes from
-   `releaseNotes`. Add testers (the Google accounts of the phones), install
+   `releaseNotes` (en-US and es-ES). Add testers (the Google accounts of the phones), install
    from the opt-in link and check the app once on a real phone. The first
    upload must be done by hand in the Console.
 2. **Production → Create new release** → *Add from library* (the same

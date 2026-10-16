@@ -3,7 +3,7 @@
  * Truck Route Planner - Google Play listing graphics.
  *
  *     node tools/store-graphics.js     -> store/google-play/icon-512.png
- *                                         store/google-play/feature-graphic.png
+ *                                         store/google-play/feature-graphic-<locale>.png
  *
  * Google Play needs a 512 x 512 icon (full square; Play rounds the corners
  * itself) and a 1024 x 500 feature graphic, shown above the listing. The
@@ -28,14 +28,20 @@ const EDGE = [
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'
 ].find((p) => fs.existsSync(p));
 
-const TITLE = 'Planificador de ruta camión';
-const TAGLINE = 'Pausas obligatorias, peajes y normativa de cada país para tus viajes por Europa.';
+/* One feature graphic per listing language, with that listing's title and a
+   screenshot of the app in the same language. English is the default listing. */
+const LOCALES = {
+  'en-US': { title: 'Truck Route Planner EU',
+    tagline: 'Mandatory breaks, tolls and the rules of every country on your trips across Europe.' },
+  'es-ES': { title: 'Planificador de ruta camión',
+    tagline: 'Pausas obligatorias, peajes y normativa de cada país para tus viajes por Europa.' }
+};
 
 function dataUri(file) {
   return 'data:image/png;base64,' + fs.readFileSync(file).toString('base64');
 }
 
-function featureHtml(icon, shot) {
+function featureHtml(icon, shot, TITLE, TAGLINE) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>
   html,body{margin:0;width:1024px;height:500px;overflow:hidden}
   body{font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#fff;
@@ -91,21 +97,27 @@ async function main() {
   await sharp(path.join(root, 'assets', 'generated', 'icon.png')).resize(512, 512)
     .flatten({ background: '#0b4ea2' }).png().toFile(icon512);
 
-  const shot = path.join(OUT, 'screenshots', 'es-ES', '2-result.png');
-  if (!fs.existsSync(shot)) throw new Error('missing ' + shot + ' - run node tools/store-screenshots.js --android');
   if (!EDGE) throw new Error('Microsoft Edge not found');
+  const made = [icon512];
+  for (const locale of Object.keys(LOCALES)) {
+    const shot = path.join(OUT, 'screenshots', locale, '2-result.png');
+    if (!fs.existsSync(shot)) {
+      throw new Error('missing ' + shot + ' - run node tools/store-screenshots.js --android' +
+        (locale === 'es-ES' ? '' : ' --lang ' + locale.slice(0, 2)));
+    }
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-feature-'));
+    const html = path.join(tmp, 'feature.html');
+    fs.writeFileSync(html, featureHtml(dataUri(icon512), dataUri(shot), LOCALES[locale].title, LOCALES[locale].tagline));
+    const raw = path.join(tmp, 'feature.png');
+    await photograph('file:///' + html.replace(/\\/g, '/'), raw, tmp);
+    const feature = path.join(OUT, 'feature-graphic-' + locale + '.png');
+    await sharp(raw).resize(1024, 500, { fit: 'cover', position: 'left top' })
+      .flatten({ background: '#0b4ea2' }).removeAlpha().png().toFile(feature);
+    try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* Edge may hold it */ }
+    made.push(feature);
+  }
 
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-feature-'));
-  const html = path.join(tmp, 'feature.html');
-  fs.writeFileSync(html, featureHtml(dataUri(icon512), dataUri(shot)));
-  const raw = path.join(tmp, 'feature.png');
-  await photograph('file:///' + html.replace(/\\/g, '/'), raw, tmp);
-  const feature = path.join(OUT, 'feature-graphic.png');
-  await sharp(raw).resize(1024, 500, { fit: 'cover', position: 'left top' })
-    .flatten({ background: '#0b4ea2' }).removeAlpha().png().toFile(feature);
-  try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* Edge may hold it */ }
-
-  for (const f of [icon512, feature]) {
+  for (const f of made) {
     const m = await sharp(f).metadata();
     process.stdout.write(path.relative(root, f) + '  ' + m.width + 'x' + m.height + (m.hasAlpha ? ' (alpha)' : '') + '\n');
   }

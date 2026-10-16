@@ -1,0 +1,11 @@
+{
+  "_comment": "Google Play listing, default language en-US (Spanish es-ES is a translation). Limits: title 30, short description 80, full description 4000. Tests check the limits and that it names nobody but the publisher.",
+  "title": "Truck Route Planner EU",
+  "shortDescription": "EU driving breaks, tolls and national rules for your truck trips across Europe.",
+  "fullDescription": "Truck Route Planner turns two addresses into a complete trip plan for heavy goods vehicles in Europe.\n\n• Driving times and breaks: works out the 45-minute breaks and the daily rests under Regulation (EC) No 561/2006, with the permitted alternatives, such as the split break or the reduced daily rest.\n• Stop plan: the time and kilometre of every mandatory break and rest.\n• Team driving: planning for one or two drivers.\n• Estimated tolls per country, based on the vehicle's weight, axles and EURO class.\n• Fuel and total trip cost, also per kilometre.\n• National rules for each country on the route: driving bans, low-emission zones and winter equipment.\n• Route map with the stops, to view or save.\n• Break reminders: your phone alerts you before each mandatory break of the trip.\n• Use my location as the starting point.\n• Text report and GPX export.\n• Available in all 24 official EU languages.\n\nNo accounts, no ads and no selling of data.\n\nImportant: the results are estimates for planning and are not legally binding. Always check the traffic restrictions, toll rates and vehicle limits in force, as well as your actual tachograph records.",
+  "category": "Maps & Navigation",
+  "contactEmail": "aissa.b.code@gmail.com",
+  "website": "https://aissab-code.github.io/planificador-legal/support.html",
+  "privacyPolicyUrl": "https://aissab-code.github.io/planificador-legal/privacy.html",
+  "releaseNotes": "First release: truck routes with breaks and rests under Regulation (EC) 561/2006, estimated tolls per country, national rules, map, break reminders and 24 languages."
+}
