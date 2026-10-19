@@ -14,6 +14,7 @@ account, so no 12-tester closed test is required before production).
 | Listing texts | `store/google-play/listing-en-US.json` (default language, English) and `listing-es-ES.json` (Spanish translation) |
 | Graphics | `store/google-play/icon-512.png`, `feature-graphic-<locale>.png`, `screenshots/<locale>/*.png` (1080 × 1920), for en-US and es-ES |
 | App language | the phone's language when it is one of the 24 EU languages, otherwise English (the website keeps Spanish) |
+| Name under the icon | **Truck Planner**; **Planificador** on Spanish phones (`LABELS` in tools/build-android-resources.js, checked in the bundle) |
 | Privacy policy | https://aissab-code.github.io/planificador-legal/privacy.html |
 
 Regenerate the graphics with:

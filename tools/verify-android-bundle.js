@@ -2,7 +2,7 @@
 /**
  * Truck Route Planner - check what actually reached the Android App Bundle.
  *
- *     node tools/verify-android-bundle.js <manifest.xml> <assets-dir>
+ *     node tools/verify-android-bundle.js <manifest.xml> <assets-dir> <app_name dump>
  *
  * In CI: <manifest.xml> is `bundletool dump manifest --bundle app.aab` and
  * <assets-dir> is the bundle's base/assets/public unzipped - the web app as
@@ -15,7 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 const appFlavour = require('./app-flavour.js');
-const { PERMISSIONS, OPTIONAL_FEATURES } = require('./build-android-resources.js');
+const { PERMISSIONS, OPTIONAL_FEATURES, LABELS } = require('./build-android-resources.js');
 
 const root = path.resolve(__dirname, '..');
 
@@ -65,6 +65,32 @@ function manifestProblems(xml, expected) {
   return out;
 }
 
+/*
+ * The launcher names, from `bundletool dump resources --resource=string/app_name
+ * --values`, which prints one line per configuration:
+ *     (default) - [STR] "Truck Planner"
+ *     locale: "es" - [STR] "Planificador"
+ */
+function labelValues(dump) {
+  const out = {};
+  String(dump).split(/\r?\n/).forEach((line) => {
+    const m = /^\s*(?:\(default\)|locale:\s*"([^"]*)")[^"]*"((?:[^"\\]|\\.)*)"/.exec(line);
+    if (m) out[m[1] || ''] = m[2];
+  });
+  return out;
+}
+
+function labelProblems(dump, labels) {
+  const found = labelValues(dump);
+  const out = [];
+  Object.keys(labels).forEach((q) => {
+    if (found[q] !== labels[q]) {
+      out.push('launcher name ' + (q || 'default') + ' is ' + JSON.stringify(found[q]) + ', expected ' + JSON.stringify(labels[q]));
+    }
+  });
+  return out;
+}
+
 /** Problems in the packaged web app. */
 function assetProblems(dir) {
   const out = [];
@@ -79,14 +105,15 @@ function assetProblems(dir) {
 }
 
 function main() {
-  const [manifestFile, assetsDir] = process.argv.slice(2);
-  if (!manifestFile || !assetsDir) {
-    process.stderr.write('usage: node tools/verify-android-bundle.js <manifest.xml> <assets-dir>\n');
+  const [manifestFile, assetsDir, labelsFile] = process.argv.slice(2);
+  if (!manifestFile || !assetsDir || !labelsFile) {
+    process.stderr.write('usage: node tools/verify-android-bundle.js <manifest.xml> <assets-dir> <app_name dump>\n');
     process.exit(2);
   }
   const expected = expectations();
   const xml = fs.readFileSync(manifestFile, 'utf8');
-  const found = manifestProblems(xml, expected).concat(assetProblems(assetsDir));
+  const found = manifestProblems(xml, expected).concat(assetProblems(assetsDir))
+    .concat(labelProblems(fs.readFileSync(labelsFile, 'utf8'), LABELS));
   if (found.length) {
     process.stdout.write('The Android bundle is not right:\n');
     found.forEach((p) => process.stdout.write('  - ' + p + '\n'));
@@ -95,9 +122,10 @@ function main() {
   process.stdout.write('Android bundle verified: ' + expected.packageName + ' ' + expected.versionName +
     ' (' + attr(xml, 'manifest', 'android:versionCode') + '), target SDK ' +
     attr(xml, 'uses-sdk', 'android:targetSdkVersion') + ', location and notification permissions, ' +
-    'GPS optional, app pages only, no developer name\n');
+    'GPS optional, app pages only, no developer name, launcher name ' +
+    Object.keys(LABELS).map((q) => (q || 'default') + ' "' + LABELS[q] + '"').join(', ') + '\n');
 }
 
 if (require.main === module) main();
 
-module.exports = { manifestProblems, assetProblems, expectations, MIN_TARGET_SDK };
+module.exports = { manifestProblems, assetProblems, labelValues, labelProblems, expectations, MIN_TARGET_SDK };

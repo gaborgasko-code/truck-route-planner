@@ -122,9 +122,13 @@ jobs:
             "https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar"
           AAB=android/app/build/outputs/bundle/release/app-release.aab
           java -jar "$RUNNER_TEMP/bundletool.jar" dump manifest --bundle "$AAB" > "$RUNNER_TEMP/manifest.xml"
+          java -jar "$RUNNER_TEMP/bundletool.jar" dump resources --bundle "$AAB" \
+            --resource string/app_name --values > "$RUNNER_TEMP/app_name.txt"
+          cat "$RUNNER_TEMP/app_name.txt"
           mkdir -p "$RUNNER_TEMP/aab"
           unzip -q -o "$AAB" 'base/assets/public/*' -d "$RUNNER_TEMP/aab"
-          node tools/verify-android-bundle.js "$RUNNER_TEMP/manifest.xml" "$RUNNER_TEMP/aab/base/assets/public"
+          node tools/verify-android-bundle.js "$RUNNER_TEMP/manifest.xml" "$RUNNER_TEMP/aab/base/assets/public" \
+            "$RUNNER_TEMP/app_name.txt"
 
       - name: Package
         run: |

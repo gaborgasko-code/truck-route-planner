@@ -86,6 +86,29 @@
       assert.equal(/storePassword\s*=\s*"/.test(out), false, 'no password is written into the file');
     });
 
+    test('the launcher name is English by default and Spanish on Spanish phones', function () {
+      const STRINGS = [
+        "<?xml version='1.0' encoding='utf-8'?>",
+        '<resources>',
+        '    <string name="app_name">Planificador</string>',
+        '    <string name="title_activity_main">Planificador</string>',
+        '    <string name="package_name">com.aissaapps.planificador</string>',
+        '    <string name="custom_url_scheme">com.aissaapps.planificador</string>',
+        '</resources>',
+        ''
+      ].join('\n');
+      assert.equal(res.LABELS[''], 'Truck Planner');
+      assert.equal(res.LABELS.es, 'Planificador');
+      const out = res.applyStrings(STRINGS, res.LABELS['']);
+      assert.ok(out.indexOf('<string name="app_name">Truck Planner</string>') !== -1);
+      assert.ok(out.indexOf('<string name="title_activity_main">Truck Planner</string>') !== -1);
+      assert.ok(out.indexOf('<string name="package_name">com.aissaapps.planificador</string>') !== -1, 'the rest is kept');
+      assert.equal(res.applyStrings(out, res.LABELS['']), out, 'idempotent');
+      const es = res.localeStrings(res.LABELS.es);
+      assert.ok(/^<\?xml[\s\S]*<string name="app_name">Planificador<\/string>[\s\S]*<\/resources>\n$/.test(es));
+      assert.throws(function () { res.applyStrings('<resources></resources>', 'x'); });
+    });
+
     test('the notification icon is configured and generated', function () {
       const config = JSON.parse(fs.readFileSync(path.join(root, 'capacitor.config.json'), 'utf8'));
       assert.equal(config.plugins.LocalNotifications.smallIcon, res.NOTIFICATION_ICON);
@@ -210,6 +233,21 @@
       fs.writeFileSync(path.join(dir, 'mobile.html'), 'by Gabor');
       const found = verify.assetProblems(dir).join(' | ');
       assert.ok(/desktop\.html must not ship/.test(found) && /names the developer/.test(found), found);
+    });
+
+    test('the launcher names are read back from the bundle', function () {
+      const dump = [
+        "Package 'com.aissaapps.planificador':",
+        '0x7f0f001b - string/app_name',
+        '\t(default) - [STR] "Truck Planner"',
+        '\tlocale: "es" - [STR] "Planificador"'
+      ].join('\n');
+      assert.deepEqual(verify.labelValues(dump), { '': 'Truck Planner', es: 'Planificador' });
+      assert.deepEqual(verify.labelProblems(dump, res.LABELS), []);
+      const old = dump.replace('"Truck Planner"', '"Planificador"');
+      assert.ok(/launcher name default is "Planificador"/.test(verify.labelProblems(old, res.LABELS).join(' ')));
+      assert.ok(verify.labelProblems('', res.LABELS).length === 2, 'an empty dump fails');
+      assert.ok(/dump resources --bundle "\$AAB" \\\s*--resource string\/app_name --values/.test(workflow));
     });
 
     test('the workflow builds, then verifies, then signs the test APK with the same key', function () {

@@ -18,6 +18,9 @@
  *                        upload key never sits in the project.
  *   res/drawable-*       the notification icon, a white silhouette per
  *                        density (assets/generated/notification-icon.png).
+ *   res/values*          the name under the icon: "Truck Planner" by default,
+ *                        so every phone outside Spanish shows the English
+ *                        name, and "Planificador" on Spanish phones.
  *
  * The notification permission (POST_NOTIFICATIONS) and its alarms come from
  * the Local Notifications plugin's own manifest.
@@ -41,6 +44,32 @@ const OPTIONAL_FEATURES = [
   'android.hardware.location',
   'android.hardware.location.gps'
 ];
+
+/* The launcher name per resource qualifier; '' is the default (values/). */
+const LABELS = { '': 'Truck Planner', es: 'Planificador' };
+const LABEL_STRINGS = ['app_name', 'title_activity_main'];
+
+function xmlText(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, "\\'");
+}
+
+/** values/strings.xml with the default launcher name. */
+function applyStrings(xml, label) {
+  let s = xml;
+  LABEL_STRINGS.forEach((name) => {
+    const re = new RegExp('(<string name="' + name + '">)[^<]*(</string>)');
+    if (!re.test(s)) throw new Error('strings.xml has no ' + name);
+    s = s.replace(re, '$1' + xmlText(label) + '$2');
+  });
+  return s;
+}
+
+/** A values-<lang>/strings.xml holding only the launcher name. */
+function localeStrings(label) {
+  return "<?xml version='1.0' encoding='utf-8'?>\n<resources>\n" +
+    LABEL_STRINGS.map((name) => '    <string name="' + name + '">' + xmlText(label) + '</string>\n').join('') +
+    '</resources>\n';
+}
 
 /** The manifest with the location permissions and optional GPS features. */
 function applyManifest(xml) {
@@ -127,13 +156,26 @@ async function main() {
 
   await writeNotificationIcons();
 
+  const res = path.join(ANDROID, 'app', 'src', 'main', 'res');
+  Object.keys(LABELS).forEach((q) => {
+    if (q === '') {
+      const file = path.join(res, 'values', 'strings.xml');
+      fs.writeFileSync(file, applyStrings(fs.readFileSync(file, 'utf8'), LABELS[q]));
+    } else {
+      fs.mkdirSync(path.join(res, 'values-' + q), { recursive: true });
+      fs.writeFileSync(path.join(res, 'values-' + q, 'strings.xml'), localeStrings(LABELS[q]));
+    }
+  });
+
   process.stdout.write('Android project: version ' + opts.versionName + ' (' + opts.versionCode + '), ' +
     'location permissions, GPS optional, release signing from env, notification icon in ' +
-    Object.keys(DENSITIES).length + ' densities\n');
+    Object.keys(DENSITIES).length + ' densities, launcher name ' +
+    Object.keys(LABELS).map((q) => (q || 'default') + ' "' + LABELS[q] + '"').join(', ') + '\n');
 }
 
 if (require.main === module) {
   main().catch((err) => { process.stderr.write(String(err.stack || err) + '\n'); process.exit(1); });
 }
 
-module.exports = { applyManifest, applyGradle, NOTIFICATION_ICON, PERMISSIONS, OPTIONAL_FEATURES };
+module.exports = { applyManifest, applyGradle, applyStrings, localeStrings, LABELS,
+  NOTIFICATION_ICON, PERMISSIONS, OPTIONAL_FEATURES };
