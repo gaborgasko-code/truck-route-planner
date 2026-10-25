@@ -15,7 +15,7 @@ account, so no 12-tester closed test is required before production).
 | Graphics | `store/google-play/icon-512.png`, `feature-graphic-<locale>.png`, `screenshots/<locale>/*.png` (1080 × 1920), for en-US and es-ES |
 | App language | the phone's language when it is one of the 24 EU languages, otherwise English (the website keeps Spanish) |
 | Name under the icon | **Truck Planner**; **Planificador** on Spanish phones (`LABELS` in tools/build-android-resources.js, checked in the bundle) |
-| Privacy policy | https://aissab-code.github.io/planificador-legal/privacy.html |
+| Privacy policy | https://chispapps.com/truckrouteplanner/privacy.html |
 
 Regenerate the graphics with:
 
@@ -38,7 +38,7 @@ Play Console → **Create app**
 
 | Section | Answer |
 |---|---|
-| Privacy policy | https://aissab-code.github.io/planificador-legal/privacy.html |
+| Privacy policy | https://chispapps.com/truckrouteplanner/privacy.html |
 | App access | All functionality is available without special access (no login) |
 | Ads | No, the app does not contain ads |
 | Content rating | Category **All other app types**; every question **No** (no violence, sexuality, language, drugs, gambling; users cannot interact or share content or location; no purchases; no web browser) |
