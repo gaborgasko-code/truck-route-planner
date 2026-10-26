@@ -2,7 +2,7 @@
   "schema": "trp.toll_rates/1",
   "author": "created by Gabor Gasko",
   "currency": "EUR",
-  "updated": "2026-01-01",
+  "updated": "2026-10-26",
   "basis": "Indicative blended toll for a 40 t / 5-axle / EURO VI articulated combination, expressed in EUR per kilometre across the motorway and tolled trunk network.",
   "disclaimer": "ESTIMATE ONLY. Rates are averages and do not represent an official tariff. Vignette / time-based countries are listed at 0.00 EUR/km with a note. Always verify with the national toll operator before departure.",
   "rates": {
@@ -192,11 +192,11 @@
     },
     "LT": {
       "name": "Lithuania",
-      "rate_eur_per_km": 0.13,
-      "system": "Distance-based e-toll",
-      "distance_based": true,
+      "rate_eur_per_km": 0,
+      "system": "Time-based e-vignette (Via Toll by distance from 2027)",
+      "distance_based": false,
       "bboxes": [[20.8, 53.8, 26.9, 56.5]],
-      "notes": "Charging by kilometre on the main network for vehicles over 3.5 t."
+      "notes": "Time-based e-vignette until 31 December 2026. The distance-based Via Toll starts on 1 January 2027."
     },
     "LU": {
       "name": "Luxembourg",
@@ -204,7 +204,7 @@
       "system": "Eurovignette",
       "distance_based": false,
       "bboxes": [[5.7, 49.4, 6.6, 50.3]],
-      "notes": "Time-based Eurovignette shared with NL and SE. Not per kilometre."
+      "notes": "Time-based Eurovignette shared with Sweden. Not per kilometre."
     },
     "MT": {
       "name": "Malta",
@@ -232,11 +232,11 @@
     },
     "NL": {
       "name": "Netherlands",
-      "rate_eur_per_km": 0,
-      "system": "Eurovignette (truck charge announced)",
-      "distance_based": false,
+      "rate_eur_per_km": 0.16,
+      "system": "Truck toll (vrachtwagenheffing)",
+      "distance_based": true,
       "bboxes": [[3.2, 50.7, 7.3, 53.7]],
-      "notes": "Time-based today. Westerschelde and Kil tunnels are charged separately."
+      "notes": "Charged per kilometre since 1 July 2026 for vehicles over 3.5 t on motorways and some regional roads; replaced the Eurovignette. On-board unit required. Westerschelde and Kil tunnels are charged separately."
     },
     "MK": {
       "name": "North Macedonia",
@@ -273,10 +273,10 @@
     "RO": {
       "name": "Romania",
       "rate_eur_per_km": 0.09,
-      "system": "Rovinieta plus bridge tolls",
-      "distance_based": false,
+      "system": "TollRO (by distance) plus bridge tolls",
+      "distance_based": true,
       "bboxes": [[20.2, 43.5, 29.8, 48.4]],
-      "notes": "Time-based vignette. Fetesti-Cernavoda bridge tolled separately."
+      "notes": "Since 1 October 2026 goods vehicles over 3.5 t pay TollRO by distance (route ticket or TollRo app), by mass, EURO class and road category. Fetesti-Cernavoda bridge tolled separately."
     },
     "RU": {
       "name": "Russia",

@@ -288,6 +288,34 @@
     });
   });
 
+  /* Facts re-checked against the official sources on 26 Oct 2026, so an old
+     copy of the data cannot come back unnoticed. */
+  describe('data - rules checked against the official sources', function () {
+    const tolls = JSON.parse(fs.readFileSync(path.join(root, 'data', 'toll_rates.json'), 'utf8')).rates;
+    const regs = JSON.parse(fs.readFileSync(path.join(root, 'data', 'trailer_regulations.json'), 'utf8')).regulations;
+    const en = function (code) { return regs[code].rules.en.join(' '); };
+
+    test('the Netherlands charge trucks per kilometre since 1 July 2026', function () {
+      assert.ok(tolls.NL.distance_based && tolls.NL.rate_eur_per_km > 0);
+      assert.ok(/vrachtwagenheffing/.test(tolls.NL.system) && /1 July 2026/.test(en('NL')));
+      assert.equal(/Eurovignette required/.test(en('NL')), false);
+    });
+
+    test('Romania charges TollRO by distance since 1 October 2026', function () {
+      assert.ok(tolls.RO.distance_based && /TollRO/.test(tolls.RO.system) && /1 October 2026/.test(en('RO')));
+    });
+
+    test('Lithuania keeps the vignette until the end of 2026', function () {
+      assert.equal(tolls.LT.distance_based, false);
+      assert.ok(/1 January 2027/.test(tolls.LT.notes) && /1 January 2027/.test(en('LT')));
+    });
+
+    test('Sweden: winter tyres on heavy vehicles from 10 November to 10 April', function () {
+      assert.ok(/10 November to 10 April/.test(en('SE')));
+      assert.ok(/10 de noviembre al 10 de abril/.test(regs.SE.rules.es.join(' ')));
+    });
+  });
+
   describe('android - what reaches the bundle', function () {
     const e = verify.expectations();
     const good = [

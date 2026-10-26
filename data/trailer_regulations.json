@@ -1,7 +1,7 @@
 {
   "schema": "trp.trailer_regulations/2",
   "author": "created by Gabor Gasko",
-  "updated": "2026-01-01",
+  "updated": "2026-10-26",
   "disclaimer": {
     "es": "SOLO RESUMEN / ESTIMACIÓN. Estas notas son una ayuda simplificada a la planificación, no asesoramiento jurídico. Las normas nacionales, las restricciones de circulación, los calendarios de festivos y los límites dimensionales cambian con frecuencia. VERIFIQUE CADA PUNTO CON LA AUTORIDAD NACIONAL COMPETENTE ANTES DE LA SALIDA.",
     "en": "ESTIMATE / SUMMARY ONLY. These notes are a simplified planning aid, not legal advice. National rules, driving bans, holiday calendars and dimension limits change frequently. VERIFY EVERY ITEM WITH THE COMPETENT NATIONAL AUTHORITY BEFORE DEPARTURE."
@@ -270,13 +270,13 @@
       "name": { "es": "Lituania", "en": "Lithuania" },
       "rules": {
         "es": [
-          "Registro obligatorio en el sistema de peaje por kilómetro para vehículos de más de 3,5 t.",
+          "Viñeta electrónica por tiempo obligatoria para vehículos de más de 3,5 t hasta el 31 de diciembre de 2026; el peaje por kilómetro Via Toll empieza el 1 de enero de 2027.",
           "Neumáticos de invierno obligatorios del 10 de noviembre al 1 de abril.",
           "Luces de cruce obligatorias en todo momento y durante todo el año.",
           "En el deshielo primaveral pueden aplicarse restricciones de peso en las carreteras regionales."
         ],
         "en": [
-          "Distance-based e-toll registration required for vehicles over 3.5 t.",
+          "Time-based e-vignette required for vehicles over 3.5 t until 31 December 2026; the distance-based Via Toll starts on 1 January 2027.",
           "Winter tyres compulsory from 10 November to 1 April.",
           "Dipped headlights mandatory at all times, all year.",
           "Weight restrictions can apply on regional roads during the spring thaw."
@@ -304,13 +304,13 @@
       "name": { "es": "Países Bajos", "en": "Netherlands" },
       "rules": {
         "es": [
-          "Euroviñeta obligatoria en la red de autopistas para vehículos de más de 12 t.",
+          "Peaje por kilómetro para camiones (vrachtwagenheffing) desde el 1 de julio de 2026 para vehículos de más de 3,5 t en autopistas y algunas carreteras regionales; se necesita unidad de a bordo.",
           "Se están implantando zonas de emisiones cero para vehículos de reparto en más de 25 ciudades: consulte cada municipio.",
           "No hay prohibición general de fin de semana; el transporte especial sí está restringido los fines de semana y de noche.",
           "Los túneles del Westerschelde y del Kil tienen peajes propios y restricciones para mercancías peligrosas."
         ],
         "en": [
-          "Eurovignette required for the motorway network for vehicles over 12 t.",
+          "Truck toll per kilometre (vrachtwagenheffing) since 1 July 2026 for vehicles over 3.5 t on motorways and some regional roads; an on-board unit is required.",
           "Zero emission zones for delivery vehicles are being introduced in more than 25 cities - check per city.",
           "No general weekend ban; abnormal loads are restricted at weekends and at night.",
           "Westerschelde and Kil tunnels have separate tolls and dangerous goods restrictions."
@@ -372,13 +372,13 @@
       "name": { "es": "Rumanía", "en": "Romania" },
       "rules": {
         "es": [
-          "Hay que adquirir la viñeta Rovinieta antes de entrar en la red nacional de carreteras.",
+          "Desde el 1 de octubre de 2026, los vehículos de mercancías de más de 3,5 t pagan TollRO por distancia (tichet de ruta o app TollRo) en lugar de la rovinieta.",
           "El puente de Fetesti-Cernavoda y los pasos del Danubio se pagan aparte.",
           "Neumáticos de invierno obligatorios en carreteras con nieve o hielo del 1 de noviembre al 31 de marzo.",
           "Durante las olas de calor se aplican restricciones temporales a los vehículos pesados en determinadas carreteras nacionales."
         ],
         "en": [
-          "Rovinieta vignette must be purchased before entering the national road network.",
+          "Since 1 October 2026 goods vehicles over 3.5 t pay TollRO by distance (route ticket or TollRo app) instead of the rovinieta.",
           "Fetesti-Cernavoda bridge and the Danube crossings are tolled separately.",
           "Winter tyres compulsory on snow or ice covered roads from 1 November to 31 March.",
           "Temporary restrictions for heavy vehicles apply during heatwaves on selected national roads."
@@ -460,13 +460,13 @@
       "rules": {
         "es": [
           "Euroviñeta obligatoria en la red de autopistas para vehículos de más de 12 t.",
-          "Neumáticos de invierno obligatorios para vehículos pesados del 1 de diciembre al 31 de marzo en condiciones invernales.",
+          "Neumáticos de invierno obligatorios para vehículos pesados del 10 de noviembre al 10 de abril, haga el tiempo que haga, en todos los ejes, incluido el remolque; en los ejes directores y motrices, con símbolo alpino o de clavos.",
           "Se aplican tasas de congestión en Estocolmo y Gotemburgo los días laborables.",
           "Los límites nacionales de peso más altos (BK4, hasta 74 t) solo se aplican en las clases de carretera autorizadas."
         ],
         "en": [
           "Eurovignette required for vehicles over 12 t on the motorway network.",
-          "Winter tyres mandatory for HGVs from 1 December to 31 March in wintry conditions.",
+          "Winter tyres mandatory for heavy vehicles from 10 November to 10 April whatever the weather, on all axles including the trailer; Alpine-marked or studded tyres on the steer and drive axles.",
           "Congestion charges apply in Stockholm and Gothenburg on weekdays.",
           "Higher national weight limits (BK4 up to 74 t) apply only on approved road classes."
         ]

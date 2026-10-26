@@ -592,6 +592,13 @@
       assert.ok(listing.copyright.indexOf('Aissa Bamogo Redondo') !== -1);
     });
 
+    test('it says it is not a government app and links the official sources', function () {
+      const d = listing.description;
+      assert.ok(d.indexOf('NO ES UNA APP OFICIAL') !== -1 && d.indexOf('NO ES UNA APP OFICIAL') < 400, 'near the top');
+      assert.ok(d.indexOf('https://chispapps.com/truckrouteplanner/sources.html') !== -1);
+      assert.ok(/https:\/\/eur-lex\.europa\.eu\/\S*32006R0561/.test(d));
+    });
+
     test('keywords do not repeat the name, which Apple already indexes', function () {
       const name = listing.name.toLowerCase();
       listing.keywords.split(',').forEach(function (k) {
