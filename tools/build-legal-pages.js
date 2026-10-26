@@ -12,9 +12,14 @@
  * same tools/app-flavour.js as the app bundle - and the store listing says
  * exactly what the app says, in all 24 languages.
  *
+ * sources.html lists the official sources behind the rules the app shows
+ * (store/official-sources.json) and says plainly that the app is not a
+ * government app; Google Play requires both, and the store descriptions link
+ * to it.
+ *
  * The output is plain HTML with inline styles: no scripts, no analytics, no
- * external requests. It is published from Aissa's GitHub (GitHub Pages);
- * MOBILE_APP_GUIDE.md B.9 has the steps.
+ * external requests. It is published at chispapps.com/truckrouteplanner/ (the
+ * aissab-code/chispapps-site repo); MOBILE_APP_GUIDE.md B.9 has the steps.
  */
 'use strict';
 
@@ -30,6 +35,22 @@ const OUT = path.join(root, 'build', 'legal');
    knows the app by. */
 const STORE_NAME = 'Planificador de ruta camión';
 const UPDATED = '2026-10-08';
+
+/* The official sources behind the rules the app summarises (store/
+   official-sources.json). Google Play requires working links to official
+   sources for government information, and a statement that the app is not a
+   government app; the store descriptions link to the page built from it. */
+const SOURCES_FILE = path.join(root, 'store', 'official-sources.json');
+const YOUR_EUROPE = 'https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/';
+
+function loadSources() {
+  return JSON.parse(fs.readFileSync(SOURCES_FILE, 'utf8'));
+}
+
+/** Your Europe's road-rules page for a country, or null where it has none. */
+function yourEuropeUrl(slug) {
+  return slug ? YOUR_EUROPE + slug + '/index_en.htm' : null;
+}
 
 /* The services the app contacts, as on PRIVACY.html (a test keeps the two
    lists identical). Google Analytics only with the visitor's consent. */
@@ -74,6 +95,7 @@ const STYLE = [
   '.meta{color:var(--muted);font-size:14px;margin:18px 0 0}',
   'table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}th,td{text-align:left;vertical-align:top;padding:8px 6px;border-top:1px solid var(--line)}th{color:var(--muted);font-weight:600}',
   '.wrap{overflow-x:auto}nav.langs{font-size:14px;line-height:2;margin:14px 0 0}nav.langs a,nav.langs strong{margin-right:10px;white-space:nowrap}',
+  'ul{margin:8px 0;padding-left:22px}li{margin:6px 0}.note{color:var(--muted);font-size:13px}',
   'footer{color:var(--muted);font-size:14px;padding:0 16px 32px}'
 ].join('\n');
 
@@ -87,7 +109,8 @@ function shell(lang, title, subtitle, body) {
     '<main>\n' + body + '\n</main>\n' +
     '<footer><div class="in">' + esc(STORE_NAME) + ' · ' + esc(appFlavour.PUBLISHER) +
     ' · <a href="mailto:' + esc(appFlavour.CONTACT) + '">' + esc(appFlavour.CONTACT) + '</a>' +
-    ' · <a href="privacy.html">Privacidad / Privacy</a> · <a href="support.html">Soporte / Support</a></div></footer>\n' +
+    ' · <a href="privacy.html">Privacidad / Privacy</a> · <a href="support.html">Soporte / Support</a>' +
+    ' · <a href="sources.html">Fuentes oficiales / Official sources</a></div></footer>\n' +
     '</body>\n</html>\n';
 }
 
@@ -154,6 +177,7 @@ function supportPage() {
     '<p><strong>«Usar mi ubicación» no funciona.</strong> En el iPhone, abra Ajustes → Planificador → Ubicación y elija «Mientras se usa la app». En Android, abra Ajustes → Aplicaciones → Planificador → Permisos → Ubicación y elija «Permitir solo mientras se usa la aplicación». La ubicación solo se usa para rellenar el punto de partida.</p>',
     '<p><strong>No recibo los avisos de pausa.</strong> En el iPhone, abra Ajustes → Planificador → Notificaciones y active «Permitir notificaciones». En Android, abra Ajustes → Aplicaciones → Planificador → Notificaciones y actívelas. Los avisos se programan en el propio teléfono para cada viaje.</p>',
     '<p><strong>¿Qué datos se recogen?</strong> No hay cuentas ni publicidad. Consulte la <a href="privacy.html">política de privacidad</a>.</p>',
+    '<p><strong>¿Es una app oficial? ¿De dónde salen las normas?</strong> No es una app oficial ni representa a ningún organismo público. Las normas que resume proceden de las <a href="sources.html">fuentes oficiales</a> que enlazamos, país por país.</p>',
     '</section>',
     '<section lang="en"><h2>Contact</h2>',
     '<p>For any question, problem or suggestion, write to <a href="mailto:' + C + '">' + C + '</a>.</p>',
@@ -163,16 +187,62 @@ function supportPage() {
     '<p><strong>“Use my location” does not work.</strong> On iPhone, open Settings → Planificador → Location and choose “While Using the App”. On Android, open Settings → Apps → Planificador → Permissions → Location and choose “Allow only while using the app”. Your location is only used to fill in the starting point.</p>',
     '<p><strong>I do not get the break reminders.</strong> On iPhone, open Settings → Planificador → Notifications and turn on “Allow Notifications”. On Android, open Settings → Apps → Planificador → Notifications and turn them on. Reminders are scheduled on the phone itself, for each trip.</p>',
     '<p><strong>What data is collected?</strong> There are no accounts and no advertising. See the <a href="privacy-en.html">privacy policy</a>.</p>',
+    '<p><strong>Is it an official app? Where do the rules come from?</strong> It is not a government app and does not represent any public authority. The rules it summarises come from the <a href="sources.html">official sources</a> we link to, country by country.</p>',
     '</section>'
   ].join('\n');
   return shell('es', 'Soporte / Support', STORE_NAME, body);
+}
+
+function sourceLink(src) {
+  return '<a href="' + esc(src.url) + '" rel="noopener">' + esc(src.label) + '</a>';
+}
+
+/* Official sources: the not-a-government-app statement, the EU-wide sources,
+   then one row per country the app has rules or tolls for. Spanish and
+   English on one page, like the support page. */
+function sourcesPage(S) {
+  const eu = S.eu.map(function (s) {
+    return '<li>' + esc(s.topic.es) + ' / ' + esc(s.topic.en) + ': ' +
+      '<a href="' + esc(s.url) + '" rel="noopener">' + esc(s.label) + '</a></li>';
+  }).join('\n');
+
+  const rows = S.countries.map(function (c) {
+    const rules = yourEuropeUrl(c.yourEurope);
+    const cell = function (src) {
+      if (!src) return '—';
+      return sourceLink(src) + (src.note ? '<br><span class="note">' + esc(src.note.es) + ' / ' + esc(src.note.en) + '</span>' : '');
+    };
+    return '<tr><td><strong>' + esc(c.name.es) + '</strong>' + (c.name.en !== c.name.es ? '<br>' + esc(c.name.en) : '') + '</td>' +
+      '<td>' + (rules ? '<a href="' + esc(rules) + '" rel="noopener">Your Europe</a>' : '—') + '</td>' +
+      '<td>' + cell(c.tolls) + '</td><td>' + cell(c.bans) + '</td></tr>';
+  }).join('\n');
+
+  const body = [
+    '<section lang="es"><h2>No es una app oficial</h2>',
+    '<p><strong>Planificador de ruta camión es una app independiente. No representa a la Unión Europea ni a ningún gobierno u organismo público, ni está afiliada a ellos.</strong></p>',
+    '<p>La app resume normas publicadas por las autoridades que se enlazan en esta página: tiempos de conducción y descanso, peajes, restricciones a la circulación de camiones, zonas de bajas emisiones y equipamiento de invierno. Sus resultados son estimaciones para planificar y no son jurídicamente vinculantes; compruebe siempre la norma vigente en la fuente oficial.</p></section>',
+    '<section lang="en"><h2>Not a government app</h2>',
+    '<p><strong>Truck Route Planner is an independent app. It does not represent, and is not affiliated with, the European Union or any government or public authority.</strong></p>',
+    '<p>The app summarises rules published by the authorities linked on this page: driving and rest times, tolls, truck driving bans, low-emission zones and winter equipment. Its results are planning estimates and are not legally binding; always check the rule in force at the official source.</p></section>',
+    '<section><h2>Unión Europea / European Union</h2><ul>\n' + eu + '\n</ul></section>',
+    '<section><h2>Por país / By country</h2>',
+    '<p>Normas de circulación: la página de cada país en <a href="' + esc(YOUR_EUROPE + 'index_es.htm') + '" rel="noopener">Your Europe</a>, el sitio web oficial de la UE. ' +
+      'Peajes: el operador o la autoridad oficial de cada país. Restricciones: la autoridad nacional de tráfico o de transportes.<br>' +
+      'Road rules: each country\'s page on <a href="' + esc(YOUR_EUROPE + 'index_en.htm') + '" rel="noopener">Your Europe</a>, the official EU website. ' +
+      'Tolls: each country\'s official toll operator or authority. Driving bans: the national traffic or transport authority.</p>',
+    '<div class="wrap"><table><thead><tr><th>País / Country</th><th>Normas / Road rules</th><th>Peajes / Tolls</th>' +
+      '<th>Restricciones a camiones / Truck driving bans</th></tr></thead><tbody>\n' + rows + '\n</tbody></table></div>',
+    '<p class="meta">Actualizado / Updated: ' + esc(S.updated) + '</p></section>'
+  ].join('\n');
+  return shell('es', 'Fuentes oficiales / Official sources', STORE_NAME + ' · Truck Route Planner EU', body);
 }
 
 function indexPage() {
   return shell('es', STORE_NAME, appFlavour.PUBLISHER, [
     '<section><h2>' + esc(STORE_NAME) + '</h2>',
     '<p><a href="privacy.html">Política de privacidad</a> · <a href="privacy-en.html">Privacy policy</a></p>',
-    '<p><a href="support.html">Soporte / Support</a></p></section>'
+    '<p><a href="support.html">Soporte / Support</a></p>',
+    '<p><a href="sources.html">Fuentes oficiales / Official sources</a></p></section>'
   ].join('\n'));
 }
 
@@ -186,19 +256,20 @@ function build(outDir) {
     fs.writeFileSync(path.join(out, pageFile(code)), privacyPage(TRP, code), 'utf8');
   });
   fs.writeFileSync(path.join(out, 'support.html'), supportPage(), 'utf8');
+  fs.writeFileSync(path.join(out, 'sources.html'), sourcesPage(loadSources()), 'utf8');
   fs.writeFileSync(path.join(out, 'index.html'), indexPage(), 'utf8');
   /* GitHub Pages: serve the files as they are, no Jekyll. */
   fs.writeFileSync(path.join(out, '.nojekyll'), '', 'utf8');
 
   const named = appFlavour.leftovers(out);
   if (named.length) throw new Error('the legal pages must not name the developer:\n  ' + named.join('\n  '));
-  return { out: out, pages: codes.length + 2, languages: codes };
+  return { out: out, pages: codes.length + 3, languages: codes };
 }
 
 if (require.main === module) {
   const r = build();
   process.stdout.write('legal pages built: ' + r.pages + ' files in ' + path.relative(root, r.out) +
-    ' (privacy in ' + r.languages.length + ' languages, support, index)\n');
+    ' (privacy in ' + r.languages.length + ' languages, support, sources, index)\n');
 }
 
-module.exports = { build, THIRD_PARTIES, STORE_NAME, pageFile };
+module.exports = { build, THIRD_PARTIES, STORE_NAME, pageFile, loadSources, yourEuropeUrl, SOURCES_FILE };

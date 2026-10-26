@@ -76,6 +76,29 @@ feature graphic `feature-graphic-en-US.png` and phone screenshots
 translation takes `listing-es-ES.json`, `feature-graphic-es-ES.png` and
 `screenshots/es-ES/`. The app icon `icon-512.png` is shared.
 
+### Official sources and "not a government app" (required)
+
+The first release was rejected on 25 Oct 2026 under the **Misleading Claims**
+policy ("Missing Source Link for Government Information"): the description
+presents official rules (Regulation 561/2006, tolls, driving bans, low-emission
+zones, winter equipment) and must give working links to official sources for
+all of them, plus an easy-to-see statement that the app is not a government
+app. Both descriptions now carry:
+
+- a **NOT A GOVERNMENT APP / NO ES UNA APP OFICIAL** paragraph right after the
+  first sentence;
+- an **OFFICIAL SOURCES / FUENTES OFICIALES** list at the end: EUR-Lex
+  (561/2006), the European Commission (driving time, road charging, urban
+  vehicle access regulations), Your Europe (road rules by country), and
+  https://chispapps.com/truckrouteplanner/sources.html for the per-country
+  toll operators and driving-ban authorities.
+
+The sources page is generated from `store/official-sources.json` by
+`tools/build-legal-pages.js` and published in the chispapps-site repo. A new
+country in `data/toll_rates.json` or `data/trailer_regulations.json` fails the
+tests until it has its official sources. Keep both texts in any future
+description change.
+
 ## 4. Release
 
 1. **Testing → Internal testing → Create new release.** Upload the signed

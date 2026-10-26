@@ -1,0 +1,840 @@
+{
+  "_comment": "Official sources behind the rules and tolls the app shows. Built into chispapps.com/truckrouteplanner/sources.html by tools/build-legal-pages.js; linked from both Google Play descriptions. Every link was checked to load (26 Oct 2026). Tests: tests/test_android_build.js (store - official sources).",
+  "updated": "2026-10-26",
+  "eu": [
+    {
+      "topic": {
+        "es": "Tiempos de conducción, pausas y descansos",
+        "en": "Driving times, breaks and rest periods"
+      },
+      "label": "Regulation (EC) No 561/2006 – EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/reg/2006/561/oj"
+    },
+    {
+      "topic": {
+        "es": "Tiempos de conducción y descanso",
+        "en": "Driving time and rest periods"
+      },
+      "label": "European Commission – Driving time and rest periods",
+      "url": "https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en"
+    },
+    {
+      "topic": {
+        "es": "Tacógrafos",
+        "en": "Tachographs"
+      },
+      "label": "Regulation (EU) No 165/2014 – EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/reg/2014/165/oj"
+    },
+    {
+      "topic": {
+        "es": "Tiempo de trabajo en el transporte por carretera",
+        "en": "Working time in road transport"
+      },
+      "label": "Directive 2002/15/EC – EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/dir/2002/15/oj"
+    },
+    {
+      "topic": {
+        "es": "Acuerdo AETR (países no comunitarios)",
+        "en": "AETR Agreement (non-EU countries)"
+      },
+      "label": "UNECE – Road transport (AETR)",
+      "url": "https://unece.org/transport/road-transport"
+    },
+    {
+      "topic": {
+        "es": "Peajes y viñetas",
+        "en": "Tolls and vignettes"
+      },
+      "label": "European Commission – Road charging",
+      "url": "https://transport.ec.europa.eu/transport-modes/road/road-charging_en"
+    },
+    {
+      "topic": {
+        "es": "Tarificación de vehículos pesados (Euroviñeta)",
+        "en": "Charging of heavy goods vehicles (Eurovignette)"
+      },
+      "label": "Directive 1999/62/EC – EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/dir/1999/62/oj"
+    },
+    {
+      "topic": {
+        "es": "Pesos y dimensiones máximos",
+        "en": "Maximum weights and dimensions"
+      },
+      "label": "Directive 96/53/EC – EUR-Lex",
+      "url": "https://eur-lex.europa.eu/eli/dir/1996/53/oj"
+    },
+    {
+      "topic": {
+        "es": "Zonas de bajas emisiones y acceso urbano",
+        "en": "Low-emission and urban access zones"
+      },
+      "label": "European Commission – Urban vehicle access regulations",
+      "url": "https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en"
+    },
+    {
+      "topic": {
+        "es": "Normas de circulación por país (equipamiento de invierno, límites)",
+        "en": "Road rules by country (winter equipment, limits)"
+      },
+      "label": "Your Europe – Road rules and safety",
+      "url": "https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_en.htm"
+    }
+  ],
+  "countries": [
+    {
+      "code": "AL",
+      "name": {
+        "es": "Albania",
+        "en": "Albania"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "Autoriteti Rrugor Shqiptar (Albanian Road Authority)",
+        "url": "https://www.arrsh.gov.al/",
+        "note": {
+          "es": "Peaje solo en la A1 Milot–Morinë",
+          "en": "Toll only on the A1 Milot–Morinë"
+        }
+      }
+    },
+    {
+      "code": "DE",
+      "name": {
+        "es": "Alemania",
+        "en": "Germany"
+      },
+      "yourEurope": "germany",
+      "tolls": {
+        "label": "Toll Collect – Truck toll in Germany",
+        "url": "https://www.toll-collect.de/en/toll_collect/tc_homepage.html"
+      },
+      "bans": {
+        "label": "BALM (Federal Office for Logistics and Mobility) – LKW-Fahrverbote",
+        "url": "https://www.balm.bund.de/DE/Themen/RechtsentwicklungRechtsvorschriften/Rechtsvorschriften/Strassenverkehrsrecht/LKW-Fahrverbote/LKW-Fahrverbote_node.html"
+      }
+    },
+    {
+      "code": "AD",
+      "name": {
+        "es": "Andorra",
+        "en": "Andorra"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "Túnel d'Envalira – Fares",
+        "url": "https://tuneldenvalira.com/en/rates",
+        "note": {
+          "es": "Solo el túnel de Envalira",
+          "en": "Envalira tunnel only"
+        }
+      }
+    },
+    {
+      "code": "AT",
+      "name": {
+        "es": "Austria",
+        "en": "Austria"
+      },
+      "yourEurope": "austria",
+      "tolls": {
+        "label": "ASFINAG – GO toll (vehicles over 3.5 t)",
+        "url": "https://www.asfinag.at/en/toll/go-toll/"
+      },
+      "bans": {
+        "label": "USP (Austrian Business Service Portal) – HGV driving bans",
+        "url": "https://www.usp.gv.at/en/themen/betrieb-und-umwelt/transport-und-verkehr/lkw-fahrverbote.html"
+      }
+    },
+    {
+      "code": "BE",
+      "name": {
+        "es": "Bélgica",
+        "en": "Belgium"
+      },
+      "yourEurope": "belgium",
+      "tolls": {
+        "label": "Viapass – Belgian kilometre charge for HGVs",
+        "url": "https://www.viapass.be/en/"
+      },
+      "bans": {
+        "label": "Belgium.be – The Highway Code",
+        "url": "https://www.belgium.be/en/mobility/the_highway_code",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "BY",
+      "name": {
+        "es": "Bielorrusia",
+        "en": "Belarus"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "BelToll – Electronic toll collection system",
+        "url": "https://beltoll.by/en/"
+      }
+    },
+    {
+      "code": "BA",
+      "name": {
+        "es": "Bosnia y Herzegovina",
+        "en": "Bosnia and Herzegovina"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "JP Autoceste FBiH – Pricelist and vehicle categories",
+        "url": "https://www.jpautoceste.ba/en/pricelist/"
+      }
+    },
+    {
+      "code": "BG",
+      "name": {
+        "es": "Bulgaria",
+        "en": "Bulgaria"
+      },
+      "yourEurope": "bulgaria",
+      "tolls": {
+        "label": "BG TOLL (National Toll Administration) – Toll for vehicles over 3.5 t",
+        "url": "https://bgtoll.bg/en/toll-en"
+      },
+      "bans": {
+        "label": "Traffic Police (Ministry of Interior) – Travel restrictions on lorries over 12 t",
+        "url": "https://www.mvr.bg/opp/en/useful-information/foreign-drivers%27-section/advises-for-foreign-drivers"
+      }
+    },
+    {
+      "code": "CZ",
+      "name": {
+        "es": "Chequia",
+        "en": "Czechia"
+      },
+      "yourEurope": "czechia",
+      "tolls": {
+        "label": "MYTO CZ – Electronic toll system of the Czech Republic",
+        "url": "https://myto.gov.cz/en/"
+      },
+      "bans": {
+        "label": "Portál veřejné správy (gov.cz) – Driving restrictions for certain vehicles",
+        "url": "https://portal.gov.cz/sluzby-vs/vyjimka-z-omezeni-jizdy-nekterych-vozidel-v-ramci-cele-cr-S551"
+      }
+    },
+    {
+      "code": "CY",
+      "name": {
+        "es": "Chipre",
+        "en": "Cyprus"
+      },
+      "yourEurope": "cyprus",
+      "tolls": {
+        "label": "Ministry of Transport, Communications and Works – Public Works Department",
+        "url": "https://www.gov.cy/mtcw/en/public-works-department/",
+        "note": {
+          "es": "Sin peajes",
+          "en": "No tolls"
+        }
+      }
+    },
+    {
+      "code": "HR",
+      "name": {
+        "es": "Croacia",
+        "en": "Croatia"
+      },
+      "yourEurope": "croatia",
+      "tolls": {
+        "label": "Hrvatske autoceste – Toll rates",
+        "url": "https://www.hac.hr/en/toll"
+      },
+      "bans": {
+        "label": "Narodne novine 64/2009 – Order on traffic restrictions on roads",
+        "url": "https://narodne-novine.nn.hr/clanci/sluzbeni/2009_06_64_1440.html"
+      }
+    },
+    {
+      "code": "DK",
+      "name": {
+        "es": "Dinamarca",
+        "en": "Denmark"
+      },
+      "yourEurope": "denmark",
+      "tolls": {
+        "label": "Vejafgifter.dk – Kilometre-based road toll for trucks",
+        "url": "https://www.vejafgifter.dk/en"
+      },
+      "bans": {
+        "label": "Miljøzoner – Danish low-emission zones",
+        "url": "https://www.miljoezoner.dk/en/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "SK",
+      "name": {
+        "es": "Eslovaquia",
+        "en": "Slovakia"
+      },
+      "yourEurope": "slovakia",
+      "tolls": {
+        "label": "emyto.sk – Electronic toll system of the Slovak Republic",
+        "url": "https://www.emyto.sk/en"
+      },
+      "bans": {
+        "label": "Slov-Lex – Act No. 8/2009 on road traffic, § 39",
+        "url": "https://www.slov-lex.sk/ezbierky/pravne-predpisy/SK/ZZ/2009/8/#paragraf-39"
+      }
+    },
+    {
+      "code": "SI",
+      "name": {
+        "es": "Eslovenia",
+        "en": "Slovenia"
+      },
+      "yourEurope": "slovenia",
+      "tolls": {
+        "label": "DARS – About DarsGo (electronic toll over 3.5 t)",
+        "url": "https://www.dars.si/DarsGo/About_DarsGo"
+      },
+      "bans": {
+        "label": "PROMET.SI – Freight traffic: general limitations",
+        "url": "https://www.promet.si/en/general-limitations"
+      }
+    },
+    {
+      "code": "ES",
+      "name": {
+        "es": "España",
+        "en": "Spain"
+      },
+      "yourEurope": "spain",
+      "tolls": {
+        "label": "Government of Spain (PAG) – Tolls and vignettes",
+        "url": "https://administracion.gob.es/en/tu-espacio-europeo/derechos-obligaciones/ciudadanos/vehiculos/normas-trafico-viales/peajes-vinetas",
+        "note": {
+          "es": "Sin peaje nacional para camiones",
+          "en": "No national truck toll"
+        }
+      },
+      "bans": {
+        "label": "DGT – Restricciones a la circulación",
+        "url": "https://www.dgt.es/conoce-el-estado-del-trafico/restricciones-a-la-circulacion/"
+      }
+    },
+    {
+      "code": "EE",
+      "name": {
+        "es": "Estonia",
+        "en": "Estonia"
+      },
+      "yourEurope": "estonia",
+      "tolls": {
+        "label": "Transpordiamet (Estonian Transport Administration) – Road user charge",
+        "url": "https://www.transpordiamet.ee/en/roads-waterways-airspace/estonian-road-network/road-user-charge"
+      },
+      "bans": {
+        "label": "Transpordiamet – Large and heavy vehicles",
+        "url": "https://transpordiamet.ee/en/road-maintenance-and-traffic-management/estonian-road-network/special-permit-driving-large-or-heavy",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "FI",
+      "name": {
+        "es": "Finlandia",
+        "en": "Finland"
+      },
+      "yourEurope": "finland",
+      "tolls": {
+        "label": "Visit Finland (Business Finland) – Driving in Finland",
+        "url": "https://www.visitfinland.com/en/articles/guide-to-drive-in-finland/",
+        "note": {
+          "es": "Sin peajes",
+          "en": "No tolls"
+        }
+      },
+      "bans": {
+        "label": "Fintraffic – Traffic situation and weight limits",
+        "url": "https://www.fintraffic.fi/en/digitalservices/traffic-situation",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "FR",
+      "name": {
+        "es": "Francia",
+        "en": "France"
+      },
+      "yourEurope": "france",
+      "tolls": {
+        "label": "Ministère de la Transition écologique – Péages et autoroutes en France",
+        "url": "https://www.ecologie.gouv.fr/politiques-publiques/peages-autoroutes-france"
+      },
+      "bans": {
+        "label": "Bison Futé – HGV traffic restrictions (general regime)",
+        "url": "https://www.bison-fute.gouv.fr/regime-general,10852,langen.html"
+      }
+    },
+    {
+      "code": "GR",
+      "name": {
+        "es": "Grecia",
+        "en": "Greece"
+      },
+      "yourEurope": "greece",
+      "tolls": {
+        "label": "Ministry of Infrastructure and Transport – Road Tolls Service",
+        "url": "https://yot.ddt.gov.gr/en/"
+      },
+      "bans": {
+        "label": "Hellenic Police – Announcements, incl. holiday truck bans",
+        "url": "https://www.astynomia.gr/category/genikes-anakoinoseis-archigeiou-ellinikis-astynomias/genikes-anakoinoseis-archigeiou-ellinikis-astynomias-2026/",
+        "note": {
+          "es": "Prohibiciones por festivos",
+          "en": "Holiday bans"
+        }
+      }
+    },
+    {
+      "code": "HU",
+      "name": {
+        "es": "Hungría",
+        "en": "Hungary"
+      },
+      "yourEurope": "hungary",
+      "tolls": {
+        "label": "HU-GO – Electronic toll system",
+        "url": "https://www.hu-go.hu/articles/category/news"
+      },
+      "bans": {
+        "label": "Útinform (Magyar Közút) – Traffic ban for trucks over 7.5 t",
+        "url": "https://www.utinform.hu/en/static/kamionstop"
+      }
+    },
+    {
+      "code": "IE",
+      "name": {
+        "es": "Irlanda",
+        "en": "Ireland"
+      },
+      "yourEurope": "ireland",
+      "tolls": {
+        "label": "Transport Infrastructure Ireland – Tolling information",
+        "url": "https://www.tii.ie/en/roads-tolling/tolling-information/"
+      },
+      "bans": {
+        "label": "Road Safety Authority – Rules for trucks and trailers",
+        "url": "https://www.rsa.ie/road-safety/road-users/professional-drivers/vehicle-safety-legislation",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "IS",
+      "name": {
+        "es": "Islandia",
+        "en": "Iceland"
+      },
+      "yourEurope": "iceland",
+      "tolls": {
+        "label": "Ísland.is – Kilometre fee for trucks over 10 tonnes",
+        "url": "https://island.is/en/kilometer-fee/fee-for-buses-and-trucks-over-10-tonnes",
+        "note": {
+          "es": "Tasa por kilómetro desde 10 t",
+          "en": "Kilometre fee from 10 t"
+        }
+      }
+    },
+    {
+      "code": "IT",
+      "name": {
+        "es": "Italia",
+        "en": "Italy"
+      },
+      "yourEurope": "italy",
+      "tolls": {
+        "label": "Ministero delle infrastrutture e dei trasporti – Motorway concessions",
+        "url": "https://www.mit.gov.it/documentazione/convenzioni-regolanti-i-rapporti-tra-il-ministero-e-le-societa-concessionarie"
+      },
+      "bans": {
+        "label": "MIT – Heavy vehicles: 2026 driving ban calendar",
+        "url": "https://www.mit.gov.it/comunicazione/news/mezzi-pesanti-calendario-2026-dei-divieti-di-circolazione-stradale"
+      }
+    },
+    {
+      "code": "XK",
+      "name": {
+        "es": "Kosovo",
+        "en": "Kosovo"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "Ministry of Infrastructure and Transport (Kosovo)",
+        "url": "https://www.mit-ks.net/en/",
+        "note": {
+          "es": "Sin peajes ni viñetas",
+          "en": "No tolls or vignettes"
+        }
+      }
+    },
+    {
+      "code": "LV",
+      "name": {
+        "es": "Letonia",
+        "en": "Latvia"
+      },
+      "yourEurope": "latvia",
+      "tolls": {
+        "label": "Latvijas Valsts ceļi – Control of tolls (vignettes)",
+        "url": "https://lvceli.lv/en/road-network/construction-and-maintenance/control-of-tolls-vignettes/"
+      }
+    },
+    {
+      "code": "LI",
+      "name": {
+        "es": "Liechtenstein",
+        "en": "Liechtenstein"
+      },
+      "yourEurope": "liechtenstein",
+      "tolls": {
+        "label": "Swiss customs BAZG – The LSVA at a glance",
+        "url": "https://www.bazg.admin.ch/en/the-lsva-at-a-glance",
+        "note": {
+          "es": "Se aplica la LSVA suiza",
+          "en": "The Swiss LSVA applies"
+        }
+      }
+    },
+    {
+      "code": "LT",
+      "name": {
+        "es": "Lituania",
+        "en": "Lithuania"
+      },
+      "yourEurope": "lithuania",
+      "tolls": {
+        "label": "Via Lietuva – User charge (electronic vignettes)",
+        "url": "https://vialietuva.lt/en/user-charge-vignettes"
+      },
+      "bans": {
+        "label": "Via Lietuva – Permits and traffic restrictions",
+        "url": "https://vialietuva.lt/en/permits",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "LU",
+      "name": {
+        "es": "Luxemburgo",
+        "en": "Luxembourg"
+      },
+      "yourEurope": "luxembourg",
+      "tolls": {
+        "label": "Guichet.lu (Government of Luxembourg) – Eurovignette for trucks",
+        "url": "https://guichet.public.lu/en/entreprises/import-export/transit/transit-ue/e-vignette-poids-lourds.html"
+      },
+      "bans": {
+        "label": "Grand Ducal Police – Driving bans on heavy goods vehicles",
+        "url": "https://police.public.lu/en/legislation/code-de-la-route/routiers-poids-lourds1.html"
+      }
+    },
+    {
+      "code": "MK",
+      "name": {
+        "es": "Macedonia del Norte",
+        "en": "North Macedonia"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "Public Enterprise for State Roads – Toll system",
+        "url": "https://roads.org.mk/en/toll-system/"
+      }
+    },
+    {
+      "code": "MT",
+      "name": {
+        "es": "Malta",
+        "en": "Malta"
+      },
+      "yourEurope": "malta",
+      "tolls": {
+        "label": "Infrastructure Malta",
+        "url": "https://www.infrastructuremalta.com/about-us",
+        "note": {
+          "es": "Sin peajes",
+          "en": "No tolls"
+        }
+      }
+    },
+    {
+      "code": "MD",
+      "name": {
+        "es": "Moldavia",
+        "en": "Moldova"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "e-Vinieta – National Road Administration (ANDSA)",
+        "url": "https://www.evinieta.gov.md/"
+      }
+    },
+    {
+      "code": "ME",
+      "name": {
+        "es": "Montenegro",
+        "en": "Montenegro"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "Monteput – Toll price list",
+        "url": "https://monteput.me/cjenovnik/"
+      }
+    },
+    {
+      "code": "NO",
+      "name": {
+        "es": "Noruega",
+        "en": "Norway"
+      },
+      "yourEurope": "norway",
+      "tolls": {
+        "label": "Statens vegvesen – Toll payment tag for heavy vehicles",
+        "url": "https://www.vegvesen.no/en/vehicles/professional-transport/toll-payment-tag-for-heavy-vehicles/"
+      },
+      "bans": {
+        "label": "Statens vegvesen – Trucker's guide",
+        "url": "https://www.vegvesen.no/en/vehicles/professional-transport/truckers-guide/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "NL",
+      "name": {
+        "es": "Países Bajos",
+        "en": "Netherlands"
+      },
+      "yourEurope": "netherlands",
+      "tolls": {
+        "label": "Vrachtwagenheffing (RDW) – Truck toll in the Netherlands",
+        "url": "https://www.vrachtwagenheffing.nl/en"
+      },
+      "bans": {
+        "label": "Rijkswaterstaat – Rules for freight traffic",
+        "url": "https://www.rijkswaterstaat.nl/wegen/wetten-regels-en-vergunningen/verkeerswetten/inhaalverbod-vrachtverkeer",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "PL",
+      "name": {
+        "es": "Polonia",
+        "en": "Poland"
+      },
+      "yourEurope": "poland",
+      "tolls": {
+        "label": "e-TOLL – Official electronic toll system",
+        "url": "https://etoll.gov.pl/en/"
+      },
+      "bans": {
+        "label": "GDDKiA – Restrictions for vehicles over 12 t",
+        "url": "https://www.gov.pl/web/gddkia/c-ograniczenia-w-ruchu-dla-pojazdow-powyzej-12-ton2"
+      }
+    },
+    {
+      "code": "PT",
+      "name": {
+        "es": "Portugal",
+        "en": "Portugal"
+      },
+      "yourEurope": "portugal",
+      "tolls": {
+        "label": "PT Tolls (Infraestruturas de Portugal)",
+        "url": "https://www.pttolls.com/en/"
+      },
+      "bans": {
+        "label": "IMT – Weekend restrictions for dangerous goods",
+        "url": "https://www.imt-ip.pt/noticias/restricoes-a-circulacao-rodoviaria-de-mercadorias-perigosas-aos-fins-de-semana/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "GB",
+      "name": {
+        "es": "Reino Unido",
+        "en": "United Kingdom"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "GOV.UK – Pay the HGV levy",
+        "url": "https://www.gov.uk/hgv-levy"
+      },
+      "bans": {
+        "label": "National Highways – Freight and professional drivers",
+        "url": "https://nationalhighways.co.uk/roads-and-travel/freight-and-professional-drivers/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "RO",
+      "name": {
+        "es": "Rumanía",
+        "en": "Romania"
+      },
+      "yourEurope": "romania",
+      "tolls": {
+        "label": "TollRO – Official e-toll and rovinieta portal (CNAIR)",
+        "url": "https://portal.etoll.ro/en/web/guest/home"
+      },
+      "bans": {
+        "label": "CESTRIN / CNAIR – Traffic restrictions on national roads",
+        "url": "https://www.cestrin.ro/restrictii/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "RU",
+      "name": {
+        "es": "Rusia",
+        "en": "Russia"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "State Company Russian Highways (Avtodor) – Road users",
+        "url": "https://www.russianhighways.ru/en/for_drivers/"
+      }
+    },
+    {
+      "code": "RS",
+      "name": {
+        "es": "Serbia",
+        "en": "Serbia"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "JP Putevi Srbije (Roads of Serbia) – Road toll",
+        "url": "https://www.putevi-srbije.rs/index.php/en/road-toll"
+      },
+      "bans": {
+        "label": "Ministry of Interior – Mandatory winter equipment",
+        "url": "https://www.mup.gov.rs/wps/portal/sr/gradjani/Najcesca%20pitanja/tehnicka%20ispravnost%20i%20koriscenje%20obavezne%20zimske%20opreme%20motornih%20vozila%20u%20saobracaju%20na%20putu/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "SE",
+      "name": {
+        "es": "Suecia",
+        "en": "Sweden"
+      },
+      "yourEurope": "sweden",
+      "tolls": {
+        "label": "Transportstyrelsen – Road user charging (Eurovignette)",
+        "url": "https://www.transportstyrelsen.se/en/road/vehicles/taxes-and-fees/road-user-charging/"
+      },
+      "bans": {
+        "label": "Transportstyrelsen – Winter tyres",
+        "url": "https://www.transportstyrelsen.se/en/road/vehicles/winter-tyres/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "CH",
+      "name": {
+        "es": "Suiza",
+        "en": "Switzerland"
+      },
+      "yourEurope": "switzerland",
+      "tolls": {
+        "label": "Swiss customs BAZG – Heavy vehicle charge (LSVA)",
+        "url": "https://www.bazg.admin.ch/en/hvc-lsva-overview"
+      },
+      "bans": {
+        "label": "FEDRO / ASTRA – Sunday and night driving ban",
+        "url": "https://www.astra.admin.ch/de/sonntags-und-nachtfahrten"
+      }
+    },
+    {
+      "code": "TR",
+      "name": {
+        "es": "Turquía",
+        "en": "Turkey"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "KGM (General Directorate of Highways) – Tolls",
+        "url": "https://www.kgm.gov.tr/Sayfalar/KGM/SiteEng/Root/Tolls.aspx"
+      },
+      "bans": {
+        "label": "KGM – Motorway restrictions and prohibitions",
+        "url": "https://www.kgm.gov.tr/Sayfalar/KGM/SiteTr/Otoyollar/KisitlamalarKanunlar.aspx",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    },
+    {
+      "code": "UA",
+      "name": {
+        "es": "Ucrania",
+        "en": "Ukraine"
+      },
+      "yourEurope": null,
+      "tolls": {
+        "label": "State Agency for Restoration and Development of Infrastructure (road authority)",
+        "url": "https://restoration.gov.ua/en/",
+        "note": {
+          "es": "Sin peajes",
+          "en": "No tolls"
+        }
+      },
+      "bans": {
+        "label": "Agency for Restoration – Seasonal restrictions for heavy vehicles",
+        "url": "https://restoration.gov.ua/blog/do-uvagy-vodiyiv-sezonni-obmezhennya-ruhu-dlya-velykovagovyh-transportnyh-zasobiv/",
+        "note": {
+          "es": "Sin prohibición general",
+          "en": "No general ban"
+        }
+      }
+    }
+  ]
+}

@@ -587,8 +587,8 @@
 
     test('it names nobody but the publisher, and links the published pages', function () {
       assert.equal(/gabor/i.test(JSON.stringify(listing)), false);
-      assert.ok(/^https:\/\/aissab-code\.github\.io\/planificador-legal\/privacy\.html$/.test(listing.privacyPolicyUrl));
-      assert.ok(/^https:\/\/aissab-code\.github\.io\/planificador-legal\/support\.html$/.test(listing.supportUrl));
+      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/privacy\.html$/.test(listing.privacyPolicyUrl));
+      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/support\.html$/.test(listing.supportUrl));
       assert.ok(listing.copyright.indexOf('Aissa Bamogo Redondo') !== -1);
     });
 

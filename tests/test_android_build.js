@@ -192,6 +192,102 @@
     });
   });
 
+  /*
+   * Google Play rejected the first release (25 Oct 2026, Misleading Claims:
+   * "Missing Source Link for Government Information"). The descriptions must
+   * link official sources for every rule the app shows and say plainly that
+   * the app is not a government app; the sources page carries the full list.
+   */
+  describe('store - official sources', function () {
+    const legal = require('../tools/build-legal-pages.js');
+    const os = require('os');
+    const S = legal.loadSources();
+    const gp = path.join(root, 'store', 'google-play');
+    const listing = function (l) { return JSON.parse(fs.readFileSync(path.join(gp, 'listing-' + l + '.json'), 'utf8')); };
+    const tolls = JSON.parse(fs.readFileSync(path.join(root, 'data', 'toll_rates.json'), 'utf8')).rates;
+    const regs = JSON.parse(fs.readFileSync(path.join(root, 'data', 'trailer_regulations.json'), 'utf8')).regulations;
+    const regCodes = Object.keys(regs).filter(function (c) { return c !== 'DEFAULT'; });
+    const byCode = {};
+    S.countries.forEach(function (c) { byCode[c.code] = c; });
+    const SOURCES_PAGE = 'https://chispapps.com/truckrouteplanner/sources.html';
+
+    /* Commercial compilations are not official sources. */
+    const NOT_OFFICIAL = /wikipedia|adac\.|timocom|trans\.info|transconnect|iru\.org|dhl\.|eurowag|savaexpress|europeanshippers|bustruckpark|collective-log|nakordoni|freightlink|espaceglobalfreight|pirelli|continental|ayvens|eversure|greenmotion/i;
+
+    function allLinks() {
+      const out = S.eu.map(function (s) { return s.url; });
+      S.countries.forEach(function (c) {
+        if (c.tolls) out.push(c.tolls.url);
+        if (c.bans) out.push(c.bans.url);
+        if (c.yourEurope) out.push(legal.yourEuropeUrl(c.yourEurope));
+      });
+      return out;
+    }
+
+    test('every country the app has tolls or rules for has its official sources', function () {
+      const codes = Object.keys(tolls).concat(regCodes).filter(function (c, i, a) { return a.indexOf(c) === i; });
+      codes.forEach(function (code) {
+        const c = byCode[code];
+        assert.ok(c, code + ' is missing from store/official-sources.json');
+        assert.ok(c.name && c.name.es && c.name.en, code + ' name');
+        assert.ok(c.tolls && /^https:\/\//.test(c.tolls.url) && c.tolls.label, code + ' toll source');
+      });
+      regCodes.forEach(function (code) {
+        assert.ok(byCode[code].bans && /^https:\/\//.test(byCode[code].bans.url) && byCode[code].bans.label, code + ' driving-ban source');
+      });
+    });
+
+    test('the links are official and secure', function () {
+      allLinks().forEach(function (url) {
+        assert.ok(/^https:\/\/[^\s"<>]+$/.test(url), url);
+        assert.equal(NOT_OFFICIAL.test(url), false, url + ' is not an official source');
+      });
+      S.eu.forEach(function (s) {
+        assert.ok(/^https:\/\/([a-z-]+\.)*(europa\.eu|unece\.org)\//.test(s.url), s.url + ' is not an EU or UN page');
+        assert.ok(s.topic && s.topic.es && s.topic.en && s.label, s.url);
+      });
+    });
+
+    test('Your Europe road rules for every EU, EEA and Swiss country', function () {
+      ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT',
+        'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'CH'].forEach(function (code) {
+        assert.ok(byCode[code] && /^[a-z]+$/.test(byCode[code].yourEurope || ''), code + ' Your Europe page');
+      });
+    });
+
+    test('the sources page says it is not a government app and links every source', function () {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-sources-'));
+      legal.build(dir);
+      const html = fs.readFileSync(path.join(dir, 'sources.html'), 'utf8');
+      assert.ok(html.indexOf('It does not represent, and is not affiliated with, the European Union or any government') !== -1);
+      assert.ok(html.indexOf('No representa a la Unión Europea ni a ningún gobierno') !== -1);
+      allLinks().forEach(function (url) {
+        assert.ok(html.indexOf('href="' + url.replace(/&/g, '&amp;') + '"') !== -1, url + ' is not on the page');
+      });
+      ['support.html', 'index.html', 'privacy-en.html'].forEach(function (f) {
+        assert.ok(fs.readFileSync(path.join(dir, f), 'utf8').indexOf('href="sources.html"') !== -1, f + ' links the sources page');
+      });
+    });
+
+    test('both Play descriptions carry the statement and the official sources', function () {
+      const en = listing('en-US').fullDescription;
+      const es = listing('es-ES').fullDescription;
+      assert.ok(/NOT A GOVERNMENT APP/.test(en) && /not affiliated with, the European Union or any government/.test(en));
+      assert.ok(/NO ES UNA APP OFICIAL/.test(es) && /No representa a la Unión Europea ni a ningún gobierno/.test(es));
+      assert.ok(en.indexOf('NOT A GOVERNMENT APP') < 400 && es.indexOf('NO ES UNA APP OFICIAL') < 400, 'near the top, easy to see');
+      [en, es].forEach(function (d) {
+        assert.ok(d.indexOf(SOURCES_PAGE) !== -1, 'links the sources page');
+        assert.ok(/https:\/\/eur-lex\.europa\.eu\/\S*(2006\/561|32006R0561)/.test(d), 'links Regulation 561/2006');
+        assert.ok(d.indexOf('https://transport.ec.europa.eu/transport-modes/road/road-charging_en') !== -1, 'tolls source');
+        assert.ok(/urban-vehicle-access-regulations/.test(d), 'low-emission zones source');
+        assert.ok(/youreurope\/citizens\/travel\/driving-abroad\/road-rules-and-safety/.test(d), 'national road rules source');
+      });
+      ['en-US', 'es-ES'].forEach(function (l) {
+        assert.equal(listing(l).privacyPolicyUrl, 'https://chispapps.com/truckrouteplanner/privacy.html');
+      });
+    });
+  });
+
   describe('android - what reaches the bundle', function () {
     const e = verify.expectations();
     const good = [
