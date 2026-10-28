@@ -286,6 +286,30 @@
         assert.equal(listing(l).privacyPolicyUrl, 'https://chispapps.com/truckrouteplanner/privacy.html');
       });
     });
+
+    /* Google asked for the sources inside the app as well, not only in the store. */
+    test('the app\'s Info tab carries the statement and the same official sources', function () {
+      const flav = require('../tools/app-flavour.js');
+      const mobile = flav.flavour(fs.readFileSync(path.join(root, 'mobile.html'), 'utf8'), 'mobile.html');
+      const card = (/<div class="card" id="m_sources">[\s\S]*?<\/ul>/.exec(mobile) || [''])[0];
+      assert.ok(/data-i18n="info\.notGov"/.test(card), 'the "not a government app" statement');
+      const links = (card.match(/href="[^"]+"/g) || []).map(function (h) { return h.slice(6, -1); });
+      const en = listing('en-US').fullDescription;
+      assert.equal(links.length, 6);
+      links.forEach(function (url) {
+        assert.ok(en.indexOf(url) !== -1, url + ' is not in the Play description');
+      });
+      assert.ok(links.indexOf(SOURCES_PAGE) !== -1, 'links the sources page');
+
+      const i18n = fs.readFileSync(path.join(root, 'js', 'core', 'i18n.js'), 'utf8');
+      assert.ok(i18n.indexOf('not affiliated with, the European Union or any government') !== -1);
+      ['info.sources', 'info.notGov', 'info.src561', 'info.srcDriving', 'info.srcTolls', 'info.srcLez', 'info.srcRoad', 'info.srcCountry'].forEach(function (key) {
+        fs.readdirSync(path.join(root, 'js', 'i18n')).forEach(function (f) {
+          const pack = fs.readFileSync(path.join(root, 'js', 'i18n', f), 'utf8');
+          assert.ok(pack.indexOf("'" + key + "':") !== -1, f + ' lacks ' + key);
+        });
+      });
+    });
   });
 
   /* Facts re-checked against the official sources on 26 Oct 2026, so an old

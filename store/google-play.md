@@ -99,6 +99,13 @@ country in `data/toll_rates.json` or `data/trailer_regulations.json` fails the
 tests until it has its official sources. Keep both texts in any future
 description change.
 
+Google also asks for the sources **inside the app**. The Info tab
+(`mobile.html`, card `m_sources`) shows the same statement and the same six
+links in all 24 languages (`info.sources`, `info.notGov`, `info.src*`); a test
+fails if a link there is missing from the en-US description. Only builds from
+version code 8 on carry the card: 2.3.0 (7) does not, so the release under
+review must use a newer bundle.
+
 ## 4. Release
 
 1. **Testing → Internal testing → Create new release.** Upload the signed

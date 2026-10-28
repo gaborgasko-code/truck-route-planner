@@ -526,6 +526,14 @@
     'info.links': { es: 'Enlaces', en: 'Links' },
     'info.openGuide': { es: 'Abrir la guía de usuario', en: 'Open the user guide' },
     'info.switchDesktop': { es: 'Cambiar a la versión de escritorio', en: 'Switch to the desktop version' },
+    'info.sources': { es: 'Fuentes oficiales', en: 'Official sources' },
+    'info.notGov': { es: 'No es una app oficial. Esta aplicación independiente no representa a la Unión Europea ni a ningún gobierno u organismo público, ni está vinculada a ellos. Sus normas resumen las fuentes oficiales siguientes; compruébelas siempre antes de salir.', en: 'Not a government app. This independent app does not represent, and is not affiliated with, the European Union or any government or public authority. Its rules summarise the official sources below; always check them before departure.' },
+    'info.src561': { es: 'Tiempos de conducción, pausas y descansos – Reglamento (CE) n.º 561/2006 (EUR-Lex)', en: 'Driving times, breaks and rest periods – Regulation (EC) No 561/2006 (EUR-Lex)' },
+    'info.srcDriving': { es: 'Tiempos de conducción y descanso – Comisión Europea', en: 'Driving time and rest periods – European Commission' },
+    'info.srcTolls': { es: 'Peajes y viñetas – Comisión Europea', en: 'Tolls and vignettes – European Commission' },
+    'info.srcLez': { es: 'Zonas de bajas emisiones – Comisión Europea', en: 'Low-emission zones – European Commission' },
+    'info.srcRoad': { es: 'Normas de circulación y equipamiento de invierno por país – Tu Europa', en: 'Road rules and winter equipment by country – Your Europe' },
+    'info.srcCountry': { es: 'Prohibiciones de circulación de camiones y operadores oficiales de peaje, país por país', en: 'Truck driving bans and official toll operators, country by country' },
 
     /* ----------------------------------------------------------- splash */
     'splash.detecting': { es: 'Detectando su dispositivo…', en: 'Detecting your device…' },
