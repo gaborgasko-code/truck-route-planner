@@ -144,9 +144,10 @@
 
   describe('android - the Google Play listing', function () {
     /* English is the default listing. The texts of every language are in
-       store/listings (tests in test_ios_build.js); the graphics exist in
-       English and Spanish. */
-    const LOCALES = ['en-US', 'es-ES'];
+       store/listings (tests in test_ios_build.js); each language has its own
+       feature graphic and captioned screenshots (en-GB shows the en-US ones). */
+    const PLAY = require('../tools/store-listings.js').PLAY_LOCALES;
+    const LOCALES = Object.keys(PLAY).map(function (l) { return PLAY[l][0]; });
     const gp = path.join(root, 'store', 'google-play');
 
     function pngSize(file) {

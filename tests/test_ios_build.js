@@ -638,11 +638,15 @@
     const upload = require('../tools/asc-upload-screenshots.js');
     const crypto = require('crypto');
 
-    test('the screenshots are the size App Store Connect takes', function () {
+    test('every App Store page has its six screenshots, at the size App Store Connect takes', function () {
       const sets = upload.collect();
-      const es = sets.filter(function (s) { return s.locale === 'es-ES'; })[0];
-      assert.ok(es && es.files.length >= 3 && es.files.length <= 10, 'es-ES screenshots');
-      es.files.forEach(function (f) { assert.equal(f.size, '1290x2796', f.name); });
+      const asc = require('../tools/store-listings.js').ascLocales(
+        require('../tools/store-listings.js').load(), require('../tools/store-listings.js').loadStore());
+      Object.keys(asc).forEach(function (locale) {
+        const set = sets.filter(function (s) { return s.locale === locale; })[0];
+        assert.ok(set && set.files.length === 6, locale + ' screenshots');
+        set.files.forEach(function (f) { assert.equal(f.size, '1290x2796', locale + '/' + f.name); });
+      });
     });
 
     test('the API token is an ES256 JWT Apple can verify', function () {
