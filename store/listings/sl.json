@@ -1,0 +1,19 @@
+{
+  "notGov": "TO NI VLADNA APLIKACIJA",
+  "name": "Tovornjak: načrtovalnik poti",
+  "subtitle": "Čas vožnje, odmori, cestnine",
+  "keywords": "tahograf,počitek,odmor,voznik,kamion,kamionist,šleper,navigacija,gps,561,evropa,cestnina,prepovedi",
+  "promotionalText": "Načrtujte poti s tovornjakom po EU: vsi 45-minutni odmori in dnevni počitki po Uredbi 561/2006, ocenjene cestnine po državah in prepovedi vožnje na vaši poti.",
+  "whatsNew": "• Aplikacija se zdaj odpre v jeziku vašega telefona (vseh 24 uradnih jezikov EU).\n• Zavihek „Informacije“: uradni viri za vsako pravilo.\n• Posodobljene cestnine in predpisi: nizozemska cestnina za tovornjake, romunska cestnina glede na prevoženo razdaljo, litovska vinjeta in datumi za zimske pnevmatike na Švedskem.",
+  "playTitle": "Tovornjak: načrtovalnik poti",
+  "shortDescription": "Poti za tovornjake: čas vožnje, odmori, cestnine in prepovedi vožnje v EU.",
+  "screenshotCaptions": [
+    "Načrtujte pot tovornjaka po Evropi",
+    "Vsi odmori in počitki po 561/2006",
+    "Cestnine, ocenjene po državah",
+    "Vaša pot in postanki na zemljevidu",
+    "Opomnik pred vsakim odmorom",
+    "Prepovedi in predpisi po državah"
+  ],
+  "description": "Načrtovalnik poti dva naslova spremeni v celoten načrt vožnje za tovornjake, vlačilce in druga težka tovorna vozila v Evropi: čas vožnje in počitki po pravilih EU, ocenjene cestnine in nacionalni predpisi na vaši poti.\n\nTO NI VLADNA APLIKACIJA: to je neodvisna aplikacija. Ne predstavlja Evropske unije ali katere koli vlade ali javnega organa in ni povezana z njimi. Pravila, ki jih povzema, izhajajo iz uradnih virov, navedenih na koncu tega opisa.\n\nČAS VOŽNJE IN ODMORI\n• Izračuna 45-minutne odmore in dnevne počitke po Uredbi (ES) št. 561/2006, z dovoljenimi možnostmi, kot sta deljeni odmor (15 + 30 minut) ali skrajšani dnevni počitek.\n• Načrt postankov: ura in kilometer vsakega obveznega odmora in počitka.\n• Dvojna posadka: načrtovanje za enega ali dva voznika.\n• Opomniki za odmore: telefon vas opozori pred vsakim obveznim odmorom na poti.\n\nCESTNINE IN STROŠKI POTI\n• Ocenjene cestnine po državah glede na maso, število osi in razred EURO vozila.\n• Gorivo in skupni stroški poti, tudi na kilometer.\n\nPREDPISI NA VAŠI POTI\n• Prepovedi vožnje za tovornjake, nizkoemisijska območja in zimska oprema za vsako državo na poti.\n\nZEMLJEVID IN POROČILO\n• Zemljevid poti s postanki za ogled ali shranjevanje.\n• Vaša lokacija kot izhodišče.\n• Besedilno poročilo in izvoz GPX.\n• Vseh 24 uradnih jezikov EU: aplikacija se odpre v jeziku vašega telefona.\n\nBrez računov, brez oglasov in brez prodaje podatkov.\n\nPomembno: rezultati so ocene za načrtovanje in niso pravno zavezujoči. Aplikacija načrtuje pot; ne nadomešča navigacije GPS niti vašega tahografa. Vedno preverite veljavne prometne omejitve, cestninske tarife in mejne vrednosti za vozila v spodnjih uradnih virih ter dejanske zapise svojega tahografa.\n\nURADNI VIRI\n• Čas vožnje, odmori in počitki – Uredba (ES) št. 561/2006 (EUR-Lex): https://eur-lex.europa.eu/legal-content/SL/TXT/?uri=CELEX:32006R0561\n• Čas vožnje in počitka – Evropska komisija: https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en\n• Cestnine in vinjete – Evropska komisija, zaračunavanje uporabe cest: https://transport.ec.europa.eu/transport-modes/road/road-charging_en\n• Nizkoemisijska območja – Evropska komisija, predpisi o dostopu vozil v mestna območja: https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en\n• Cestnoprometna pravila in zimska oprema po državah – Vaša Evropa, uradno spletišče EU: https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_sl.htm\n• Prepovedi vožnje za tovornjake in uradni upravljavci cestnin, po državah: https://chispapps.com/truckrouteplanner/sources.html"
+}

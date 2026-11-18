@@ -1,6 +1,6 @@
 {
   "name": "truck-route-planner",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Truck Route Planner - road routing, EU driving time, tolls, legal stops and safe parking for heavy goods vehicles. created by Gabor Gasko",
   "private": true,
   "author": "Gabor Gasko",
@@ -19,6 +19,7 @@
     "android:sync": "npm run build:app && npx cap sync android"
   },
   "devDependencies": {
+    "@capacitor-community/in-app-review": "^8.0.0",
     "@capacitor/android": "^8.5.3",
     "@capacitor/cli": "^8.5.3",
     "@capacitor/core": "^8.5.3",

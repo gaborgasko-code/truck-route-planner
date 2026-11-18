@@ -1,0 +1,19 @@
+{
+  "notGov": "NOT A GOVERNMENT APP",
+  "name": "HGV Truck Route Planner EU",
+  "subtitle": "Drivers' hours, breaks & tolls",
+  "keywords": "lorry,tachograph,tacho,driving,time,rest,561,calculator,satnav,sat,nav,gps,trucker,europe,ban,rules",
+  "promotionalText": "Plan EU truck trips with every 45-minute break and daily rest under Regulation 561/2006, estimated tolls per country and the truck bans on your route.",
+  "whatsNew": "• The app now opens in your phone's language (all 24 official EU languages).\n• Info tab: the official sources behind every rule.\n• Updated tolls and rules: the Dutch truck toll, Romania's distance-based toll, Lithuania's vignette and Sweden's winter tyre dates.",
+  "playTitle": "HGV Truck Route Planner EU",
+  "shortDescription": "Truck route planner with EU drivers' hours, 45-min breaks, tolls and truck bans.",
+  "screenshotCaptions": [
+    "Plan your truck trip across Europe",
+    "Each break and rest under 561/2006",
+    "Tolls estimated country by country",
+    "Your route and stops on the map",
+    "A reminder before each break",
+    "Driving bans and rules per country"
+  ],
+  "description": "Truck Route Planner turns two addresses into a complete trip plan for trucks, lorries and other heavy goods vehicles (HGV) in Europe: EU driving times and rest breaks, estimated tolls and the national rules on your route.\n\nNOT A GOVERNMENT APP: this is an independent app. It does not represent, and is not affiliated with, the European Union or any government or public authority. The rules it summarises come from the official sources listed at the end of this description.\n\nDRIVERS' HOURS AND BREAKS\n• Works out the 45-minute breaks and the daily rests under Regulation (EC) No 561/2006, with the permitted alternatives, such as the split break (15 + 30 minutes) or the reduced daily rest.\n• Stop plan: the time and kilometre of every mandatory break and rest.\n• Team driving: planning for one or two drivers.\n• Break reminders: your phone alerts you before each mandatory break of the trip.\n\nTOLLS AND TRIP COST\n• Estimated tolls per country, based on the vehicle's weight, axles and EURO class.\n• Fuel and total trip cost, also per kilometre.\n\nRULES ON YOUR ROUTE\n• Truck driving bans, low-emission zones and winter equipment for each country on the route.\n\nMAP AND REPORT\n• Route map with the stops, to view or save.\n• Use my location as the starting point.\n• Text report and GPX export.\n• All 24 official EU languages: the app opens in your phone's language.\n\nNo accounts, no ads and no selling of data.\n\nImportant: the results are estimates for planning and are not legally binding. The app plans the trip; it does not replace turn-by-turn navigation or your tachograph. Always check the traffic restrictions, toll rates and vehicle limits in force at the official sources below, as well as your actual tachograph records.\n\nOFFICIAL SOURCES\n• Driving times, breaks and rest periods – Regulation (EC) No 561/2006 (EUR-Lex): https://eur-lex.europa.eu/eli/reg/2006/561/oj\n• Driving time and rest periods – European Commission: https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en\n• Tolls and vignettes – European Commission, road charging: https://transport.ec.europa.eu/transport-modes/road/road-charging_en\n• Low-emission zones – European Commission, urban vehicle access regulations: https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en\n• Road rules and winter equipment by country – Your Europe, official EU website: https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_en.htm\n• Truck driving bans and official toll operators, country by country: https://chispapps.com/truckrouteplanner/sources.html"
+}

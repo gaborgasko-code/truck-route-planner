@@ -28,14 +28,16 @@ const EDGE = [
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe'
 ].find((p) => fs.existsSync(p));
 
-/* One feature graphic per listing language, with that listing's title and a
-   screenshot of the app in the same language. English is the default listing. */
-const LOCALES = {
-  'en-US': { title: 'Truck Route Planner EU',
-    tagline: 'Mandatory breaks, tolls and the rules of every country on your trips across Europe.' },
-  'es-ES': { title: 'Planificador de ruta camión',
-    tagline: 'Pausas obligatorias, peajes y normativa de cada país para tus viajes por Europa.' }
-};
+/* One feature graphic per listing language, with that listing's title and
+   short description (store/listings) and a bare screenshot of the app in the
+   same language (build/store-shots, from store-screenshots.js --android).
+   English is the default listing. */
+const listings = require('./store-listings.js');
+const SHOTS = path.join(root, 'build', 'store-shots', 'android');
+const LOCALES = {};
+Object.entries(listings.load()).forEach(function ([lang, l]) {
+  LOCALES[listings.PLAY_LOCALES[lang][0]] = { lang: lang, title: l.playTitle, tagline: l.shortDescription };
+});
 
 function dataUri(file) {
   return 'data:image/png;base64,' + fs.readFileSync(file).toString('base64');
@@ -100,10 +102,9 @@ async function main() {
   if (!EDGE) throw new Error('Microsoft Edge not found');
   const made = [icon512];
   for (const locale of Object.keys(LOCALES)) {
-    const shot = path.join(OUT, 'screenshots', locale, '2-result.png');
+    const shot = path.join(SHOTS, LOCALES[locale].lang, '2-result.png');
     if (!fs.existsSync(shot)) {
-      throw new Error('missing ' + shot + ' - run node tools/store-screenshots.js --android' +
-        (locale === 'es-ES' ? '' : ' --lang ' + locale.slice(0, 2)));
+      throw new Error('missing ' + shot + ' - run node tools/store-screenshots.js --android --lang ' + LOCALES[locale].lang);
     }
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'trp-feature-'));
     const html = path.join(tmp, 'feature.html');

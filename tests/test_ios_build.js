@@ -274,13 +274,13 @@
          @capacitor/cli/dist/plugin.js getDependencies(). A plugin that is not
          declared is simply not linked, and the feature fails silently at
          runtime while the build stays green. */
-      ['@capacitor/local-notifications', '@capacitor/geolocation'].forEach(function (name) {
+      ['@capacitor/local-notifications', '@capacitor/geolocation', '@capacitor-community/in-app-review'].forEach(function (name) {
         assert.ok(declared[name], name + ' is not declared in package.json');
       });
     });
 
     test('each plugin actually supports iOS', function () {
-      ['@capacitor/local-notifications', '@capacitor/geolocation'].forEach(function (name) {
+      ['@capacitor/local-notifications', '@capacitor/geolocation', '@capacitor-community/in-app-review'].forEach(function (name) {
         const dir = path.join(root, 'node_modules', name, 'package.json');
         if (!fs.existsSync(dir)) return;    /* not installed in this checkout */
         const meta = JSON.parse(fs.readFileSync(dir, 'utf8'));
@@ -298,12 +298,28 @@
         return m.replace(/^plugin\(['"]/, '').replace(/['"]\)$/, '');
       });
       const known = { LocalNotifications: '@capacitor/local-notifications',
-        Geolocation: '@capacitor/geolocation' };
+        Geolocation: '@capacitor/geolocation', InAppReview: '@capacitor-community/in-app-review' };
       used.forEach(function (name) {
         assert.ok(known[name], 'native.js calls an unknown plugin: ' + name);
         assert.ok(declared[known[name]], name + ' is used but ' + known[name] + ' is not declared');
       });
       assert.ok(used.length >= 2, 'found ' + used.length + ' plugin call sites');
+    });
+
+    test('the rating sheet is asked for after the 3rd, 10th and 30th route, a month apart', function () {
+      const native = require('../js/ui/native.js');
+      const day = 24 * 3600 * 1000;
+      const now = Date.UTC(2026, 10, 18);
+      const ask = function (routes, asked, times) {
+        return native.shouldAskForReview({ routes: routes, asked: asked, times: times }, now);
+      };
+      assert.deepEqual(native.REVIEW_AT, [3, 10, 30]);
+      assert.equal(ask(2, 0, 0), false, 'not before the third route');
+      assert.equal(ask(3, 0, 0), true, 'the third route');
+      assert.equal(ask(10, now - 5 * day, 1), false, 'not twice within a month');
+      assert.equal(ask(12, now - 31 * day, 1), true, 'the next milestone, once a month has passed');
+      assert.equal(ask(29, now - 90 * day, 2), false, 'the third time waits for route 30');
+      assert.equal(ask(500, now - 900 * day, 3), false, 'three times at most');
     });
   });
 
@@ -571,40 +587,56 @@
   });
 
 
-  describe('ios - the App Store listing', function () {
-    const listing = JSON.parse(fs.readFileSync(path.join(root, 'store', 'listing-es-ES.json'), 'utf8'));
-    const upload = require('../tools/asc-upload-screenshots.js');
-    const crypto = require('crypto');
+  describe('store - the listings in every language', function () {
+    const listings = require('../tools/store-listings.js');
+    const all = listings.load();
+    const store = listings.loadStore();
 
-    test('every text fits Apple\'s limits', function () {
-      const limits = { name: 30, subtitle: 30, promotionalText: 170, description: 4000,
-        keywords: 100, copyright: 200, reviewNotes: 4000 };
-      Object.keys(limits).forEach(function (k) {
-        const n = Array.from(listing[k] || '').length;
-        assert.ok(n > 0 && n <= limits[k], k + ' is ' + n + ' of ' + limits[k]);
-      });
+    test('every text fits the stores\' limits and rules', function () {
+      /* Lengths, keywords that repeat the name, words Google Play refuses in
+         a title, the "not a government app" statement near the top and the
+         official sources at the end: see tools/store-listings.js. */
+      assert.deepEqual(listings.problems(all, store), []);
+      assert.ok(Array.from(store.appStore.reviewNotes).length <= 4000, 'review notes');
+      assert.ok(Array.from(store.copyright).length <= 200, 'copyright');
+    });
+
+    test('every app language Google Play offers has a listing', function () {
+      /* The app speaks 24 languages; Play has no Irish or Maltese and Apple
+         no Bulgarian or Baltic languages. A missing page means the app is
+         invisible to searches in that language. */
+      assert.deepEqual(Object.keys(all).sort(), Object.keys(listings.PLAY_LOCALES).sort());
     });
 
     test('it names nobody but the publisher, and links the published pages', function () {
-      assert.equal(/gabor/i.test(JSON.stringify(listing)), false);
-      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/privacy\.html$/.test(listing.privacyPolicyUrl));
-      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/support\.html$/.test(listing.supportUrl));
-      assert.ok(listing.copyright.indexOf('Aissa Bamogo Redondo') !== -1);
+      assert.equal(/gabor/i.test(JSON.stringify(all) + JSON.stringify(store)), false);
+      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/privacy\.html$/.test(store.privacyPolicyUrl));
+      assert.ok(/^https:\/\/chispapps\.com\/truckrouteplanner\/support\.html$/.test(store.supportUrl));
+      assert.ok(store.copyright.indexOf('Aissa Bamogo Redondo') !== -1);
     });
 
-    test('it says it is not a government app and links the official sources', function () {
-      const d = listing.description;
-      assert.ok(d.indexOf('NO ES UNA APP OFICIAL') !== -1 && d.indexOf('NO ES UNA APP OFICIAL') < 400, 'near the top');
-      assert.ok(d.indexOf('https://chispapps.com/truckrouteplanner/sources.html') !== -1);
-      assert.ok(/https:\/\/eur-lex\.europa\.eu\/\S*32006R0561/.test(d));
+    test('the Spanish App Store page keeps the name it ranks first with', function () {
+      /* #1 for "planificador de ruta camión" on 14 Nov 2026 (store/aso.md). */
+      assert.equal(all.es.name, 'Planificador de ruta camión');
     });
 
-    test('keywords do not repeat the name, which Apple already indexes', function () {
-      const name = listing.name.toLowerCase();
-      listing.keywords.split(',').forEach(function (k) {
-        assert.equal(name.indexOf(k.trim().toLowerCase()), -1, k);
-      });
+    test('the build writes one Play row per language and one Apple entry per locale', function () {
+      const dir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'trp-listings-'));
+      const n = listings.build(dir);
+      const csv = fs.readFileSync(path.join(dir, 'google-play.csv'), 'utf8');
+      const asc = JSON.parse(fs.readFileSync(path.join(dir, 'asc.json'), 'utf8'));
+      assert.equal(csv.charCodeAt(0), 0xfeff, 'UTF-8 BOM, so the Play Console reads the accents');
+      assert.ok(/^﻿language,title,short_description,full_description\r\n/.test(csv));
+      assert.equal(n.asc, Object.keys(asc).length);
+      assert.ok(asc['es-ES'] && asc['en-GB'] && asc.ca, 'Spanish, English (UK) and the Catalan keyword page');
+      assert.equal(asc.ca.description, all.es.description, 'the Catalan page reuses the Spanish texts');
     });
+  });
+
+
+  describe('ios - the App Store screenshots and API', function () {
+    const upload = require('../tools/asc-upload-screenshots.js');
+    const crypto = require('crypto');
 
     test('the screenshots are the size App Store Connect takes', function () {
       const sets = upload.collect();

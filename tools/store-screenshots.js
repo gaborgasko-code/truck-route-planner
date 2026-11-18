@@ -2,7 +2,10 @@
 /**
  * Truck Route Planner - App Store screenshots of the iPhone app.
  *
- *     node tools/store-screenshots.js        -> store/screenshots/es-ES/*.png
+ *     node tools/store-screenshots.js        -> build/store-shots/ios/es/*.png
+ *
+ * These are the bare app screens; tools/store-captions.js frames them with a
+ * caption in each language and writes the files the stores get.
  *
  * App Store Connect wants 6.9-inch iPhone screenshots, 1290 x 2796. These are
  * taken from the app bundle itself (www/, built by build-app.js, so they show
@@ -32,26 +35,51 @@ const WWW = path.join(root, 'www');
  * shots are 1080 x 1920 (9:16) from a 360 x 640 phone at 3x.
  *     node tools/store-screenshots.js            -> App Store
  *     node tools/store-screenshots.js --android  -> Google Play
- * Add --lang en for the English set (the app in English, an English route);
- * Spanish is the default.
+ * Add --lang de for the German set (the app in German, the same route with
+ * the place names in German), --lang de,fr for several, --lang all for every
+ * store language. Spanish is the default.
  */
 const ANDROID = process.argv.indexOf('--android') !== -1;
+/* Valencia to Lyon in every language: three countries, tolls, driving bans
+   and a daily rest. Each pair was checked to geocode to the right cities. */
 const LANGS = {
   es: { locale: 'es-ES', route: { origin: 'Valencia, España', dest: 'Lyon, Francia' } },
-  en: { locale: 'en-US', route: { origin: 'Valencia, Spain', dest: 'Lyon, France' } }
+  en: { locale: 'en-GB', route: { origin: 'Valencia, Spain', dest: 'Lyon, France' } },
+  bg: { locale: 'bg-BG', route: { origin: 'Валенсия, Испания', dest: 'Лион, Франция' } },
+  cs: { locale: 'cs-CZ', route: { origin: 'Valencie, Španělsko', dest: 'Lyon, Francie' } },
+  da: { locale: 'da-DK', route: { origin: 'Valencia, Spanien', dest: 'Lyon, Frankrig' } },
+  de: { locale: 'de-DE', route: { origin: 'Valencia, Spanien', dest: 'Lyon, Frankreich' } },
+  el: { locale: 'el-GR', route: { origin: 'Βαλένθια, Ισπανία', dest: 'Λυών, Γαλλία' } },
+  et: { locale: 'et-EE', route: { origin: 'Valencia, Hispaania', dest: 'Lyon, Prantsusmaa' } },
+  fi: { locale: 'fi-FI', route: { origin: 'Valencia, Espanja', dest: 'Lyon, Ranska' } },
+  fr: { locale: 'fr-FR', route: { origin: 'Valence, Espagne', dest: 'Lyon, France' } },
+  hr: { locale: 'hr-HR', route: { origin: 'Valencia, Španjolska', dest: 'Lyon, Francuska' } },
+  hu: { locale: 'hu-HU', route: { origin: 'Valencia, Spanyolország', dest: 'Lyon, Franciaország' } },
+  it: { locale: 'it-IT', route: { origin: 'Valencia, Spagna', dest: 'Lione, Francia' } },
+  lt: { locale: 'lt-LT', route: { origin: 'Valensija, Ispanija', dest: 'Lionas, Prancūzija' } },
+  lv: { locale: 'lv-LV', route: { origin: 'Valensija, Spānija', dest: 'Liona, Francija' } },
+  nl: { locale: 'nl-NL', route: { origin: 'Valencia, Spanje', dest: 'Lyon, Frankrijk' } },
+  pl: { locale: 'pl-PL', route: { origin: 'Walencja, Hiszpania', dest: 'Lyon, Francja' } },
+  pt: { locale: 'pt-PT', route: { origin: 'Valência, Espanha', dest: 'Lyon, França' } },
+  ro: { locale: 'ro-RO', route: { origin: 'Valencia, Spania', dest: 'Lyon, Franța' } },
+  sk: { locale: 'sk-SK', route: { origin: 'Valencia, Španielsko', dest: 'Lyon, Francúzsko' } },
+  sl: { locale: 'sl-SI', route: { origin: 'Valencija, Španija', dest: 'Lyon, Francija' } },
+  sv: { locale: 'sv-SE', route: { origin: 'Valencia, Spanien', dest: 'Lyon, Frankrike' } }
 };
 const LANG_ARG = process.argv.indexOf('--lang');
-const LANG = LANG_ARG !== -1 ? process.argv[LANG_ARG + 1] : 'es';
-if (!LANGS[LANG]) throw new Error('--lang must be one of ' + Object.keys(LANGS).join(', '));
-const LOCALE = LANGS[LANG].locale;
+const LANG_LIST = LANG_ARG !== -1 ? process.argv[LANG_ARG + 1] : 'es';
+const LANG = LANG_LIST.indexOf(',') === -1 && LANG_LIST !== 'all' ? LANG_LIST : null;
+if (LANG && !LANGS[LANG]) throw new Error('--lang must be "all" or among ' + Object.keys(LANGS).join(', '));
+const LOCALE = LANG ? LANGS[LANG].locale : 'en-GB';
+const SHOTS_DIR = path.join(root, 'build', 'store-shots');
 const PROFILE = ANDROID ? {
-  out: path.join(root, 'store', 'google-play', 'screenshots', LOCALE),
+  out: path.join(SHOTS_DIR, 'android', LANG || ''),
   device: { width: 360, height: 640, deviceScaleFactor: 3, mobile: true },
   size: { width: 1080, height: 1920 },
   ua: 'Mozilla/5.0 (Linux; Android 16; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36',
   platform: 'android'
 } : {
-  out: path.join(root, 'store', 'screenshots', LOCALE),
+  out: path.join(SHOTS_DIR, 'ios', LANG || ''),
   device: { width: 430, height: 932, deviceScaleFactor: 3, mobile: true },
   size: { width: 1290, height: 2796 },
   ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
@@ -66,7 +94,7 @@ const EDGE = [
 const DEVICE = PROFILE.device;
 const SIZE = PROFILE.size;
 const UA = PROFILE.ua;
-const ROUTE = Object.assign({ departure: '2026-10-12T06:00' }, LANGS[LANG].route);
+const ROUTE = Object.assign({ departure: '2026-10-12T06:00' }, LANGS[LANG || 'en'].route);
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.png': 'image/png',
@@ -282,8 +310,26 @@ async function main() {
   process.stdout.write('screenshots in ' + path.relative(root, OUT) + ':\n  ' + shots.join('\n  ') + '\n');
 }
 
-if (require.main === module) {
-  main().catch(function (err) { process.stderr.write(String(err && err.stack || err) + '\n'); process.exit(1); });
+/** Several languages: one run each, one after the other, so a failure names its language. */
+function runAll() {
+  const list = LANG_LIST === 'all' ? Object.keys(LANGS) : LANG_LIST.split(',');
+  const bad = list.filter(function (l) { return !LANGS[l]; });
+  if (bad.length) throw new Error('unknown language: ' + bad.join(', '));
+  const failed = [];
+  list.forEach(function (l) {
+    const args = [__filename, '--lang', l].concat(ANDROID ? ['--android'] : []);
+    const r = require('child_process').spawnSync(process.execPath, args, { stdio: 'inherit' });
+    if (r.status !== 0) failed.push(l);
+  });
+  if (failed.length) {
+    process.stderr.write('failed: ' + failed.join(', ') + '\n');
+    process.exit(1);
+  }
 }
 
-module.exports = { connect, EDGE };
+if (require.main === module) {
+  if (!LANG) runAll();
+  else main().catch(function (err) { process.stderr.write(String(err && err.stack || err) + '\n'); process.exit(1); });
+}
+
+module.exports = { connect, EDGE, LANGS, SHOTS_DIR };

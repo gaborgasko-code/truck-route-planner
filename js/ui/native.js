@@ -1,13 +1,15 @@
 /**
- * Truck Route Planner - the two things only the packaged app can do.
+ * Truck Route Planner - the things only the packaged app can do.
  *
  *   Break reminders   Local notifications timed to the legal stop plan, so a
  *                     driver is warned before the 4 h 30 min runs out rather
  *                     than finding out afterwards.
  *   Your location     A GPS fix turned into a street address for the origin
  *                     field, instead of typing where you already are.
+ *   Rating            The store's own rating sheet, now and then, after a
+ *                     route has been calculated.
  *
- * Both are deliberately absent on the web. A browser tab cannot fire a
+ * The first two are deliberately absent on the web. A browser tab cannot fire a
  * notification hours later while the phone is in a pocket, and pretending
  * otherwise would be worse than not offering it: the whole value is that the
  * reminder arrives when nobody is looking at the screen.
@@ -191,6 +193,55 @@
       .catch(function () { return { ok: false, reason: 'error' }; });
   }
 
+  /* -------------------------------------------------------------- rating */
+
+  var REVIEW_KEY = 'trp.review';
+  /* Ask after the 3rd, 10th and 30th route a driver calculates: by then the
+     app has proved useful, and the result is on screen. Apple shows the sheet
+     at most three times a year and Google rations it too, so asking more
+     often only wastes the chances. */
+  var REVIEW_AT = [3, 10, 30];
+  var REVIEW_GAP_MS = 30 * 24 * 3600 * 1000;
+
+  /**
+   * @param {{routes:number, asked:number, times:number}} s  routes counted so
+   *        far (this one included), when we last asked, how often we asked
+   * @param {number} now
+   */
+  function shouldAskForReview(s, now) {
+    if (s.times >= REVIEW_AT.length || s.routes < REVIEW_AT[s.times]) return false;
+    return !s.asked || now - s.asked >= REVIEW_GAP_MS;
+  }
+
+  function readReviewState(storage) {
+    try {
+      var s = JSON.parse(storage.getItem(REVIEW_KEY) || '{}');
+      return { routes: Number(s.routes) || 0, asked: Number(s.asked) || 0, times: Number(s.times) || 0 };
+    } catch (e) {
+      return { routes: 0, asked: 0, times: 0 };
+    }
+  }
+
+  /**
+   * Count a calculated route and, at the moments above, show the store's own
+   * rating sheet. Whether it actually appears is up to Apple and Google.
+   * @returns {Promise<boolean>} whether the sheet was requested
+   */
+  function routeCalculated() {
+    var api = plugin('InAppReview');
+    if (!available() || !api || !global.localStorage) return Promise.resolve(false);
+    var s = readReviewState(global.localStorage);
+    s.routes += 1;
+    var now = Date.now();
+    var ask = shouldAskForReview(s, now);
+    if (ask) { s.asked = now; s.times += 1; }
+    try { global.localStorage.setItem(REVIEW_KEY, JSON.stringify(s)); } catch (e) { /* private mode */ }
+    if (!ask) return Promise.resolve(false);
+    return api.requestReview()
+      .then(function () { return true; })
+      .catch(function () { return false; });
+  }
+
   TRP.native = {
     available: available,
     platform: platform,
@@ -198,7 +249,10 @@
     scheduleReminders: scheduleReminders,
     cancelReminders: cancelReminders,
     pendingReminders: pendingReminders,
-    currentPosition: currentPosition
+    currentPosition: currentPosition,
+    routeCalculated: routeCalculated,
+    shouldAskForReview: shouldAskForReview,
+    REVIEW_AT: REVIEW_AT
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = TRP.native;

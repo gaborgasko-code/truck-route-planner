@@ -143,30 +143,22 @@
   });
 
   describe('android - the Google Play listing', function () {
-    /* English is the default listing; Spanish is its translation. */
+    /* English is the default listing. The texts of every language are in
+       store/listings (tests in test_ios_build.js); the graphics exist in
+       English and Spanish. */
     const LOCALES = ['en-US', 'es-ES'];
     const gp = path.join(root, 'store', 'google-play');
-    const listings = {};
-    LOCALES.forEach(function (l) {
-      listings[l] = JSON.parse(fs.readFileSync(path.join(gp, 'listing-' + l + '.json'), 'utf8'));
-    });
 
     function pngSize(file) {
       const b = fs.readFileSync(file);
       return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
     }
 
-    test('the texts fit Google Play\'s limits and name nobody but the publisher', function () {
-      const lim = { title: 30, shortDescription: 80, fullDescription: 4000, releaseNotes: 500 };
-      LOCALES.forEach(function (l) {
-        Object.keys(lim).forEach(function (k) {
-          const n = Array.from(listings[l][k] || '').length;
-          assert.ok(n > 0 && n <= lim[k], l + ' ' + k + ' is ' + n + ' of ' + lim[k]);
-        });
-        assert.equal(/gabor/i.test(JSON.stringify(listings[l])), false, l);
-        assert.equal(/iphone/i.test(listings[l].fullDescription), false, l + ': no iPhone wording on Google Play');
+    test('the descriptions name neither store nor platform, since both stores show them', function () {
+      const all = require('../tools/store-listings.js').load();
+      Object.keys(all).forEach(function (l) {
+        assert.equal(/iphone|ipad|android|google play|app store/i.test(all[l].description), false, l);
       });
-      assert.equal(listings['en-US'].privacyPolicyUrl, listings['es-ES'].privacyPolicyUrl);
     });
 
     test('icon and one feature graphic per language have the required sizes', function () {
@@ -202,8 +194,8 @@
     const legal = require('../tools/build-legal-pages.js');
     const os = require('os');
     const S = legal.loadSources();
-    const gp = path.join(root, 'store', 'google-play');
-    const listing = function (l) { return JSON.parse(fs.readFileSync(path.join(gp, 'listing-' + l + '.json'), 'utf8')); };
+    const listings = path.join(root, 'store', 'listings');
+    const listing = function (l) { return JSON.parse(fs.readFileSync(path.join(listings, l + '.json'), 'utf8')); };
     const tolls = JSON.parse(fs.readFileSync(path.join(root, 'data', 'toll_rates.json'), 'utf8')).rates;
     const regs = JSON.parse(fs.readFileSync(path.join(root, 'data', 'trailer_regulations.json'), 'utf8')).regulations;
     const regCodes = Object.keys(regs).filter(function (c) { return c !== 'DEFAULT'; });
@@ -270,8 +262,8 @@
     });
 
     test('both Play descriptions carry the statement and the official sources', function () {
-      const en = listing('en-US').fullDescription;
-      const es = listing('es-ES').fullDescription;
+      const en = listing('en').description;
+      const es = listing('es').description;
       assert.ok(/NOT A GOVERNMENT APP/.test(en) && /not affiliated with, the European Union or any government/.test(en));
       assert.ok(/NO ES UNA APP OFICIAL/.test(es) && /No representa a la Unión Europea ni a ningún gobierno/.test(es));
       assert.ok(en.indexOf('NOT A GOVERNMENT APP') < 400 && es.indexOf('NO ES UNA APP OFICIAL') < 400, 'near the top, easy to see');
@@ -282,9 +274,7 @@
         assert.ok(/urban-vehicle-access-regulations/.test(d), 'low-emission zones source');
         assert.ok(/youreurope\/citizens\/travel\/driving-abroad\/road-rules-and-safety/.test(d), 'national road rules source');
       });
-      ['en-US', 'es-ES'].forEach(function (l) {
-        assert.equal(listing(l).privacyPolicyUrl, 'https://chispapps.com/truckrouteplanner/privacy.html');
-      });
+      assert.equal(listing('store').privacyPolicyUrl, 'https://chispapps.com/truckrouteplanner/privacy.html');
     });
 
     /* Google asked for the sources inside the app as well, not only in the store. */
@@ -294,7 +284,7 @@
       const card = (/<div class="card" id="m_sources">[\s\S]*?<\/ul>/.exec(mobile) || [''])[0];
       assert.ok(/data-i18n="info\.notGov"/.test(card), 'the "not a government app" statement');
       const links = (card.match(/href="[^"]+"/g) || []).map(function (h) { return h.slice(6, -1); });
-      const en = listing('en-US').fullDescription;
+      const en = listing('en').description;
       assert.equal(links.length, 6);
       links.forEach(function (url) {
         assert.ok(en.indexOf(url) !== -1, url + ' is not in the Play description');

@@ -1,0 +1,17 @@
+{
+  "_comment": "Settings shared by every store language. The texts are in <lang>.json; tools/store-listings.js checks and builds them. The app is published by Aissa Bamogo Redondo and names nobody else.",
+  "supportUrl": "https://chispapps.com/truckrouteplanner/support.html",
+  "marketingUrl": "https://chispapps.com/truckrouteplanner/",
+  "privacyPolicyUrl": "https://chispapps.com/truckrouteplanner/privacy.html",
+  "copyright": "2026 Aissa Bamogo Redondo",
+  "appStore": {
+    "primaryCategory": "Navegación",
+    "secondaryCategory": "Viajes",
+    "reviewNotes": "No hace falta iniciar sesión: la app no tiene cuentas.\n\nPara probarla: escriba un origen y un destino (por ejemplo «Valencia, España» y «Lyon, Francia») y pulse «Calcular ruta». El resultado aparece en las pestañas Resultado, Mapa y Normas.\n\nFunciones del iPhone:\n- «Usar mi ubicación», bajo el origen, rellena el punto de partida con la ubicación actual (pide permiso de ubicación mientras se usa la app).\n- En la pestaña Normas, «Avisarme de las pausas» programa notificaciones locales antes de cada pausa obligatoria del viaje (pide permiso de notificaciones).\n\nLa app necesita conexión a internet: calcula la ruta con OSRM y busca direcciones con Nominatim de OpenStreetMap.\n\n---\n\nNo sign-in is needed: the app has no accounts.\n\nTo try it: enter an origin and a destination (for example \"Valencia, España\" and \"Lyon, Francia\") and tap \"Calcular ruta\". The result is in the Resultado, Mapa and Normas tabs.\n\niPhone features:\n- \"Usar mi ubicación\", under the origin, fills in the starting point from the current location (asks for location permission while using the app).\n- In the Normas tab, \"Avisarme de las pausas\" schedules local notifications before each mandatory break of the trip (asks for notification permission).\n\nThe app needs an internet connection: it routes with OSRM and looks up addresses with OpenStreetMap Nominatim."
+  },
+  "googlePlay": {
+    "category": "Maps & Navigation",
+    "contactEmail": "aissa.b.code@gmail.com",
+    "website": "https://chispapps.com/truckrouteplanner/support.html"
+  }
+}

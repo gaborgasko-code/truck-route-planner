@@ -13,7 +13,7 @@
 
   var CONFIG = {
     APP_NAME: 'Planificador de ruta - Gabor',
-    APP_VERSION: '2.3.0',
+    APP_VERSION: '2.3.1',
     APP_BUILD: 'web',
     AUTHOR: 'created by Gabor Gasko',
     AUTHOR_URL: 'https://www.linkedin.com/in/gaborgasko/',

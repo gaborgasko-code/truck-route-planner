@@ -240,6 +240,8 @@
         km: util.formatNumber(result.route.distanceKm, 0),
         time: util.formatDuration(result.time.totalHours)
       }), 'ok');
+      /* After the toast, with the result in view. */
+      if (nativeAvailable()) setTimeout(function () { TRP.native.routeCalculated(); }, 2500);
     }).catch(function (err) {
       if (err && err.code === 'CANCELLED') return;
       app.trackEvent('route_failed', { errorCode: err && err.code });

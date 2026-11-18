@@ -11,7 +11,7 @@ account, so no 12-tester closed test is required before production).
 | Build | Aissa's repo → Actions → **Android** → Run workflow with **signed** ticked |
 | Output | `planificador-<version>-<run>.aab` for Play, `.apk` (same key) to install directly for testing |
 | Signing | upload key from `tools/android-signing.ps1` (in `.signing/`, secrets on `aissab-code/planificador`); Google holds the app signing key (Play App Signing) |
-| Listing texts | `store/google-play/listing-en-US.json` (default language, English) and `listing-es-ES.json` (Spanish translation) |
+| Listing texts | `store/listings/<lang>.json`, one file per app language for both stores (default language English); `node tools/store-listings.js build` writes `build/store-listings/google-play.csv` for Play Console → Main store listing → Import a file. Keyword choices: `store/aso.md` |
 | Graphics | `store/google-play/icon-512.png`, `feature-graphic-<locale>.png`, `screenshots/<locale>/*.png` (1080 × 1920), for en-US and es-ES |
 | App language | the phone's language when it is one of the 24 EU languages, otherwise English (the website keeps Spanish) |
 | Name under the icon | **Truck Planner**; **Planificador** on Spanish phones (`LABELS` in tools/build-android-resources.js, checked in the bundle) |
@@ -70,10 +70,11 @@ These match the App Store privacy answers (MOBILE_APP_GUIDE.md B.9).
 
 ## 3. Store listing (Grow users → Store presence → Main store listing)
 
-Default language English: from `store/google-play/listing-en-US.json`, with
+Default language English: texts from `store/listings/en.json` (all 22 Play
+languages are imported at once from the CSV the build writes), with
 feature graphic `feature-graphic-en-US.png` and phone screenshots
 `screenshots/en-US/1-plan.png` … `6-rules.png` (in that order). The Spanish
-translation takes `listing-es-ES.json`, `feature-graphic-es-ES.png` and
+translation takes `feature-graphic-es-ES.png` and
 `screenshots/es-ES/`. The app icon `icon-512.png` is shared.
 
 ### Official sources and "not a government app" (required)

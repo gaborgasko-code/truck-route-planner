@@ -1,0 +1,19 @@
+{
+  "notGov": "INGEN MYNDIGHETSAPP",
+  "name": "Ruttplanerare för lastbil",
+  "subtitle": "Kör- och vilotider, vägavgift",
+  "keywords": "körtid,körtider,vilotid,färdskrivare,raster,chaufför,långtradare,gps,navigering,561,europa,körförbud",
+  "promotionalText": "Planera lastbilsresor i EU med varje rast på 45 minuter och dygnsvila enligt förordning 561/2006, uppskattade vägavgifter per land och körförbuden längs rutten.",
+  "whatsNew": "• Appen öppnas nu på telefonens språk (alla 24 officiella EU-språk).\n• Fliken Info: de officiella källorna bakom varje regel.\n• Uppdaterade avgifter och regler: Nederländernas lastbilsavgift, Rumäniens avståndsbaserade vägavgift, Litauens vinjett och Sveriges datum för vinterdäck.",
+  "playTitle": "Ruttplanerare för lastbil",
+  "shortDescription": "Lastbilsrutter med EU:s kör- och vilotider, raster, vägavgifter och körförbud.",
+  "screenshotCaptions": [
+    "Planera din lastbilsresa i Europa",
+    "Raster och vila enligt 561/2006",
+    "Vägavgifter beräknade per land",
+    "Din rutt och dina stopp på kartan",
+    "En påminnelse före varje rast",
+    "Körförbud och regler per land"
+  ],
+  "description": "Ruttplanerare för lastbil gör två adresser till en komplett reseplan för lastbilar, långtradare och andra tunga fordon i Europa: EU:s kör- och vilotider, uppskattade vägavgifter och de nationella reglerna längs din rutt.\n\nINGEN MYNDIGHETSAPP: det här är en oberoende app. Den representerar inte Europeiska unionen eller någon regering eller myndighet och är inte knuten till dem. Reglerna som den sammanfattar kommer från de officiella källor som anges i slutet av den här beskrivningen.\n\nKÖR- OCH VILOTIDER\n• Beräknar raster på 45 minuter och dygnsvila enligt förordning (EG) nr 561/2006, med de tillåtna alternativen, till exempel delad rast (15 + 30 minuter) eller reducerad dygnsvila.\n• Stoppplan: klockslag och kilometer för varje obligatorisk rast och vila.\n• Dubbelbemanning: planering för en eller två förare.\n• Rastpåminnelser: telefonen påminner dig före varje obligatorisk rast under resan.\n\nVÄGAVGIFTER OCH RESEKOSTNAD\n• Uppskattade vägavgifter per land utifrån fordonets vikt, antal axlar och EURO-klass.\n• Bränsle och total resekostnad, även per kilometer.\n\nREGLER LÄNGS DIN RUTT\n• Körförbud för lastbilar, miljözoner och vinterutrustning för varje land längs rutten.\n\nKARTA OCH RAPPORT\n• Ruttkarta med stoppen, att visa eller spara.\n• Din plats som startpunkt.\n• Textrapport och GPX-export.\n• Alla 24 officiella EU-språk: appen öppnas på telefonens språk.\n\nInga konton, ingen reklam och ingen försäljning av data.\n\nViktigt: resultaten är uppskattningar för planering och är inte juridiskt bindande. Appen planerar resan; den ersätter inte GPS-navigering eller din färdskrivare. Kontrollera alltid gällande trafikbegränsningar, avgifter och fordonsgränser hos de officiella källorna nedan, liksom vad din färdskrivare faktiskt har registrerat.\n\nOFFICIELLA KÄLLOR\n• Körtider, raster och vilotider – förordning (EG) nr 561/2006 (EUR-Lex): https://eur-lex.europa.eu/legal-content/SV/TXT/?uri=CELEX:32006R0561\n• Kör- och vilotider – Europeiska kommissionen: https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en\n• Vägavgifter och vinjetter – Europeiska kommissionen, avgifter för användning av vägar: https://transport.ec.europa.eu/transport-modes/road/road-charging_en\n• Miljözoner – Europeiska kommissionen, regler för fordons tillträde till stadsområden: https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en\n• Trafikregler och vinterutrustning per land – Ditt Europa, EU:s officiella webbplats: https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_sv.htm\n• Körförbud för lastbilar och officiella vägavgiftsoperatörer, land för land: https://chispapps.com/truckrouteplanner/sources.html"
+}

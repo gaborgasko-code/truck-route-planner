@@ -1,0 +1,26 @@
+{
+  "notGov": "NO ES UNA APP OFICIAL",
+  "name": "Planificador de ruta camión",
+  "subtitle": "Tiempos de conducción y peajes",
+  "keywords": "pausas,descansos,tacógrafo,561,camionero,conductor,transportista,gps,navegador,europa,rutas,camiones",
+  "promotionalText": "Planifique sus viajes en camión por Europa: pausas y descansos del Reglamento (CE) 561/2006, peajes estimados por país y prohibiciones en su ruta.",
+  "whatsNew": "• La app se abre en el idioma de su teléfono (los 24 idiomas oficiales de la UE).\n• Pestaña Info: las fuentes oficiales de cada norma.\n• Peajes y normas actualizados: peaje para camiones de los Países Bajos, peaje por distancia en Rumanía, viñeta de Lituania y fechas de neumáticos de invierno en Suecia.",
+  "playTitle": "Planificador de ruta camión",
+  "shortDescription": "Rutas de camión con tiempos de conducción, pausas, peajes y normativa por país.",
+  "screenshotCaptions": [
+    "Su viaje en camión por Europa",
+    "Cada pausa y descanso del 561/2006",
+    "Peajes estimados país por país",
+    "Su ruta y paradas en el mapa",
+    "Un aviso antes de cada pausa",
+    "Prohibiciones y normas por país"
+  ],
+  "variants": {
+    "ca": {
+      "name": "Planificador de ruta camió",
+      "subtitle": "Temps de conducció i peatges",
+      "keywords": "itinerario,calculadora,viaje,mapa,tir,zbe,prohibiciones,horas,pesados,transporte,autonomo,vehiculo"
+    }
+  },
+  "description": "Planificador de ruta camión convierte dos direcciones en un plan de viaje completo para camiones, tráileres y otros vehículos pesados en Europa: tiempos de conducción y descanso de la UE, peajes estimados y la normativa de cada país de la ruta.\n\nNO ES UNA APP OFICIAL: es una app independiente. No representa a la Unión Europea ni a ningún gobierno u organismo público, ni está afiliada a ellos. Las normas que resume proceden de las fuentes oficiales que se indican al final de esta descripción.\n\nTIEMPOS DE CONDUCCIÓN Y PAUSAS\n• Calcula las pausas de 45 minutos y los descansos diarios según el Reglamento (CE) n.º 561/2006, con las alternativas permitidas, como la pausa fraccionada (15 + 30 minutos) o el descanso diario reducido.\n• Plan de paradas: hora y kilómetro de cada pausa y descanso obligatorio.\n• Conducción en equipo: planificación para uno o dos conductores.\n• Avisos de pausa: el teléfono le avisa antes de cada pausa obligatoria del viaje.\n\nPEAJES Y COSTE DEL VIAJE\n• Peajes estimados por país, según el peso, los ejes y la clase EURO del vehículo.\n• Combustible y coste total del viaje, también por kilómetro.\n\nNORMATIVA EN SU RUTA\n• Prohibiciones de circulación para camiones, zonas de bajas emisiones y equipamiento de invierno de cada país de la ruta.\n\nMAPA E INFORME\n• Mapa de la ruta con las paradas, para consultar o guardar.\n• Usar mi ubicación como punto de partida.\n• Informe de texto y exportación GPX.\n• Los 24 idiomas oficiales de la UE: la app se abre en el idioma de su teléfono.\n\nSin cuentas, sin publicidad y sin venta de datos.\n\nImportante: los resultados son estimaciones para planificar y no son jurídicamente vinculantes. La app planifica el viaje; no sustituye a un navegador GPS ni a su tacógrafo. Compruebe siempre en las fuentes oficiales de abajo las restricciones de circulación, las tarifas de peaje y las limitaciones del vehículo vigentes, así como los registros reales de su tacógrafo.\n\nFUENTES OFICIALES\n• Tiempos de conducción, pausas y descansos – Reglamento (CE) n.º 561/2006 (EUR-Lex): https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32006R0561\n• Tiempos de conducción y descanso – Comisión Europea: https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en\n• Peajes y viñetas – Comisión Europea, tarificación vial: https://transport.ec.europa.eu/transport-modes/road/road-charging_en\n• Zonas de bajas emisiones – Comisión Europea, normas de acceso de vehículos a zonas urbanas: https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en\n• Normas de circulación y equipamiento de invierno por país – Tu Europa, sitio web oficial de la UE: https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_es.htm\n• Restricciones a camiones y operadores oficiales de peaje, país por país: https://chispapps.com/truckrouteplanner/sources.html"
+}

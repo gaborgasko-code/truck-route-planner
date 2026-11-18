@@ -38,10 +38,15 @@ function pngSize(buf) {
   return buf.readUInt32BE(16) + 'x' + buf.readUInt32BE(20);
 }
 
+/* Pages that show another page's screenshots instead of a folder of their
+   own: US English uses the UK set, and the Catalan page (a second set of
+   Spanish keywords for the Spanish store) the Spanish one. */
+const ALIASES = { 'en-US': 'en-GB', ca: 'es-ES' };
+
 /** Every locale folder and its screenshots, checked before anything is sent. */
 function collect() {
   if (!fs.existsSync(SHOTS)) throw new Error('no ' + path.relative(root, SHOTS));
-  return fs.readdirSync(SHOTS).filter((d) => fs.statSync(path.join(SHOTS, d)).isDirectory()).sort()
+  const sets = fs.readdirSync(SHOTS).filter((d) => fs.statSync(path.join(SHOTS, d)).isDirectory()).sort()
     .map((locale) => {
       const files = fs.readdirSync(path.join(SHOTS, locale)).filter((f) => /\.png$/i.test(f)).sort();
       if (!files.length || files.length > 10) throw new Error(locale + ': ' + files.length + ' screenshots, need 1-10');
@@ -56,6 +61,11 @@ function collect() {
         })
       };
     });
+  Object.keys(ALIASES).forEach((locale) => {
+    const from = sets.find((s) => s.locale === ALIASES[locale]);
+    if (from && !sets.some((s) => s.locale === locale)) sets.push({ locale, files: from.files });
+  });
+  return sets;
 }
 
 function b64url(data) {
@@ -188,4 +198,4 @@ if (require.main === module) {
   main().catch((err) => { process.stderr.write('error: ' + err.message + '\n'); process.exit(1); });
 }
 
-module.exports = { collect, pngSize, token, DISPLAY_TYPE };
+module.exports = { collect, pngSize, token, DISPLAY_TYPE, ALIASES };

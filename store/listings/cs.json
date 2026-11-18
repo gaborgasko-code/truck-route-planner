@@ -1,0 +1,19 @@
+{
+  "notGov": "NEJDE O VLÁDNÍ APLIKACI",
+  "name": "Plánovač tras pro kamiony",
+  "subtitle": "Doba řízení, přestávky a mýto",
+  "keywords": "tachograf,kamion,navigace,gps,řidič,řidiče,odpočinek,mýtné,561,zákazy,jízdy,nákladní,trasa,tir,mapa",
+  "promotionalText": "Plánujte jízdy kamionem po EU s každou 45minutovou přestávkou a denním odpočinkem podle nařízení 561/2006, odhadem mýtného po zemích a zákazy jízdy na trase.",
+  "whatsNew": "• Aplikace se nyní otevírá v jazyce vašeho telefonu (všech 24 úředních jazyků EU).\n• Karta Info: oficiální zdroje ke každému pravidlu.\n• Aktualizované mýtné a předpisy: mýto pro nákladní vozidla v Nizozemsku, mýto podle ujeté vzdálenosti v Rumunsku, dálniční známka v Litvě a termíny zimních pneumatik ve Švédsku.",
+  "playTitle": "Plánovač tras pro kamiony",
+  "shortDescription": "Trasy pro kamiony: doba řízení, přestávky 45 min, mýtné a zákazy jízdy v EU.",
+  "screenshotCaptions": [
+    "Plán jízdy kamionem po Evropě",
+    "Přestávky a odpočinky dle 561/2006",
+    "Odhad mýtného v každé zemi",
+    "Trasa a zastávky na mapě",
+    "Připomenutí před každou přestávkou",
+    "Zákazy jízdy a předpisy podle zemí"
+  ],
+  "description": "Plánovač tras pro kamiony promění dvě adresy v kompletní plán jízdy po Evropě pro kamiony, nákladní auta a další těžká nákladní vozidla: doba řízení, přestávky a odpočinek podle pravidel EU, odhad mýtného a vnitrostátní předpisy na trase.\n\nNEJDE O VLÁDNÍ APLIKACI: jde o nezávislou aplikaci. Nezastupuje Evropskou unii ani žádnou vládu či veřejný orgán a není s nimi spojena. Pravidla, která shrnuje, pocházejí z oficiálních zdrojů uvedených na konci tohoto popisu.\n\nDOBA ŘÍZENÍ A PŘESTÁVKY\n• Vypočítá 45minutové přestávky a denní odpočinky podle nařízení (ES) č. 561/2006 včetně povolených variant, jako je rozdělená přestávka (15 + 30 minut) nebo zkrácený denní odpočinek.\n• Plán zastávek: čas a kilometr každé povinné přestávky a každého odpočinku.\n• Jízda v osádce: plánování pro jednoho nebo dva řidiče.\n• Připomenutí přestávek: telefon vás upozorní před každou povinnou přestávkou na cestě.\n\nMÝTNÉ A NÁKLADY NA CESTU\n• Odhad mýtného v každé zemi podle hmotnosti, počtu náprav a emisní třídy EURO vozidla.\n• Palivo a celkové náklady na cestu, také v přepočtu na kilometr.\n\nPŘEDPISY NA VAŠÍ TRASE\n• Zákazy jízdy nákladních vozidel, nízkoemisní zóny a zimní výbava v každé zemi na trase.\n\nMAPA A ZPRÁVA\n• Mapa trasy se zastávkami k prohlížení nebo uložení.\n• Vaše poloha jako výchozí bod.\n• Textová zpráva a export do GPX.\n• Všech 24 úředních jazyků EU: aplikace se otevře v jazyce vašeho telefonu.\n\nBez účtů, bez reklam a bez prodeje dat.\n\nDůležité: výsledky jsou odhady pro plánování a nejsou právně závazné. Aplikace plánuje cestu; nenahrazuje navigaci krok za krokem ani váš tachograf. Vždy si ověřte platná dopravní omezení, sazby mýtného a limity vozidel v níže uvedených oficiálních zdrojích a také skutečné záznamy svého tachografu.\n\nOFICIÁLNÍ ZDROJE\n• Doba řízení, přestávky a doby odpočinku – nařízení (ES) č. 561/2006 (EUR-Lex): https://eur-lex.europa.eu/legal-content/CS/TXT/?uri=CELEX:32006R0561\n• Doba řízení a odpočinku – Evropská komise: https://transport.ec.europa.eu/transport-modes/road/social-provisions/driving-time-and-rest-periods_en\n• Mýtné a dálniční známky – Evropská komise, zpoplatnění silnic: https://transport.ec.europa.eu/transport-modes/road/road-charging_en\n• Nízkoemisní zóny – Evropská komise, pravidla vjezdu vozidel do měst: https://transport.ec.europa.eu/transport-themes/urban-transport/urban-vehicle-access-regulations_en\n• Pravidla silničního provozu a zimní výbava podle země – Vaše Evropa, oficiální web EU: https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_cs.htm\n• Zákazy jízdy nákladních vozidel a oficiální provozovatelé mýta, země po zemi: https://chispapps.com/truckrouteplanner/sources.html"
+}
