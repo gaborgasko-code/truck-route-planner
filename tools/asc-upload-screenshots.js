@@ -121,12 +121,22 @@ async function uploadOne(setId, shot) {
     const res = await fetch(op.url, { method: op.method, headers, body: shot.buf.subarray(op.offset, op.offset + op.length) });
     if (!res.ok) throw new Error('uploading ' + shot.name + ' failed: ' + res.status);
   }
-  await api('PATCH', '/appScreenshots/' + id, {
-    data: {
-      type: 'appScreenshots', id,
-      attributes: { uploaded: true, sourceFileChecksum: crypto.createHash('md5').update(shot.buf).digest('hex') }
+  /* Apple sometimes has not registered the upload yet (409
+     ASSET_UPLOAD_OPERATIONS_NOT_COMPLETED); it does a few seconds later. */
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await api('PATCH', '/appScreenshots/' + id, {
+        data: {
+          type: 'appScreenshots', id,
+          attributes: { uploaded: true, sourceFileChecksum: crypto.createHash('md5').update(shot.buf).digest('hex') }
+        }
+      });
+      break;
+    } catch (err) {
+      if (attempt >= 6 || !/UPLOAD_OPERATIONS_NOT_COMPLETED/.test(err.message)) throw err;
+      await sleep(5000);
     }
-  });
+  }
   return id;
 }
 
